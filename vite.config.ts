@@ -6,6 +6,8 @@ import { defineConfig, lazyPlugins } from 'vite-plus';
 const resolvePath = (path: string): string => fileURLToPath(new URL(path, import.meta.url));
 
 export default defineConfig({
+  // Relative, so the build also works from a GitHub Pages project subpath.
+  base: './',
   plugins: lazyPlugins(() => [svelte()]),
   resolve: {
     alias: {
