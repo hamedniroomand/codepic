@@ -1,43 +1,77 @@
-# Svelte + Vite
+# CodePic
 
-This template should help get you started developing with Svelte in Vite.
+CodePic turns a code snippet into a PNG snapshot. You paste code, adjust appearance, and export. The tool runs in the browser. It does not need an account or a server for normal use.
 
-## Recommended IDE Setup
+## Primary flow
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+1. Edit code directly in the centered snapshot window.
+2. Use the bottom toolbar for theme, background, dark mode, line numbers, padding, and language.
+3. Drag the side handles to change export width.
+4. Select **Download PNG** or **Copy image**.
 
-## Need an official Svelte framework?
+The stack is **Svelte 5 + TypeScript + Vite+**.
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+## Supported languages
 
-## Technical considerations
+JavaScript, TypeScript, HTML, CSS, JSON, Shell, Python, Go, PHP, SQL, Java, C#, Rust, Markdown, Plain Text.
 
-**Why use this over SvelteKit?**
+Unknown input falls back to plain text. Invalid syntax still renders.
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+## Customization
 
-This template contains as little as possible to get started with Vite + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+- **Themes:** light, dark, and colorful Shiki themes (syntax colors and code window chrome).
+- **Background:** solid, gradient presets, or transparent (checkerboard in preview).
+- **Layout:** padding presets and output width from 320 to 1600 pixels.
+- **Code display:** line numbers, wrap, and font size.
+- **Window:** minimal, decorative window controls, or borderless; optional title.
+- **Export scale:** 1×, 2× (default), or 3×.
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
+Theme and background are independent. Changing theme does not change the image background.
 
-**Why include `.vscode/extensions.json`?**
+## Export
 
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
+- Format: PNG only in this release.
+- **Download** saves a file. **Copy image** uses the Clipboard API when the browser allows it.
+- If clipboard write fails or is unsupported, the UI shows a message and download still works.
+- Transparent backgrounds export with alpha.
+- Export uses the configured width and scale, not the on-screen preview scale.
+- Export waits for code colors and fonts. Controls pause until export ends.
 
-**Why enable `checkJs` in the JS template?**
+## Local preferences
 
-It is likely that most cases of changing variable types in runtime are likely to be accidental, rather than deliberate. This provides advanced typechecking out of the box. Should you like to take advantage of the dynamically-typed nature of JavaScript, it is trivial to change the configuration.
+Appearance choices are stored in `localStorage`. Pasted code is not stored. Corrupt storage falls back to defaults.
 
-**Why is HMR not preserving my local component state?**
+## Share link
 
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/sveltejs/svelte-hmr/tree/master/packages/svelte-hmr#preservation-of-local-state).
+Existing URLs with a `#s=` fragment can load code and appearance settings. The toolbar does not create share links.
 
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
+## Design decisions
 
-```js
-// store.js
-// An extremely simple external store
-import { writable } from "svelte/store";
-export default writable(0);
+- **Separate code and appearance:** one config object drives the snapshot; code is separate so sharing and persistence can treat them differently.
+- **Local-first:** highlighting and export run client-side. Code is not sent to a backend during normal editing.
+- **Lightweight editor:** a textarea preserves bytes exactly; there is no IDE feature set.
+
+## Out of scope
+
+Full code editor, IDE features, collaboration, code execution, hosting, and Git browsing.
+
+## Limits
+
+- Long snippets take more time to highlight and export.
+- The preview scales to fit the screen. Image settings expand below the toolbar.
+- Clipboard image copy varies by browser and permission.
+
+## Development
+
+```sh
+vp install
+bun run dev
+vp check
+bun test
+vp test
+bun run build
 ```
+
+## Safety checks
+
+See [docs/VERIFICATION.md](docs/VERIFICATION.md) for a repeatable pass on HTML and script safety.
