@@ -18,8 +18,14 @@
   >
     <span
       class="mark"
-      aria-hidden="true">‹/›</span
+      aria-hidden="true"
     >
+      <svg viewBox="0 0 24 24">
+        <path d="M9 8 4.5 12 9 16" />
+        <path d="M15 8l4.5 4L15 16" />
+        <path d="M13.5 6 10.5 18" />
+      </svg>
+    </span>
     <span>CodePic</span>
     <span class="tagline">Code to image</span>
   </a>
@@ -103,7 +109,11 @@
     border-radius: var(--radius-md);
     background: var(--surface-well);
     color: var(--accent);
-    font: var(--text-headline-md) var(--font-mono);
+  }
+  .mark svg {
+    width: 22px;
+    height: 22px;
+    stroke-width: 2;
   }
   .tagline {
     margin-left: var(--space-xs);
