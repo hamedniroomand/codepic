@@ -7,16 +7,26 @@
     "dev": "vp dev",
     "build": "vp build",
     "preview": "vp preview",
-    "prepare": "vp config"
+    "prepare": "vp config && svelte-kit sync || echo ''",
+    "lint": "vp lint",
+    "format": "vp fmt"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "modern-screenshot": "^4.7.0",
+    "shiki": "^4.4.3"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^7.3.0",
-    "svelte": "^5.57.0",
-    "vite": "npm:@voidzero-dev/vite-plus-core@0.3.2",
-    "vite-plus": "0.3.2"
+    "bun-types": "^1.4.2",
+    "svelte": "^5.57.1",
+    "typescript": "^7.0.2",
+    "vite": "npm:@voidzero-dev/vite-plus-core@0.3.3",
+    "vite-plus": "0.3.3"
   },
   "overrides": {
-    "vite": "npm:@voidzero-dev/vite-plus-core@0.3.2"
+    "vite": "npm:@voidzero-dev/vite-plus-core@0.3.3"
   },
   "devEngines": {
     "packageManager": {
