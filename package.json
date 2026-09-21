@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^7.3.0",
-    "bun-types": "^1.4.2",
+    "@types/bun": "^1.4.2",
     "svelte": "^5.57.1",
     "typescript": "^7.0.2",
     "vite": "npm:@voidzero-dev/vite-plus-core@0.3.3",

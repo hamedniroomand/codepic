@@ -11,10 +11,10 @@
     "sourceMap": true,
     "strict": true,
     "moduleResolution": "bundler",
+    "types": ["vite/client", "bun"],
     "paths": {
       "$lib/*": ["./src/lib/*"],
       "$components/*": ["./src/components/*"]
-    },
-    "types": ["vite/client", "bun-types"]
+    }
   }
 }
