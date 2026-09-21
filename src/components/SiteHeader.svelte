@@ -117,7 +117,7 @@
   }
   .tagline {
     margin-left: var(--space-xs);
-    padding-left: var(--space-lg);
+    padding-left: var(--space-sm);
     border-left: 1px solid var(--border-base);
     color: var(--text-muted);
     font-size: var(--text-body-sm);
