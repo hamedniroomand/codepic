@@ -6,6 +6,7 @@
     label?: string;
     title?: string;
     disabled?: boolean;
+    busy?: boolean;
     popovertarget?: string;
     onclick?: () => void;
     children: Snippet;
@@ -16,6 +17,7 @@
     label,
     title,
     disabled,
+    busy,
     popovertarget,
     onclick,
     children,
@@ -27,6 +29,7 @@
   class={variant}
   aria-label={label}
   title={title ?? label}
+  aria-busy={busy || undefined}
   {disabled}
   {popovertarget}
   {onclick}

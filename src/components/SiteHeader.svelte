@@ -1,13 +1,16 @@
 <script lang="ts">
   import Button from '$components/ui/Button.svelte';
+  import Spinner from '$components/ui/Spinner.svelte';
+  import type { ExportFormat } from '$lib/exporter.svelte';
 
   type Props = {
     busy: boolean;
+    pending: ExportFormat | null;
     onShare: () => void;
     onCopy: () => void;
     onDownload: () => void;
   };
-  let { busy, onShare, onCopy, onDownload }: Props = $props();
+  let { busy, pending, onShare, onCopy, onDownload }: Props = $props();
 </script>
 
 <header class="header">
@@ -47,37 +50,47 @@
 
     <Button
       label="Copy image"
+      busy={pending === 'copy'}
       disabled={busy}
       onclick={onCopy}
     >
-      <svg
-        viewBox="0 0 20 20"
-        aria-hidden="true"
-      >
-        <rect
-          x="7"
-          y="7"
-          width="10"
-          height="10"
-          rx="2"
-        />
-        <path d="M13 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
-      </svg>
+      {#if pending === 'copy'}
+        <Spinner label="Copying image" />
+      {:else}
+        <svg
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+        >
+          <rect
+            x="7"
+            y="7"
+            width="10"
+            height="10"
+            rx="2"
+          />
+          <path d="M13 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
+        </svg>
+      {/if}
       <span class="wide-only">Copy image</span>
     </Button>
 
     <Button
       variant="primary"
+      busy={pending === 'download'}
       disabled={busy}
       onclick={onDownload}
     >
-      <svg
-        viewBox="0 0 20 20"
-        aria-hidden="true"
-      >
-        <path d="M10 2v10m-4-4 4 4 4-4M3 12v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" />
-      </svg>
-      {busy ? 'Creating image…' : 'Download PNG'}
+      {#if pending === 'download'}
+        <Spinner label="Creating image" />
+      {:else}
+        <svg
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+        >
+          <path d="M10 2v10m-4-4 4 4 4-4M3 12v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" />
+        </svg>
+      {/if}
+      Download PNG
     </Button>
   </nav>
 </header>

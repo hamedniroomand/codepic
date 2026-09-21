@@ -59,6 +59,7 @@
 <div class="shell">
   <SiteHeader
     busy={exporter.busy}
+    pending={exporter.pending}
     onShare={shareLink}
     onCopy={() => exporter.run('copy')}
     onDownload={() => exporter.run('download')}
