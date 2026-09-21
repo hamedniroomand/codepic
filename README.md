@@ -1,77 +1,63 @@
 # CodePic
 
-CodePic turns a code snippet into a PNG snapshot. You paste code, adjust appearance, and export. The tool runs in the browser. It does not need an account or a server for normal use.
+Turn a code snippet into a shareable PNG. Everything runs in the browser: no account, no upload, no server.
 
-## Primary flow
+**[Try it →](https://hamedniroomand.github.io/codepic/)**
 
-1. Edit code directly in the centered snapshot window.
-2. Use the bottom toolbar for theme, background, dark mode, line numbers, padding, and language.
-3. Drag the side handles to change export width.
-4. Select **Download PNG** or **Copy image**.
+A [ray.so](https://ray.so) clone, built to learn Svelte 5.
 
-The stack is **Svelte 5 + TypeScript + Vite+**.
+## Using it
 
-## Supported languages
+Type or paste into the code window, adjust the dock at the bottom, then hit **Download PNG** or **Copy image**. Drag the handles on either side of the card to change the export width.
 
-JavaScript, TypeScript, HTML, CSS, JSON, Shell, Python, Go, PHP, SQL, Java, C#, Rust, Markdown, Plain Text.
+The dock holds the settings you reach for most: background, theme, padding, language, and a light/dark switch. The `⋯` button opens the rest: width, font size, export scale, window style, line numbers, filename, and wrapping.
 
-Unknown input falls back to plain text. Invalid syntax still renders.
+**Share link** copies a URL containing your code and settings, so anyone who opens it lands on the same snapshot. Snippets over 1200 characters are dropped from the link and the app tells you.
 
-## Customization
+## What you can change
 
-- **Themes:** light, dark, and colorful Shiki themes (syntax colors and code window chrome).
-- **Background:** solid, gradient presets, or transparent (checkerboard in preview).
-- **Layout:** padding presets and output width from 320 to 1600 pixels.
-- **Code display:** line numbers, wrap, and font size.
-- **Window:** minimal, decorative window controls, or borderless; optional title.
-- **Export scale:** 1×, 2× (default), or 3×.
+| Setting     | Options                                                                                                    |
+| ----------- | ---------------------------------------------------------------------------------------------------------- |
+| Themes      | GitHub Light, GitHub Dark, Dracula, Nord, One Dark Pro                                                     |
+| Backgrounds | Six gradients, two solids, or transparent                                                                  |
+| Languages   | JavaScript, TypeScript, HTML, CSS, JSON, Shell, Python, Go, PHP, SQL, Java, C#, Rust, Markdown, plain text |
+| Size        | Width 320–1600px, padding 16/32/64/128, export at 1×, 2× or 3×                                             |
+| Window      | Traffic-light controls, minimal, or borderless, each with an optional filename                             |
 
-Theme and background are independent. Changing theme does not change the image background.
+The theme colours the code; the background sits behind the card. They are independent, so changing one never disturbs the other.
 
-## Export
-
-- Format: PNG only in this release.
-- **Download** saves a file. **Copy image** uses the Clipboard API when the browser allows it.
-- If clipboard write fails or is unsupported, the UI shows a message and download still works.
-- Transparent backgrounds export with alpha.
-- Export uses the configured width and scale, not the on-screen preview scale.
-- Export waits for code colors and fonts. Controls pause until export ends.
-
-## Local preferences
-
-Appearance choices are stored in `localStorage`. Pasted code is not stored. Corrupt storage falls back to defaults.
-
-## Share link
-
-Existing URLs with a `#s=` fragment can load code and appearance settings. The toolbar does not create share links.
-
-## Design decisions
-
-- **Separate code and appearance:** one config object drives the snapshot; code is separate so sharing and persistence can treat them differently.
-- **Local-first:** highlighting and export run client-side. Code is not sent to a backend during normal editing.
-- **Lightweight editor:** a textarea preserves bytes exactly; there is no IDE feature set.
-
-## Out of scope
-
-Full code editor, IDE features, collaboration, code execution, hosting, and Git browsing.
-
-## Limits
-
-- Long snippets take more time to highlight and export.
-- The preview scales to fit the screen. Image settings expand below the toolbar.
-- Clipboard image copy varies by browser and permission.
-
-## Development
+## Running it
 
 ```sh
-vp install
+bun install
 bun run dev
-vp check
-bun test
-vp test
-bun run build
 ```
 
-## Safety checks
+Then `bun run check` for formatting, linting and types, `bun run test` for unit tests, and `bun run build` to produce `dist/`.
 
-See [docs/VERIFICATION.md](docs/VERIFICATION.md) for a repeatable pass on HTML and script safety.
+CI runs the same checks on every push and pull request, and publishes to GitHub Pages when `main` goes green.
+
+## How it fits together
+
+```
+src/
+  styles/tokens.css      design tokens: colour, spacing, radius, type
+  components/ui/         Button, Select, Toggle, Popover, Swatch, …
+  components/toolbar/    the floating dock and its overflow panel
+  components/preview/    the code card, resize handles, export frame
+  lib/                   config, themes, highlighting, export, sharing
+```
+
+One `AppearanceConfig` object drives the whole snapshot. Code is kept separate from it, so persistence and sharing can treat the two differently. Settings go to `localStorage`; your code never does.
+
+The preview and the exported image render from the same `CodeWindow` component, which keeps them honest. The export copy lives off-screen at the exact configured width, so the PNG matches the settings rather than whatever the preview is scaled to.
+
+Highlighting is [Shiki](https://shiki.style) compiled to the browser; the PNG comes from [modern-screenshot](https://github.com/qq15725/modern-screenshot). Editing is a plain `<textarea>` layered over the highlighted lines. That keeps your bytes exactly as typed, and it is deliberately not an IDE.
+
+Built with Svelte 5 (runes), TypeScript, and [Vite+](https://viteplus.dev).
+
+## Known limits
+
+- Very long snippets take noticeably longer to highlight and export.
+- Copying to the clipboard depends on browser support and permission. If it fails, the download still works.
+- PNG is the only export format.
