@@ -19,6 +19,14 @@
 
   let stageWidth = $state(800);
 
+  // The hint has done its job once the code differs from what loaded. It stays
+  // hidden for the rest of the session and is never persisted.
+  const initialCode = code;
+  let edited = $state(false);
+  $effect(() => {
+    if (code !== initialCode) edited = true;
+  });
+
   // Width only. Content height must not change how wide the card looks,
   // so more code lines make the stage taller and never narrower.
   let scale = $derived(Math.min(1, Math.max(1, stageWidth - SIDE_GUTTER) / appearance.width));
@@ -49,7 +57,10 @@
       {/each}
     </div>
     <p class="caption">
-      <span>Click the code to edit</span>
+      <span
+        class="hint"
+        class:edited>Click the code to edit</span
+      >
       <span>{appearance.width} px <span class="separator">/</span> {Math.round(scale * 100)}%</span>
     </p>
   </div>
@@ -83,6 +94,16 @@
     margin: var(--space-sm) 0 0;
     color: var(--text-muted);
     font-size: var(--text-label);
+  }
+  /* Hidden, not removed: the box stays so the width readout never shifts. */
+  .hint {
+    transition:
+      opacity 150ms ease,
+      visibility 0s linear 150ms;
+  }
+  .hint.edited {
+    opacity: 0;
+    visibility: hidden;
   }
   .separator {
     margin: 0 var(--space-xs);
