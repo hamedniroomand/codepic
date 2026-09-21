@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { AppearanceConfig } from '$lib/appearance-config';
+  import { DEFAULT_APPEARANCE } from '$lib/appearance-config';
   import { themeById } from '$lib/themes';
 
   import CodeEditorOverlay from './CodeEditorOverlay.svelte';
@@ -23,6 +24,16 @@
   let scroll = $state({ left: 0, top: 0 });
   let theme = $derived(themeById(appearance.themeId));
   let showTitleBar = $derived(appearance.showTitle || appearance.windowStyle === 'controls');
+
+  // The untouched default reads as a placeholder, so clear it on focus and put
+  // it back if the user leaves without typing. A name they chose is never touched.
+  function clearPlaceholderTitle(): void {
+    if (appearance.title === DEFAULT_APPEARANCE.title) onTitleChange('');
+  }
+
+  function restorePlaceholderTitle(): void {
+    if (!appearance.title.trim()) onTitleChange(DEFAULT_APPEARANCE.title);
+  }
 </script>
 
 <!--
@@ -59,6 +70,8 @@
             spellcheck="false"
             value={appearance.title}
             oninput={(event) => onTitleChange(event.currentTarget.value)}
+            onfocus={clearPlaceholderTitle}
+            onblur={restorePlaceholderTitle}
           />
         {:else}
           <span class="title">{appearance.title || ' '}</span>
@@ -159,6 +172,10 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+  }
+  /* No ring on the filename. The caret already shows it is editable. */
+  .title:focus-visible {
+    outline: none;
   }
   .editor {
     position: relative;
