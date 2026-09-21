@@ -8,6 +8,8 @@ export type ExportFormat = 'download' | 'copy';
 export type Exporter = {
   /** True while a capture is running. Actions stay disabled until it clears. */
   readonly busy: boolean;
+  /** Which action is running, so only that button shows a spinner. */
+  readonly pending: ExportFormat | null;
   run: (format: ExportFormat) => Promise<void>;
 };
 
@@ -22,13 +24,20 @@ function filenameFor(title: string): string {
   return trimmed ? `${trimmed.replace(/\s+/g, '-')}.png` : 'codepic.png';
 }
 
+/**
+ * A capture is fast enough to finish as a flicker. Hold the spinner briefly so the
+ * action reads as work that happened rather than a button that twitched.
+ */
+const MIN_BUSY_MS = 400;
+
 export function createExporter(source: Source, onStatus: (message: string) => void): Exporter {
-  let busy = $state(false);
+  let pending = $state<ExportFormat | null>(null);
 
   async function run(format: ExportFormat): Promise<void> {
     const { node, appearance, highlightSettled } = source();
-    if (!node || busy) return;
-    busy = true;
+    if (!node || pending) return;
+    pending = format;
+    const startedAt = performance.now();
     try {
       // The export node must be painted and fully styled before it is captured.
       await tick();
@@ -51,13 +60,18 @@ export function createExporter(source: Source, onStatus: (message: string) => vo
     } catch {
       onStatus('Export failed. Try Download again.');
     } finally {
-      busy = false;
+      const remaining = MIN_BUSY_MS - (performance.now() - startedAt);
+      if (remaining > 0) await new Promise((resolve) => setTimeout(resolve, remaining));
+      pending = null;
     }
   }
 
   return {
     get busy(): boolean {
-      return busy;
+      return pending !== null;
+    },
+    get pending(): ExportFormat | null {
+      return pending;
     },
     run,
   };
