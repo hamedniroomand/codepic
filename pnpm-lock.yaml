@@ -242,6 +242,10 @@ importers:
       shiki:
         specifier: ^4.4.3
         version: 4.4.3
+    devDependencies:
+      '@types/node':
+        specifier: ^24.19.0
+        version: 24.19.0
 
 packages:
 
