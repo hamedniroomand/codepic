@@ -1,55 +1,54 @@
 <script lang="ts">
-  type Option = { value: string; label: string };
+  import { RadioGroup } from 'bits-ui';
   type Props = {
     value: string;
-    options: readonly Option[];
+    options: readonly { value: string; label: string }[];
     labelledby?: string;
     onchange: (value: string) => void;
   };
-
   let { value, options, labelledby, onchange }: Props = $props();
 </script>
 
-<div
+<RadioGroup.Root
+  {value}
+  onValueChange={onchange}
+  orientation="horizontal"
   class="segments"
-  role="group"
   aria-labelledby={labelledby}
 >
-  {#each options as option (option.value)}
-    <button
-      type="button"
-      aria-pressed={value === option.value}
-      onclick={() => onchange(option.value)}
-    >
-      {option.label}
-    </button>
-  {/each}
-</div>
+  {#each options as option (option.value)}<RadioGroup.Item
+      class="segment"
+      value={option.value}>{option.label}</RadioGroup.Item
+    >{/each}
+</RadioGroup.Root>
 
 <style>
-  .segments {
+  :global(.segments) {
     display: flex;
     gap: 2px;
-    padding: 2px;
-    border-radius: var(--radius-sm);
+    padding: 3px;
+    border: 1px solid var(--border-base);
+    border-radius: 8px;
     background: var(--surface-well);
   }
-  button {
-    height: 28px;
+  :global(.segment) {
+    height: 30px;
+    flex: 1;
     min-width: 30px;
-    padding: 0 var(--space-xs);
+    padding: 0 4px;
     border: 0;
-    border-radius: var(--radius-sm);
+    border-radius: 5px;
     background: transparent;
     color: var(--text-muted);
-    font-size: var(--text-label);
+    font-size: 12px;
     cursor: pointer;
   }
-  button:hover {
+  :global(.segment:hover) {
     color: var(--text-strong);
   }
-  button[aria-pressed='true'] {
-    background: var(--surface-active);
+  :global(.segment[data-state='checked']) {
+    background: var(--border-base);
+    box-shadow: 0 1px 3px #0a090840;
     color: var(--text-strong);
   }
 </style>

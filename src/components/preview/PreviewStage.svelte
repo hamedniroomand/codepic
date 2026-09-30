@@ -89,15 +89,18 @@
 
 <style>
   .stage {
-    flex: 1;
+    flex: 1 0 auto;
     min-width: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--space-md) 0;
+    padding: 52px 0;
+    min-height: 400px;
+    box-sizing: border-box;
   }
   .composition {
     flex: none;
+    min-width: 0;
   }
   .viewport {
     position: relative;
@@ -105,9 +108,9 @@
   .caption {
     display: flex;
     justify-content: space-between;
-    margin: var(--space-sm) 0 0;
+    margin: 16px 0 0;
     color: var(--text-muted);
-    font-size: var(--text-label);
+    font-size: 11px;
   }
   /* Hidden, not removed: the box stays so the width readout never shifts. */
   .hint {
@@ -123,9 +126,15 @@
     margin: 0 var(--space-xs);
     color: var(--border-strong);
   }
+  @media (max-width: 959px) {
+    .stage {
+      min-height: 380px;
+      padding: 52px 0;
+    }
+  }
   @media (max-width: 640px) {
     .caption {
-      font-size: var(--text-body-sm);
+      font-size: 10px;
     }
   }
 </style>
