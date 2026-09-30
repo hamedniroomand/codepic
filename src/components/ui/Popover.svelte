@@ -1,11 +1,12 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
 
-  type Props = { label: string; trigger: Snippet; children: Snippet };
-  let { label, trigger, children }: Props = $props();
+  type Props = { label: string; id?: string; trigger: Snippet; children: Snippet };
+  let { label, id, trigger, children }: Props = $props();
 
   // The native popover gives light dismiss and top-layer stacking with no script.
-  const panelId = $props.id();
+  const generatedId = $props.id();
+  const panelId = $derived(id ?? generatedId);
 </script>
 
 <button

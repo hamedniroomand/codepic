@@ -19,6 +19,7 @@
     clampWidth,
   } from '$lib/appearance-config';
   import type { LineMarks } from '$lib/marks/line-marks';
+  import { SETTINGS_PANEL_ID } from '$lib/shortcuts/shortcuts';
 
   import LineMarksFields from './LineMarksFields.svelte';
 
@@ -49,7 +50,10 @@
   }));
 </script>
 
-<Popover label="More image settings">
+<Popover
+  id={SETTINGS_PANEL_ID}
+  label="More image settings"
+>
   {#snippet trigger()}
     <svg
       viewBox="0 0 20 20"
