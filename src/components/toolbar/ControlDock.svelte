@@ -11,6 +11,7 @@
 
   import AdvancedPopover from './AdvancedPopover.svelte';
   import BackgroundSwatches from './BackgroundSwatches.svelte';
+  import PresetsPopover from './PresetsPopover.svelte';
 
   type Props = {
     appearance: AppearanceConfig;
@@ -18,8 +19,9 @@
     languageDetected: boolean;
     onChange: (patch: Partial<AppearanceConfig>) => void;
     onMarksChange: (marks: LineMarks) => void;
+    onStatus: (message: string) => void;
   };
-  let { appearance, marks, languageDetected, onChange, onMarksChange }: Props = $props();
+  let { appearance, marks, languageDetected, onChange, onMarksChange, onStatus }: Props = $props();
 
   const themeOptions = THEMES.map((theme) => ({ value: theme.id, label: theme.label }));
   const languageOptions = LANGUAGES.map((language) => ({
@@ -86,6 +88,12 @@
     class="divider"
     aria-hidden="true"
   ></span>
+
+  <PresetsPopover
+    {appearance}
+    onApply={onChange}
+    {onStatus}
+  />
 
   <AdvancedPopover
     {appearance}
