@@ -9,7 +9,8 @@
   import { mergeAppearance } from '$lib/appearance-config';
   import { DEFAULT_CODE } from '$lib/default-code';
   import { createExporter } from '$lib/export/exporter.svelte';
-  import { createHighlightState } from '$lib/highlight.svelte';
+  import { createHighlightState } from '$lib/highlight/highlight.svelte';
+  import { createLanguageDetection } from '$lib/highlight/language-detection.svelte';
   import { NO_MARKS, type LineMarks } from '$lib/marks/line-marks';
   import { loadAppearance, saveAppearance } from '$lib/persistence';
   import { buildShareUrl, type SharedSnapshot } from '$lib/share/share-url';
@@ -39,6 +40,13 @@
 
   function patch(next: Partial<AppearanceConfig>): void {
     appearance = mergeAppearance(appearance, next);
+  }
+
+  const languageDetection = createLanguageDetection((language) => patch({ language }));
+
+  function changeFromDock(next: Partial<AppearanceConfig>): void {
+    if (next.language !== undefined) languageDetection.pick();
+    patch(next);
   }
 
   async function shareLink(): Promise<void> {
@@ -76,6 +84,7 @@
   <main
     class="workspace"
     inert={exporter.busy}
+    onpaste={languageDetection.onPaste}
   >
     <PreviewStage
       {appearance}
@@ -95,7 +104,8 @@
     <ControlDock
       {appearance}
       {marks}
-      onChange={patch}
+      languageDetected={languageDetection.detected}
+      onChange={changeFromDock}
       onMarksChange={(next) => (marks = next)}
     />
   </div>
