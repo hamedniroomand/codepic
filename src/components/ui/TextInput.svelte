@@ -15,7 +15,11 @@
   {placeholder}
   spellcheck="false"
   aria-labelledby={labelledby}
-  onchange={(event) => onchange(event.currentTarget.value)}
+  onchange={(event) => {
+    onchange(event.currentTarget.value);
+    // Discard input the parent did not accept, such as an emptied name.
+    event.currentTarget.value = value;
+  }}
 />
 
 <style>
