@@ -8,11 +8,15 @@
     busy: boolean;
     exportFormat: ExportFormat;
     pending: ExportAction | null;
+    shareRatio: number;
     onShare: () => void;
     onCopy: () => void;
     onDownload: () => void;
   };
-  let { busy, exportFormat, pending, onShare, onCopy, onDownload }: Props = $props();
+  // Below this the link is nowhere near the limit, so the meter stays out of the way.
+  const SHARE_METER_FROM = 0.5;
+
+  let { busy, exportFormat, pending, shareRatio, onShare, onCopy, onDownload }: Props = $props();
 </script>
 
 <header class="header">
@@ -49,6 +53,20 @@
       </svg>
       <span class="wide-only">Share link</span>
     </Button>
+    {#if shareRatio >= SHARE_METER_FROM}
+      <meter
+        class="share-meter"
+        min="0"
+        max="1"
+        low="0.75"
+        high="0.9"
+        optimum="0"
+        value={Math.min(shareRatio, 1)}
+        title={shareRatio > 1
+          ? 'Too large for a link. The code will be left out.'
+          : `Share link is ${Math.round(shareRatio * 100)}% of the size limit`}
+      ></meter>
+    {/if}
 
     <Button
       label="Copy image"
@@ -141,7 +159,11 @@
   }
   nav {
     display: flex;
+    align-items: center;
     gap: var(--space-xs);
+  }
+  .share-meter {
+    width: 40px;
   }
   svg {
     width: 16px;
