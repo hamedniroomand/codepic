@@ -135,3 +135,11 @@ Built with Svelte 5 (runes), TypeScript, and [Vite+](https://viteplus.dev).
 - Very long snippets take noticeably longer to highlight and export.
 - Copying to the clipboard depends on browser support and permission. When it is unavailable or blocked, the app says so and the download still works.
 - SVG export embeds the card as HTML inside the SVG. Some design tools do not support that.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Security problems go through [SECURITY.md](SECURITY.md), and everyone is expected to follow the [code of conduct](CODE_OF_CONDUCT.md).
+
+## License
+
+[MIT](LICENSE)
