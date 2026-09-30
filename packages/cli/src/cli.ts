@@ -25,7 +25,10 @@ async function readInput(file: string | undefined): Promise<string> {
 
 async function run(argv: string[]): Promise<void> {
   const options = parseCliArgs(argv);
-  if (options.help) return console.log(HELP);
+  if (options.help) {
+    process.stdout.write(`${HELP}\n`);
+    return;
+  }
 
   const params = parseOpenParams(options.query);
   if (params.errors.length) throw new Error(params.errors.join('\n'));

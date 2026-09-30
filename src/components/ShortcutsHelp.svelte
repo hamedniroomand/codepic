@@ -1,68 +1,57 @@
 <script lang="ts">
-  import Popover from '$components/ui/Popover.svelte';
-  import { HELP_PANEL_ID, SHORTCUTS, formatShortcut } from '$lib/shortcuts/shortcuts';
+  import { Keyboard } from '@lucide/svelte';
 
+  import Dialog from '$components/ui/Dialog.svelte';
+  import { SHORTCUTS, formatShortcut } from '$lib/shortcuts/shortcuts';
+
+  let { open = $bindable(false) }: { open?: boolean } = $props();
   const mac = /Mac|iPhone|iPad/.test(navigator.userAgent);
 </script>
 
-<Popover
-  id={HELP_PANEL_ID}
-  label="Keyboard shortcuts"
+<Dialog
+  bind:open
+  title="Keyboard shortcuts"
+  description="A few shortcuts to keep you in the flow."
 >
-  {#snippet trigger()}
-    <svg
-      viewBox="0 0 20 20"
-      aria-hidden="true"
-    >
-      <rect
-        x="2.5"
-        y="5"
-        width="15"
-        height="10"
-        rx="2"
-      />
-      <path d="M6 9h.01M10 9h.01M14 9h.01M7 12h6" />
-    </svg>
-  {/snippet}
-
-  <h2>Keyboard shortcuts</h2>
+  {#snippet trigger()}<Keyboard size={15} /><span>Shortcuts</span>{/snippet}
   <dl>
-    {#each SHORTCUTS as shortcut (shortcut.action)}
-      <dt>{shortcut.label}</dt>
-      <dd><kbd>{formatShortcut(shortcut, mac)}</kbd></dd>
-    {/each}
+    {#each SHORTCUTS as shortcut (shortcut.action)}<div class="shortcut">
+        <dt>{shortcut.label}</dt>
+        <dd><kbd>{formatShortcut(shortcut, mac)}</kbd></dd>
+      </div>{/each}
   </dl>
-</Popover>
+</Dialog>
 
 <style>
-  svg {
-    width: 18px;
-    height: 18px;
-    fill: none;
-    stroke: currentcolor;
-    stroke-width: 1.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  h2 {
-    margin: 0 0 var(--space-sm);
-    font-size: var(--text-label);
-    font-weight: var(--weight-label);
-    color: var(--text-muted);
-  }
   dl {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: var(--space-xs) var(--space-lg);
     margin: 0;
+  }
+  .shortcut {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    min-height: 46px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .shortcut:last-child {
+    border-bottom: 0;
   }
   dt,
   dd {
     margin: 0;
-    font-size: var(--text-label);
+    font-size: 13px;
   }
   kbd {
-    font-family: var(--font-mono);
+    display: inline-block;
+    padding: 5px 9px;
+    border: 1px solid var(--border-base);
+    border-bottom-width: 2px;
+    border-radius: 6px;
+    background: var(--surface-well);
+    font-family: var(--font-ui);
+    font-size: 12px;
     color: var(--text-strong);
+    white-space: nowrap;
   }
 </style>

@@ -1,5 +1,7 @@
 <script lang="ts">
-  type Option = { value: string; label: string };
+  import { Check, ChevronDown } from '@lucide/svelte';
+  import { Select } from 'bits-ui';
+  type Option = { value: string; label: string; colors?: readonly string[] };
   type Props = {
     value: string;
     options: readonly Option[];
@@ -7,36 +9,66 @@
     labelledby?: string;
     onchange: (value: string) => void;
   };
-
   let { value, options, label, labelledby, onchange }: Props = $props();
+  const selectedOption = $derived(options.find((option) => option.value === value));
 </script>
 
-<select
+<Select.Root
+  type="single"
   {value}
-  aria-label={label}
-  aria-labelledby={labelledby}
-  onchange={(event) => onchange(event.currentTarget.value)}
+  onValueChange={onchange}
+  allowDeselect={false}
 >
-  {#each options as option (option.value)}
-    <option value={option.value}>{option.label}</option>
-  {/each}
-</select>
+  <Select.Trigger
+    class="ui-control"
+    aria-label={label}
+    aria-labelledby={labelledby}
+  >
+    <span>{selectedOption?.label ?? value}</span><ChevronDown
+      size={15}
+      strokeWidth={1.6}
+    />
+  </Select.Trigger>
+  <Select.Portal>
+    <Select.Content
+      class="ui-menu"
+      sideOffset={6}
+      align="start"
+    >
+      <Select.Viewport>
+        {#each options as option (option.value)}
+          <Select.Item
+            class="ui-option"
+            value={option.value}
+            label={option.label}
+          >
+            {#snippet children({ selected })}
+              {#if option.colors}<span
+                  class="palette"
+                  aria-hidden="true"
+                  >{#each option.colors as color (color)}<i style:background={color}
+                    ></i>{/each}</span
+                >{/if}
+              <span>{option.label}</span>{#if selected}<Check
+                  class="selected-icon"
+                  size={14}
+                />{/if}
+            {/snippet}
+          </Select.Item>
+        {/each}
+      </Select.Viewport>
+    </Select.Content>
+  </Select.Portal>
+</Select.Root>
 
 <style>
-  select {
-    height: var(--control-height);
-    max-width: 100%;
-    box-sizing: border-box;
-    padding: 0 var(--space-xs);
-    border: 1px solid var(--border-base);
-    border-radius: var(--radius-sm);
-    background: var(--surface-well);
-    color: var(--text-base);
-    font-size: var(--text-label);
-    cursor: pointer;
+  .palette {
+    display: flex;
+    gap: 2px;
   }
-  select:hover {
-    border-color: var(--border-strong);
-    color: var(--text-strong);
+  .palette i {
+    width: 5px;
+    height: 14px;
+    border-radius: 2px;
   }
 </style>

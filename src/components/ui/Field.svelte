@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Label } from 'bits-ui';
   import type { Snippet } from 'svelte';
 
   type Props = { label: string; children: Snippet<[string]> };
@@ -9,9 +10,9 @@
 </script>
 
 <div class="field">
-  <span
+  <Label.Root
     class="label"
-    id={labelId}>{label}</span
+    id={labelId}>{label}</Label.Root
   >
   {@render children(labelId)}
 </div>
@@ -20,11 +21,12 @@
   .field {
     display: flex;
     flex-direction: column;
-    gap: var(--space-xs);
+    gap: 7px;
     min-width: 0;
   }
-  .label {
+  .field :global(.label) {
     color: var(--text-muted);
-    font-size: var(--text-label);
+    font-size: 12px;
+    font-weight: 500;
   }
 </style>

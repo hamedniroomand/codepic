@@ -1,79 +1,60 @@
 <script lang="ts">
+  import { Label, Switch } from 'bits-ui';
   type Props = { label: string; checked: boolean; onchange: (checked: boolean) => void };
   let { label, checked, onchange }: Props = $props();
+  const id = $props.id();
 </script>
 
-<label class="toggle">
-  <span class="label">{label}</span>
-  <input
-    type="checkbox"
+<div class="toggle">
+  <Label.Root
+    for={id}
+    class="toggle-label">{label}</Label.Root
+  ><Switch.Root
+    {id}
     {checked}
-    onchange={(event) => onchange(event.currentTarget.checked)}
-  />
-  <span
-    class="switch"
-    aria-hidden="true"
-  ></span>
-</label>
+    onCheckedChange={onchange}
+    class="switch"><Switch.Thumb class="thumb" /></Switch.Root
+  >
+</div>
 
 <style>
   .toggle {
-    position: relative;
     display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    white-space: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 30px;
+  }
+  .toggle :global(.toggle-label) {
+    color: var(--text-base);
+    font-size: 13px;
     cursor: pointer;
   }
-  .label {
-    color: var(--text-muted);
-    font-size: var(--text-label);
-  }
-  input {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 32px;
-    height: var(--control-height);
-    margin: 0;
-    opacity: 0;
-    cursor: pointer;
-  }
-  .switch {
-    position: relative;
-    display: block;
-    width: 32px;
-    height: 18px;
-    margin: 7px 0;
-    border-radius: var(--radius-full);
+  .toggle :global(.switch) {
+    display: inline-flex;
+    align-items: center;
+    width: 34px;
+    height: 20px;
+    padding: 3px;
+    border: 0;
+    border-radius: 999px;
     background: var(--border-strong);
-    pointer-events: none;
+    cursor: pointer;
+    flex-shrink: 0;
   }
-  .switch::after {
-    content: '';
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--text-strong);
-    transition: transform 120ms ease;
-  }
-  input:checked + .switch {
+  .toggle :global(.switch[data-state='checked']) {
     background: var(--accent);
   }
-  input:checked + .switch::after {
+  .toggle :global(.thumb) {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: white;
+    transition: transform 120ms ease;
+    box-shadow: 0 1px 2px #0a090830;
+  }
+  .toggle :global(.thumb[data-state='checked']) {
+    background: var(--on-accent);
     transform: translateX(14px);
-    background: var(--surface-base);
-  }
-  input:focus-visible + .switch {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .switch::after {
-      transition: none;
-    }
   }
 </style>

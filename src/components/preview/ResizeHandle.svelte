@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Button } from 'bits-ui';
   type Props = {
     side: 'left' | 'right';
     width: number;
@@ -16,7 +17,9 @@
 
   function start(event: PointerEvent): void {
     event.preventDefault();
-    event.currentTarget.setPointerCapture(event.pointerId);
+    const handle = event.currentTarget;
+    if (!(handle instanceof HTMLButtonElement)) return;
+    handle.setPointerCapture(event.pointerId);
     origin = { x: event.clientX, width, scale };
     dragging = true;
   }
@@ -33,7 +36,7 @@
   }
 </script>
 
-<button
+<Button.Root
   type="button"
   class="handle {side}"
   aria-label={side === 'left' ? 'Resize image from left' : 'Resize image from right'}
@@ -44,10 +47,10 @@
   onpointercancel={() => (dragging = false)}
   onlostpointercapture={() => (dragging = false)}
   onkeydown={nudge}
-></button>
+></Button.Root>
 
 <style>
-  .handle {
+  :global(.handle) {
     position: absolute;
     top: calc(50% - 20px);
     width: 20px;
@@ -58,7 +61,7 @@
     cursor: ew-resize;
     touch-action: none;
   }
-  .handle::after {
+  :global(.handle::after) {
     content: '';
     display: block;
     width: 4px;
@@ -68,13 +71,13 @@
     background: #d8dce6;
     box-shadow: 0 1px 4px #0004;
   }
-  .handle:hover::after {
+  :global(.handle:hover::after) {
     background: #fff;
   }
-  .left {
+  :global(.handle.left) {
     left: -10px;
   }
-  .right {
+  :global(.handle.right) {
     right: -10px;
   }
 </style>

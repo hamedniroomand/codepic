@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Button } from 'bits-ui';
+
   import type { AppearanceConfig } from '$lib/config/appearance-config';
   import { DEFAULT_APPEARANCE } from '$lib/config/appearance-config';
   import { themeById } from '$lib/config/themes';
@@ -118,12 +120,12 @@
               {#if showDiff}<span class="sign">{mark ? DIFF_SIGNS[mark] : ''}</span>{/if}
               {#if appearance.lineNumbers}
                 {#if interactive && onMarksChange}
-                  <button
+                  <Button.Root
                     type="button"
                     class="number"
-                    tabindex="-1"
+                    tabindex={-1}
                     title="Click to highlight, then mark as added or removed"
-                    onclick={() => onMarksChange(cycleMark(marks, number))}>{number}</button
+                    onclick={() => onMarksChange(cycleMark(marks, number))}>{number}</Button.Root
                   >
                 {:else}
                   <span class="number">{number}</span>
@@ -242,20 +244,20 @@
     flex: 0 0 2ch;
     text-align: center;
   }
-  .number {
+  .gutter :global(.number) {
     flex: 1;
     box-sizing: border-box;
     padding: 0 1.5ch 0 0;
     text-align: right;
   }
-  button.number {
+  .gutter :global(button.number) {
     border: 0;
     background: transparent;
     color: inherit;
     font: inherit;
     cursor: pointer;
   }
-  button.number:hover {
+  .gutter :global(button.number:hover) {
     color: var(--win-title);
   }
   .row[data-mark] {

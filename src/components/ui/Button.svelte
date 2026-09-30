@@ -1,77 +1,93 @@
 <script lang="ts">
+  import { Button as ButtonPrimitive, Tooltip } from 'bits-ui';
   import type { Snippet } from 'svelte';
 
   type Props = {
-    variant?: 'primary' | 'ghost';
+    type?: 'button' | 'submit';
+    variant?: 'primary' | 'ghost' | 'subtle';
     label?: string;
     title?: string;
     disabled?: boolean;
     busy?: boolean;
-    popovertarget?: string;
     onclick?: () => void;
     children: Snippet;
   };
 
   let {
+    type = 'button',
     variant = 'ghost',
     label,
     title,
     disabled,
     busy,
-    popovertarget,
     onclick,
     children,
   }: Props = $props();
 </script>
 
-<button
-  type="button"
-  class={variant}
-  aria-label={label}
-  title={title ?? label}
-  aria-busy={busy || undefined}
-  {disabled}
-  {popovertarget}
-  {onclick}
->
-  {@render children()}
-</button>
+<Tooltip.Root disabled={!title && !label}>
+  <Tooltip.Trigger>
+    {#snippet child({ props })}
+      <ButtonPrimitive.Root
+        {...props}
+        {type}
+        class="ui-button {variant}"
+        aria-label={label}
+        aria-busy={busy || undefined}
+        {disabled}
+        {onclick}
+      >
+        {@render children()}
+      </ButtonPrimitive.Root>
+    {/snippet}
+  </Tooltip.Trigger>
+  {#if title || label}<Tooltip.Portal
+      ><Tooltip.Content
+        class="ui-tooltip"
+        sideOffset={7}>{title ?? label}</Tooltip.Content
+      ></Tooltip.Portal
+    >{/if}
+</Tooltip.Root>
 
 <style>
-  button {
+  :global(.ui-button) {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-xs);
+    gap: 8px;
     min-height: var(--control-height-lg);
-    padding: 0 var(--space-sm);
+    padding: 0 13px;
     border: 1px solid transparent;
-    border-radius: var(--radius-md);
-    font-size: var(--text-label);
-    font-weight: var(--weight-label);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 550;
     white-space: nowrap;
     cursor: pointer;
+    transition: background 120ms;
   }
-  .ghost {
+  :global(.ui-button.ghost) {
     border-color: var(--border-base);
-    border-radius: var(--radius-sm);
     background: transparent;
+    color: var(--text-base);
+  }
+  :global(.ui-button.subtle) {
+    background: transparent;
+    color: var(--text-muted);
+  }
+  :global(.ui-button.ghost:hover:not(:disabled)),
+  :global(.ui-button.subtle:hover:not(:disabled)) {
+    background: var(--surface-active);
     color: var(--text-strong);
   }
-  .ghost:hover:not(:disabled) {
-    background: var(--surface-hover);
-    color: var(--text-strong);
+  :global(.ui-button.primary) {
+    background: var(--accent);
+    color: var(--on-accent);
+    box-shadow: 0 2px 8px var(--accent-surface);
   }
-  /* One accent action at a time. This is the export button. */
-  .primary {
-    background: var(--accent-surface);
-    color: var(--accent);
-    box-shadow: inset 0 0 0 1px var(--accent-ring);
+  :global(.ui-button.primary:hover:not(:disabled)) {
+    background: #93c5fd;
   }
-  .primary:hover:not(:disabled) {
-    background: var(--accent-surface-hover);
-  }
-  button:disabled {
-    opacity: 0.55;
+  :global(.ui-button:disabled) {
+    opacity: 0.5;
   }
 </style>
