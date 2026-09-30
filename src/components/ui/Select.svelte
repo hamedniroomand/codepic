@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Check, ChevronDown } from '@lucide/svelte';
   import { Select } from 'bits-ui';
+
   type Option = { value: string; label: string; colors?: readonly string[] };
   type Props = {
     value: string;

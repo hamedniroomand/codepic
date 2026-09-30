@@ -33,6 +33,9 @@ jobs:
       - name: Format, lint and type check
         run: vp check
 
+      - name: Check Svelte templates
+        run: vp run check:svelte
+
       - name: Test
         run: vp test run
 

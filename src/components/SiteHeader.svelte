@@ -6,6 +6,7 @@
   import Spinner from '$components/ui/Spinner.svelte';
   import type { ExportFormat } from '$lib/config/appearance-config';
   import type { ExportAction } from '$lib/export/exporter.svelte';
+
   type Props = {
     busy: boolean;
     exportFormat: ExportFormat;

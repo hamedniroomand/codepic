@@ -12,6 +12,7 @@
   import type { PresetStore } from '$lib/presets/presets.svelte';
 
   import PresetPreview from './PresetPreview.svelte';
+
   type Props = {
     appearance: AppearanceConfig;
     store: PresetStore;

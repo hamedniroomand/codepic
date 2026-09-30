@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Check } from '@lucide/svelte';
   import { RadioGroup, Tooltip } from 'bits-ui';
+
   let { css, label, value }: { css: string; label: string; value: string } = $props();
 </script>
 

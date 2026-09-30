@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Popover } from 'bits-ui';
   import type { Snippet } from 'svelte';
+
   type Props = { label: string; id?: string; open?: boolean; trigger: Snippet; children: Snippet };
   let { label, id, open = $bindable(false), trigger, children }: Props = $props();
 </script>
