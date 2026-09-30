@@ -6,12 +6,18 @@ on:
 
 permissions:
   contents: read
-  id-token: write
+
+concurrency:
+  group: publish-cli
+  cancel-in-progress: false
 
 jobs:
   publish:
     name: Publish to npm
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -29,7 +35,23 @@ jobs:
         run: |
           version=$(node -p "require('./packages/cli/package.json').version")
           if [ "$GITHUB_REF_NAME" != "cli-v$version" ]; then
-            echo "Tag $GITHUB_REF_NAME does not match package version $version (expected cli-v$version)."
+            echo "::error::Tag $GITHUB_REF_NAME does not match package version $version (expected cli-v$version)."
+            exit 1
+          fi
+
+      # Read before publishing: a version missing from the changelog stops the run while nothing
+      # is public yet.
+      - name: Read the release notes
+        run: |
+          version="${GITHUB_REF_NAME#cli-v}"
+          # The changelog section of this version, without its heading.
+          awk -v heading="## $version" '
+            $0 == heading { found = 1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md > "$RUNNER_TEMP/notes.md"
+          if ! grep -q '[^[:space:]]' "$RUNNER_TEMP/notes.md"; then
+            echo "::error::CHANGELOG.md has no notes under '## $version'."
             exit 1
           fi
 
@@ -41,4 +63,16 @@ jobs:
 
       - name: Publish
         working-directory: packages/cli
-        run: npm publish
+        run: |
+          tag=latest
+          case "${GITHUB_REF_NAME#cli-v}" in *-*) tag=next ;; esac
+          npm publish --tag "$tag"
+
+      - name: Create the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          prerelease=()
+          case "${GITHUB_REF_NAME#cli-v}" in *-*) prerelease=(--prerelease) ;; esac
+          gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
+            --title "$GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/notes.md" "${prerelease[@]}"
