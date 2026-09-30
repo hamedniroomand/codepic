@@ -1,27 +1,32 @@
 <script lang="ts">
   import type { AppearanceConfig } from '$lib/appearance-config';
   import { backgroundStyle } from '$lib/backgrounds';
+  import type { LineMarks } from '$lib/marks/line-marks';
 
   import CodeWindow from './CodeWindow.svelte';
 
   type Props = {
     appearance: AppearanceConfig;
     lines: string[];
+    marks?: LineMarks;
     interactive?: boolean;
     forExport?: boolean;
     frameRef?: (element: HTMLDivElement | null) => void;
     code?: string;
     onTitleChange?: (title: string) => void;
+    onMarksChange?: (marks: LineMarks) => void;
   };
 
   let {
     appearance,
     lines,
+    marks,
     interactive = false,
     forExport = false,
     frameRef = () => {},
     code = $bindable(''),
     onTitleChange = () => {},
+    onMarksChange,
   }: Props = $props();
 
   let element = $state<HTMLDivElement | null>(null);
@@ -50,9 +55,11 @@
   <CodeWindow
     {appearance}
     {lines}
+    {marks}
     {interactive}
     bind:code
     {onTitleChange}
+    {onMarksChange}
   />
 </div>
 
