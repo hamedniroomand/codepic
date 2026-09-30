@@ -107,6 +107,7 @@
       languageDetected={languageDetection.detected}
       onChange={changeFromDock}
       onMarksChange={(next) => (marks = next)}
+      onStatus={setStatus}
     />
   </div>
 
