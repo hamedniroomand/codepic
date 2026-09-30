@@ -8,20 +8,20 @@ bigger, open an issue first so the idea can be discussed before you spend time o
 You need Node 22 or newer and [pnpm](https://pnpm.io). The version is pinned in `package.json`.
 
 ```sh
-pnpm install
-pnpm dev
+vp i
+vpr dev
 ```
 
 Before you open a pull request, run:
 
 ```sh
-pnpm check   # formatting, lint and types
-pnpm test    # unit tests
-pnpm build   # production build
+vpr check   # formatting, lint and types
+vpr test    # unit tests
+vpr build   # production build
 ```
 
 CI runs the same checks. The command line tool lives in `packages/cli` and builds with
-`pnpm run cli:build`.
+`vpr cli:build`.
 
 ## Where things go
 
