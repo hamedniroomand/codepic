@@ -21,16 +21,20 @@
     "directory": "packages/cli"
   },
   "bin": {
-    "codepic": "./dist/cli.js"
+    "codepic": "dist/cli.js"
   },
   "files": [
     "dist",
     "assets"
   ],
   "type": "module",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "scripts": {
     "build": "vp pack",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2",
