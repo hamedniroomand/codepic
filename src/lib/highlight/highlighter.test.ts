@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 
-import { escapePlain } from '$lib/highlighter';
+import { escapePlain } from '$lib/highlight/highlighter';
 
 test('escapePlain neutralizes script tags', () => {
   const out = escapePlain('<script>alert(1)</script>');
