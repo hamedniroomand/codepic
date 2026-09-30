@@ -1,0 +1,28 @@
+name: Bug report
+description: Something in CodePic does not work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you see, and what did you expect to see?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: A short snippet or a link that shows the problem helps. Leave out anything private.
+      placeholder: |
+        1. Paste ...
+        2. Choose ...
+        3. Click ...
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and system
+      description: Or the CLI version, if it is about the command line tool.
+      placeholder: Firefox 130 on macOS 15
