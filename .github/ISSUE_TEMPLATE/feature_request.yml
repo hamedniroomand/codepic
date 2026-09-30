@@ -1,0 +1,16 @@
+name: Feature request
+description: Suggest something CodePic could do
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do
+      description: Describe the problem first. The solution can come after.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Idea
+      description: What would you like CodePic to do? Alternatives you considered are welcome too.
