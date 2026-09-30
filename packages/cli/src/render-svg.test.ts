@@ -1,4 +1,4 @@
-import { expect, test } from 'bun:test';
+import { expect, test } from 'vite-plus/test';
 
 import { DEFAULT_APPEARANCE } from '$lib/config/appearance-config';
 import { NO_MARKS } from '$lib/marks/line-marks';

@@ -1,4 +1,4 @@
-import { expect, test } from 'bun:test';
+import { expect, test } from 'vite-plus/test';
 
 import { DEFAULT_APPEARANCE, parseAppearance } from '$lib/config/appearance-config';
 
