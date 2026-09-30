@@ -1,4 +1,4 @@
-import { parseAppearance, type AppearanceConfig } from '$lib/appearance-config';
+import { parseAppearance, type AppearanceConfig } from '$lib/config/appearance-config';
 import { MARK_KINDS, parseMarks, type LineMarks } from '$lib/marks/line-marks';
 
 import { deflate, fromBase64Url, inflate, toBase64Url } from './codec';

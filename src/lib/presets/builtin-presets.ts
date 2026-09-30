@@ -1,4 +1,4 @@
-import { DEFAULT_APPEARANCE, parseAppearance } from '$lib/appearance-config';
+import { DEFAULT_APPEARANCE, parseAppearance } from '$lib/config/appearance-config';
 
 import { createPreset, lookOf, type Preset } from './presets';
 

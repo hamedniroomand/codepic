@@ -1,7 +1,7 @@
 <script lang="ts">
   import Button from '$components/ui/Button.svelte';
   import Spinner from '$components/ui/Spinner.svelte';
-  import type { ExportFormat } from '$lib/appearance-config';
+  import type { ExportFormat } from '$lib/config/appearance-config';
   import type { ExportAction } from '$lib/export/exporter.svelte';
 
   type Props = {

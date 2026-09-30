@@ -1,5 +1,5 @@
-import { mergeAppearance, type AppearanceConfig } from '$lib/appearance-config';
-import { DEFAULT_CODE } from '$lib/default-code';
+import { mergeAppearance, type AppearanceConfig } from '$lib/config/appearance-config';
+import { DEFAULT_CODE } from '$lib/config/default-code';
 import { NO_MARKS, type LineMarks } from '$lib/marks/line-marks';
 
 import { parseOpenParams } from './open-params';

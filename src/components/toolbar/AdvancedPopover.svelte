@@ -9,7 +9,7 @@
     ExportFormat,
     ExportScale,
     WindowStyle,
-  } from '$lib/appearance-config';
+  } from '$lib/config/appearance-config';
   import {
     EXPORT_FORMATS,
     EXPORT_SCALE_OPTIONS,
@@ -17,7 +17,7 @@
     MAX_WIDTH,
     MIN_WIDTH,
     clampWidth,
-  } from '$lib/appearance-config';
+  } from '$lib/config/appearance-config';
   import type { LineMarks } from '$lib/marks/line-marks';
   import { SETTINGS_PANEL_ID } from '$lib/shortcuts/shortcuts';
 
