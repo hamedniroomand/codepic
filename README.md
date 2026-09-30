@@ -1,26 +1,53 @@
-# CodePic
+<p align="center">
+  <img src="public/logo.svg" alt="" width="72" height="72">
+</p>
 
-Turn a code snippet into a shareable PNG or SVG. Everything runs in the browser: no account, no upload, no server.
+<h1 align="center">CodePic</h1>
 
-**[Try it →](https://codepic.kitdev.space/)**
+<p align="center">
+  Your code deserves a better screenshot.<br>
+  Paste it, style it, share it. Nothing ever leaves your browser.
+</p>
 
-A [ray.so](https://ray.so) clone, built to learn Svelte 5.
+<p align="center">
+  <a href="https://codepic.kitdev.space/"><strong>Open CodePic</strong></a>
+</p>
 
-## Using it
+<p align="center">
+  <img src="public/og.png" alt="The CodePic social card: a short code snippet in a dark window on a pink and purple gradient" width="640">
+</p>
 
-Type or paste into the code window, adjust the dock at the bottom, then hit **Download** or **Copy image**. Drag the handles on either side of the card to change the export width.
+Most code screenshots are a crop of someone's editor: a stray sidebar, a blinking cursor, colors that looked fine in dark mode and terrible on a white slide. CodePic gives you the opposite. You paste a snippet, pick a look, and get a clean image you can drop into a post, a slide, or a pull request.
 
-Pasting into an empty editor, or over everything in it, guesses the language and marks the dock label as detected. When the guess is weak it falls back to plain text. Pick a language yourself and CodePic stops guessing.
+It's free, it has no accounts, and it has no server. The highlighting, the layout and the export all happen on your machine.
 
-The dock holds the settings you reach for most: background, theme, padding, language, and a light/dark switch. The `⋯` button opens the rest: width, font size, export format, export scale, window style, line numbers, filename, and wrapping.
+## What makes it different
 
-**Line marks.** Click a line number to cycle it through highlighted, added (`+`) and removed (`−`). The `⋯` panel takes the same as text, such as `2,5-7`. When any line is highlighted, the rest are dimmed. Marks travel with the share link and appear in the exported image.
+**It's private.** Your code never gets uploaded, stored, or logged. There's no backend to send it to. The only thing kept between visits is how the card looks, and never what's in it.
 
-The grid button next to it holds **presets**. Apply a built-in look, or save the current one under a name, rename it in place, and delete it. A preset covers the look only: theme, background, padding, size and window options. It never holds your code, language or filename. Saved presets live in `localStorage`, and **Export saved** and **Import** move them between browsers as a small JSON file. A file that is not a presets file is rejected with a message.
+**It works without a connection.** Visit once and CodePic loads and exports offline. You can install it like an app, too.
 
-**Install and offline.** After one visit CodePic loads and exports with no connection, and your browser can offer to install it. New versions replace the cached copy on the next visit.
+**It points at what matters.** Click a line number to highlight it, and the rest of the code fades back. Click again to mark a line as added or removed, and you get a diff view with `+` and `−` in the gutter.
 
-**Keyboard shortcuts.** Every shortcut uses Ctrl (⌘ on macOS), so nothing fires while you type. The keyboard button in the footer lists them too.
+**Other tools can drive it.** Every setting can be filled in from a link, and a small command line tool draws the same image without opening a browser. Docs sites, scripts and editors can use CodePic as a building block.
+
+## A quick tour
+
+1. **Paste your code.** CodePic guesses the language, and tells you it did, so you can change it in one click. If it isn't sure, it falls back to plain text and doesn't guess wrong.
+2. **Make it yours.** The dock at the bottom holds the things you reach for most: background, theme, padding, language and a light/dark switch. The `⋯` button opens the rest, like width, font size, window style, line numbers and the filename.
+3. **Get the image.** Download a PNG or an SVG, copy the image to your clipboard, or copy a link that opens the exact same snapshot. Drag the handles on the sides of the card to set the width.
+
+### Keep a look you like
+
+Presets remember a whole appearance under a name. Start from one of the five built in (Default, Clean light, Midnight, Terminal and Sunset), or save your own. They live in your browser, they never contain your code, and you can export them as a small file to move to another machine.
+
+### Share a snapshot
+
+The share link packs your code and settings into the URL itself, compressed in the browser, so long snippets fit and there's still no server involved. A small meter next to the button shows up as you get close to the size limit. If a snippet is too big for a link, the app says so and leaves the code out instead of failing quietly.
+
+### Stay on the keyboard
+
+Every shortcut uses Ctrl (⌘ on macOS), so nothing fires while you're typing. The keyboard button in the footer lists them too.
 
 | Action               | Shortcut               |
 | -------------------- | ---------------------- |
@@ -31,14 +58,22 @@ The grid button next to it holds **presets**. Apply a built-in look, or save the
 | Focus the editor     | Ctrl/⌘ + Shift + E     |
 | Show shortcuts       | Ctrl/⌘ + /             |
 
-**Share link** copies a URL containing your code and settings, so anyone who opens it lands on the same snapshot. The code is compressed in the browser first, so far larger snippets fit. A small meter next to the button appears as the link nears its limit. A snippet that is still too large is left out of the link and the app tells you. Links from before compression keep working.
+## Use it from other places
 
-## Open it with a link
+### Open it with a link
 
-Any page or tool can open CodePic with code and options already filled in. No server is involved: the link is read in the browser and nothing is sent anywhere.
+Any page or tool can open CodePic with code and options already filled in. The link is read in the browser and nothing is sent anywhere.
 
 ```
 https://codepic.kitdev.space/?theme=nord&lang=python&code=print(%22hi%22)
+```
+
+If you write docs or a blog, a plain link is the easiest way to let readers tweak a snippet themselves:
+
+```html
+<a href="https://codepic.kitdev.space/?theme=nord&amp;lang=python&amp;code=print(%22hi%22)">
+  Open in CodePic
+</a>
 ```
 
 | Parameter   | Values                                                                                                             |
@@ -62,22 +97,35 @@ https://codepic.kitdev.space/?theme=nord&lang=python&code=print(%22hi%22)
 | `added`     | Lines marked as added                                                                                              |
 | `removed`   | Lines marked as removed                                                                                            |
 
-Unknown parameters are ignored. A value that is not allowed is skipped and the page says so, and the rest still apply. Nothing in a link ever runs as code.
+Unknown parameters are ignored. A value that isn't allowed is skipped and the page tells you, and the rest still apply. Nothing in a link ever runs as code.
 
 When sources disagree, the first of these wins: a share link (`#z=`), then URL parameters, then your saved settings, then the defaults.
 
-## Command line
+You can also frame the whole app in a page if you want to:
+
+```html
+<iframe
+  title="CodePic"
+  src="https://codepic.kitdev.space/?theme=nord&amp;lang=python&amp;code=print(%22hi%22)"
+  width="100%"
+  height="560"
+  loading="lazy"
+  sandbox="allow-scripts allow-same-origin"
+></iframe>
+```
+
+The frame shows the whole app, not a small viewer. CodePic sends nothing to the host page, and the site's analytics script loads inside the frame as well. A host with a strict content security policy has to allow `codepic.kitdev.space` as a frame source. This hasn't been tried on specific hosts.
+
+### From the command line
 
 ```sh
 npx codepic --file app.ts --theme nord -o out.png
 cat app.ts | npx codepic --lang typescript -o out.svg
 ```
 
-Code comes from `--file` or standard input. `-o` sets the output path, and a `.svg` name writes SVG. The language is guessed when `--lang` is not given, and the filename comes from `--file`. Every parameter in the table above works as an option with the same name and values, for example `--theme nord --highlight 2,5-7`. Run `codepic --help` for the list. Errors name the option and the values it accepts, and exit with status 1.
+Code comes from `--file` or standard input. `-o` sets the output path, and a `.svg` name writes SVG. The language is guessed when you don't pass `--lang`, and the filename comes from `--file`. Every parameter in the table above works as an option with the same name and values, for example `--theme nord --highlight 2,5-7`. Run `codepic --help` for the full list. Mistakes name the option and the values it accepts, and exit with status 1.
 
-It uses the same highlighter, themes and layout numbers as the app, so images match closely. Two known differences: the drop shadow is an approximation, and text is wrapped by character count, so wide characters such as CJK or emoji can overrun a row. Highlighting and drawing run on your machine and nothing is uploaded.
-
-To run it from a checkout: `pnpm run cli:build`, then `node packages/cli/dist/cli.js --help`.
+It uses the same highlighter, themes and layout numbers as the app, so the images match closely. Two differences to know about: the drop shadow is an approximation, and text wraps by character count, so wide characters like CJK or emoji can overrun a row. Nothing is uploaded.
 
 ## What you can change
 
@@ -90,24 +138,33 @@ To run it from a checkout: `pnpm run cli:build`, then `node packages/cli/dist/cl
 | Export      | PNG, or SVG with the text kept as text and the code font embedded                                          |
 | Window      | Traffic-light controls, minimal, or borderless, each with an optional filename                             |
 
-The theme colours the code; the background sits behind the card. They are independent, so changing one never disturbs the other.
+The theme colors the code and the background sits behind the card. They're independent, so changing one never disturbs the other.
 
-## Running it
+## Privacy, plainly
+
+- Your code isn't sent anywhere. There's no server to receive it.
+- Your code isn't saved. Only appearance settings and presets go to `localStorage`.
+- Links carry everything in the URL, so anyone with the link can read the code in it. Keep secrets out of snippets you share.
+- The hosted site loads an [Umami](https://umami.is) script from the maintainer's own analytics server, for page statistics.
+
+## Run it yourself
+
+You need Node 22 or newer and [pnpm](https://pnpm.io).
 
 ```sh
 pnpm install
 pnpm dev
 ```
 
-Then `pnpm check` for formatting, linting and types, `pnpm test` for unit tests, and `pnpm build` to produce `dist/`.
+Then `pnpm check` runs formatting, linting and types, `pnpm test` runs the unit tests, and `pnpm build` writes the site to `dist/`. CI runs the same checks on every push and pull request, and publishes to GitHub Pages when `main` is green.
 
-CI runs the same checks on every push and pull request, and publishes to GitHub Pages when `main` goes green.
+To try the command line tool from a checkout, run `pnpm run cli:build` and then `node packages/cli/dist/cli.js --help`.
 
-## How it fits together
+## Under the hood
 
 ```
 src/
-  styles/tokens.css      design tokens: colour, spacing, radius, type
+  styles/tokens.css      design tokens: color, spacing, radius, type
   components/ui/         Button, Select, Toggle, Popover, Swatch, …
   components/toolbar/    the floating dock and its overflow panel
   components/preview/    the code card, resize handles, export frame
@@ -122,24 +179,24 @@ src/
 packages/cli/            the command line tool
 ```
 
-One `AppearanceConfig` object drives the whole snapshot. Code is kept separate from it, so persistence and sharing can treat the two differently. Settings go to `localStorage`; your code never does.
+One `AppearanceConfig` object drives the whole snapshot. Code is kept apart from it, so saving and sharing can treat the two differently.
 
-The preview and the exported image render from the same `CodeWindow` component, which keeps them honest. The export copy lives off-screen at the exact configured width, so the image matches the settings rather than whatever the preview is scaled to.
+The preview and the exported image render from the same `CodeWindow` component, so what you see is what you get. The export copy sits off-screen at the exact configured width, which means the image matches your settings and not whatever size the preview happens to be scaled to.
 
-Highlighting is [Shiki](https://shiki.style) compiled to the browser; the PNG and SVG come from [modern-screenshot](https://github.com/qq15725/modern-screenshot). Editing is a plain `<textarea>` layered over the highlighted lines. That keeps your bytes exactly as typed, and it is deliberately not an IDE.
+Highlighting is [Shiki](https://shiki.style) running in the browser, and the PNG and SVG come from [modern-screenshot](https://github.com/qq15725/modern-screenshot). Editing is a plain `<textarea>` layered over the highlighted lines. That keeps your text exactly as you typed it, and it's deliberately not an IDE.
 
-Built with Svelte 5 (runes), TypeScript, and [Vite+](https://viteplus.dev).
+It's built with Svelte 5, TypeScript and [Vite+](https://viteplus.dev).
 
-## Known limits
+## Good to know
 
 - Very long snippets take noticeably longer to highlight and export.
-- Copying to the clipboard depends on browser support and permission. When it is unavailable or blocked, the app says so and the download still works.
-- SVG export embeds the card as HTML inside the SVG. Some design tools do not support that.
+- Copying to the clipboard depends on browser support and permission. When it's unavailable or blocked, the app says so, and downloading still works.
+- SVG export embeds the card as HTML inside the SVG. Some design tools don't support that.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Security problems go through [SECURITY.md](SECURITY.md), and everyone is expected to follow the [code of conduct](CODE_OF_CONDUCT.md).
+Bug reports, ideas and pull requests are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md). Security problems go through [SECURITY.md](SECURITY.md), and everyone is expected to follow the [code of conduct](CODE_OF_CONDUCT.md).
 
-## License
+## Credits and license
 
-[MIT](LICENSE)
+CodePic was inspired by [ray.so](https://ray.so), and started as a way to learn Svelte 5. It's released under the [MIT license](LICENSE).
