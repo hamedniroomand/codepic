@@ -9,6 +9,15 @@
   };
 
   let { value, min, max, step = 1, labelledby, onchange }: Props = $props();
+
+  function commit(input: HTMLInputElement): void {
+    const next = input.valueAsNumber;
+    if (Number.isFinite(next)) {
+      const accepted = Math.max(min, Math.min(max, next));
+      onchange(accepted);
+      input.value = String(accepted);
+    } else input.value = String(value);
+  }
 </script>
 
 <input
@@ -18,11 +27,8 @@
   {max}
   {step}
   aria-labelledby={labelledby}
-  onchange={(event) => {
-    const next = event.currentTarget.valueAsNumber;
-    if (Number.isFinite(next)) onchange(next);
-    else event.currentTarget.value = String(value);
-  }}
+  onchange={(event) => commit(event.currentTarget)}
+  onblur={(event) => commit(event.currentTarget)}
 />
 
 <style>
@@ -30,7 +36,7 @@
     height: var(--control-height);
     width: 100%;
     box-sizing: border-box;
-    padding: 0 var(--space-xs);
+    padding: 0 11px;
     border: 1px solid var(--border-base);
     border-radius: var(--radius-sm);
     background: var(--surface-well);

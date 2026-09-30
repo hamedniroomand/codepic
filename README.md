@@ -34,7 +34,7 @@ It's free, it has no accounts, and it has no server. The highlighting, the layou
 ## A quick tour
 
 1. **Paste your code.** CodePic guesses the language, and tells you it did, so you can change it in one click. If it isn't sure, it falls back to plain text and doesn't guess wrong.
-2. **Make it yours.** The dock at the bottom holds the things you reach for most: background, theme, padding, language and a light/dark switch. The `⋯` button opens the rest, like width, font size, window style, line numbers and the filename.
+2. **Make it yours.** The settings sidebar groups appearance, code, layout and export controls. Pick a background and theme, search for a language, adjust padding and width, or change the window and line numbers. On smaller screens, **Customize image** opens the same controls in a settings sheet.
 3. **Get the image.** Download a PNG or an SVG, copy the image to your clipboard, or copy a link that opens the exact same snapshot. Drag the handles on the sides of the card to set the width.
 
 ### Keep a look you like
@@ -49,14 +49,14 @@ The share link packs your code and settings into the URL itself, compressed in t
 
 Every shortcut uses Ctrl (⌘ on macOS), so nothing fires while you're typing. The keyboard button in the footer lists them too.
 
-| Action               | Shortcut               |
-| -------------------- | ---------------------- |
-| Download image       | Ctrl/⌘ + Enter         |
-| Copy image           | Ctrl/⌘ + Shift + Enter |
-| Copy share link      | Ctrl/⌘ + Shift + L     |
-| Toggle more settings | Ctrl/⌘ + .             |
-| Focus the editor     | Ctrl/⌘ + Shift + E     |
-| Show shortcuts       | Ctrl/⌘ + /             |
+| Action              | Shortcut               |
+| ------------------- | ---------------------- |
+| Download image      | Ctrl/⌘ + Enter         |
+| Copy image          | Ctrl/⌘ + Shift + Enter |
+| Copy share link     | Ctrl/⌘ + Shift + L     |
+| Open image settings | Ctrl/⌘ + .             |
+| Focus the editor    | Ctrl/⌘ + Shift + E     |
+| Show shortcuts      | Ctrl/⌘ + /             |
 
 ## Use it from other places
 
@@ -165,8 +165,8 @@ To try the command line tool from a checkout, run `vpr run cli:build` and then `
 ```
 src/
   styles/tokens.css      design tokens: color, spacing, radius, type
-  components/ui/         Button, Select, Toggle, Popover, Swatch, …
-  components/toolbar/    the floating dock and its overflow panel
+  components/ui/         Bits UI wrappers: Button, Select, Dialog, Switch, …
+  components/toolbar/    settings inspector, mobile sheet and preset manager
   components/preview/    the code card, resize handles, export frame
   lib/config/            appearance settings, themes, languages, backgrounds
   lib/persistence/       saved settings in localStorage
@@ -185,7 +185,7 @@ The preview and the exported image render from the same `CodeWindow` component, 
 
 Highlighting is [Shiki](https://shiki.style) running in the browser, and the PNG and SVG come from [modern-screenshot](https://github.com/qq15725/modern-screenshot). Editing is a plain `<textarea>` layered over the highlighted lines. That keeps your text exactly as you typed it, and it's deliberately not an IDE.
 
-It's built with Svelte 5, TypeScript and [Vite+](https://viteplus.dev).
+It's built with Svelte 5, TypeScript and [Vite+](https://viteplus.dev). Interactive controls use [Bits UI](https://bits-ui.com), with [Lucide](https://lucide.dev) icons and a shared custom CSS design system.
 
 ## Good to know
 

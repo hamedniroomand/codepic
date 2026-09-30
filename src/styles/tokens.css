@@ -1,51 +1,38 @@
-/* Design tokens from the ray.so design system. */
+/* CodePic studio design system */
 :root {
-  /* Colour: near-black base, white text, one red accent. */
-  --surface-base: #0d0d0d;
-  --surface-raised: #000000;
-  --surface-well: #131313;
-  --surface-hover: #ffffff14;
-  --surface-active: #ffffff24;
-
-  --border-subtle: #ffffff1a;
-  --border-base: #ffffff26;
-  --border-strong: #ffffff40;
-
-  --text-strong: #ffffff;
-  --text-base: #eeeeee;
-  --text-muted: #ffffff8c;
-
-  --accent: #ff6161;
-  --accent-surface: #ff61612e;
-  --accent-surface-hover: #ff616145;
-  --accent-ring: #4d2a2a;
-
-  /* Spacing */
+  --surface-base: #121214;
+  --surface-raised: #1a1a1d;
+  --surface-well: #0c0c0e;
+  --surface-hover: #ffffff08;
+  --surface-active: #ffffff12;
+  --border-subtle: #ffffff0c;
+  --border-base: #333338;
+  --border-strong: #63636b;
+  --text-strong: #f4f4f5;
+  --text-base: #d4d4d8;
+  --text-muted: #94949c;
+  --accent: #e4e4e7;
+  --accent-surface: #e4e4e71a;
+  --accent-surface-hover: #e4e4e728;
+  --accent-ring: #e4e4e760;
+  --on-accent: #121214;
   --space-xs: 4px;
   --space-sm: 12px;
   --space-md: 20px;
   --space-lg: 24px;
   --space-xl: 64px;
-
-  /* Radius */
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 18px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
   --radius-full: 9999px;
-
-  /* Type */
   --font-ui: 'Inter Variable', Inter, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --text-body-sm: 14px;
-  --text-label: 14px;
+  --text-body-sm: 13px;
+  --text-label: 13px;
   --text-headline-md: 20px;
   --weight-label: 500;
-
-  /* Controls */
-  --control-height: 32px;
-  --control-height-lg: 40px;
-
-  /* Depth: concentrated on the code card, hairlines elsewhere. */
-  --shadow-dock: #00000099 0 8px 32px;
-  --shadow-popover: #000000b3 0 16px 48px;
+  --control-height: 38px;
+  --control-height-lg: 38px;
+  --shadow-dock: 0 8px 32px #0a090840;
+  --shadow-popover: 0 16px 48px #0a090870, 0 2px 8px #0a090840;
 }

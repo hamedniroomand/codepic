@@ -1,32 +1,39 @@
 <script lang="ts">
+  import { LayoutGrid, Upload, Download, Trash2, Check } from '@lucide/svelte';
+
   import Button from '$components/ui/Button.svelte';
-  import Popover from '$components/ui/Popover.svelte';
+  import Dialog from '$components/ui/Dialog.svelte';
+  import Field from '$components/ui/Field.svelte';
   import TextInput from '$components/ui/TextInput.svelte';
   import type { AppearanceConfig } from '$lib/config/appearance-config';
   import { downloadBlob } from '$lib/export/download';
   import { BUILTIN_PRESETS } from '$lib/presets/builtin-presets';
   import { lookOf, type Look } from '$lib/presets/presets';
-  import { createPresetStore } from '$lib/presets/presets.svelte';
+  import type { PresetStore } from '$lib/presets/presets.svelte';
 
+  import PresetPreview from './PresetPreview.svelte';
   type Props = {
     appearance: AppearanceConfig;
+    store: PresetStore;
     onApply: (look: Look) => void;
     onStatus: (message: string) => void;
   };
-  let { appearance, onApply, onStatus }: Props = $props();
-
-  const store = createPresetStore();
+  let { appearance, store, onApply, onStatus }: Props = $props();
   let name = $state('');
-
+  let open = $state(false);
+  function apply(look: Look): void {
+    onApply(look);
+    open = false;
+  }
   function saveCurrent(): void {
-    store.save(name, lookOf(appearance));
+    if (!name.trim()) return;
+    store.save(name.trim(), lookOf(appearance));
+    onStatus(`Saved “${name.trim()}”.`);
     name = '';
   }
-
   function exportPresets(): void {
     downloadBlob(new Blob([store.export()], { type: 'application/json' }), 'codepic-presets.json');
   }
-
   async function importPresets(event: Event & { currentTarget: HTMLInputElement }): Promise<void> {
     const input = event.currentTarget;
     const file = input.files?.[0];
@@ -41,149 +48,169 @@
   }
 </script>
 
-<Popover label="Presets">
-  {#snippet trigger()}
-    <svg
-      viewBox="0 0 20 20"
-      aria-hidden="true"
-    >
-      <rect
-        x="3"
-        y="3"
-        width="6"
-        height="6"
-        rx="1.5"
-      />
-      <rect
-        x="11"
-        y="3"
-        width="6"
-        height="6"
-        rx="1.5"
-      />
-      <rect
-        x="3"
-        y="11"
-        width="6"
-        height="6"
-        rx="1.5"
-      />
-      <rect
-        x="11"
-        y="11"
-        width="6"
-        height="6"
-        rx="1.5"
-      />
-    </svg>
-  {/snippet}
-
+<Dialog
+  bind:open
+  title="Presets"
+  description="Start with a look, or save one of your own."
+>
+  {#snippet trigger()}<LayoutGrid size={14} /><span>Presets</span>{/snippet}
   <div class="presets">
-    <h2>Built in</h2>
-    <div class="row">
-      {#each BUILTIN_PRESETS as preset (preset.id)}
-        <Button onclick={() => onApply(preset.look)}>{preset.name}</Button>
-      {/each}
+    <div class="builtins">
+      {#each BUILTIN_PRESETS as preset (preset.id)}<PresetPreview
+          look={preset.look}
+          name={preset.name}
+          onApply={() => apply(preset.look)}
+        />{/each}
     </div>
-
-    {#if store.saved.length}
-      <h2>Saved</h2>
-      {#each store.saved as preset (preset.id)}
-        <div class="saved">
-          <TextInput
-            value={preset.name}
-            onchange={(next) => store.rename(preset.id, next)}
-          />
-          <Button onclick={() => onApply(preset.look)}>Apply</Button>
-          <Button
-            label="Delete {preset.name}"
-            onclick={() => store.remove(preset.id)}>Delete</Button
-          >
+    <section>
+      <h3>Your presets</h3>
+      {#if store.saved.length}
+        <div class="saved-list">
+          {#each store.saved as preset (preset.id)}
+            <div class="saved">
+              <TextInput
+                value={preset.name}
+                label="Rename {preset.name} preset"
+                onchange={(next) => store.rename(preset.id, next)}
+              /><Button
+                label="Apply {preset.name}"
+                onclick={() => apply(preset.look)}><Check size={16} /></Button
+              ><Button
+                variant="subtle"
+                label="Delete {preset.name}"
+                onclick={() => store.remove(preset.id)}><Trash2 size={16} /></Button
+              >
+            </div>
+          {/each}
         </div>
-      {/each}
-    {/if}
-
-    <h2>Save the current look</h2>
+      {:else}<p class="empty">
+          Your saved looks will appear here. Save the current settings to get started.
+        </p>{/if}
+    </section>
     <form
-      class="saved"
       onsubmit={(event) => {
         event.preventDefault();
         saveCurrent();
       }}
     >
-      <TextInput
-        value={name}
-        placeholder="Preset name"
-        onchange={(next) => (name = next)}
-      />
-      <Button
-        onclick={saveCurrent}
-        disabled={!name.trim()}>Save</Button
+      <Field label="Save the current look"
+        >{#snippet children(labelId)}<div class="save-row">
+            <TextInput
+              live
+              value={name}
+              placeholder="Give your preset a name"
+              labelledby={labelId}
+              onchange={(next) => (name = next)}
+            /><Button
+              type="submit"
+              variant="primary"
+              disabled={!name.trim()}>Save preset</Button
+            >
+          </div>{/snippet}</Field
       >
     </form>
-
-    <div class="row">
-      <Button
-        onclick={exportPresets}
-        disabled={!store.saved.length}>Export saved</Button
-      >
-      <label class="import">
-        Import
-        <input
+    <div class="transfer">
+      <label class="import"
+        ><Upload size={14} /> Import presets<input
           type="file"
           accept="application/json"
+          aria-label="Import presets"
           onchange={importPresets}
-        />
-      </label>
+        /></label
+      ><Button
+        variant="subtle"
+        onclick={exportPresets}
+        disabled={!store.saved.length}><Download size={14} />Export saved</Button
+      >
     </div>
   </div>
-</Popover>
+</Dialog>
 
 <style>
-  svg {
-    width: 18px;
-    height: 18px;
-    fill: none;
-    stroke: currentcolor;
-    stroke-width: 1.5;
-  }
   .presets {
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
+    gap: 24px;
   }
-  h2 {
+  .builtins {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px 14px;
+  }
+  section {
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 20px;
+  }
+  h3 {
+    margin: 0 0 12px;
+    font-size: 13px;
+    font-weight: 550;
+    color: var(--text-strong);
+  }
+  .empty {
     margin: 0;
+    padding: 14px;
+    border: 1px dashed var(--border-base);
+    border-radius: 8px;
     color: var(--text-muted);
-    font-size: var(--text-label);
-    font-weight: var(--weight-label);
+    font-size: 12px;
+    line-height: 1.6;
   }
-  .row {
+  .saved-list {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-xs);
+    flex-direction: column;
+    gap: 8px;
   }
   .saved {
     display: grid;
-    grid-template-columns: 1fr auto auto;
-    gap: var(--space-xs);
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 6px;
+  }
+  .save-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+  .transfer {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 16px;
   }
   .import {
+    position: relative;
     display: inline-flex;
     align-items: center;
-    min-height: var(--control-height-lg);
-    padding: 0 var(--space-sm);
-    border: 1px solid var(--border-base);
-    border-radius: var(--radius-sm);
-    color: var(--text-strong);
-    font-size: var(--text-label);
-    font-weight: var(--weight-label);
+    gap: 8px;
+    min-height: 38px;
+    padding: 0 10px;
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 12px;
     cursor: pointer;
   }
   .import:hover {
-    background: var(--surface-hover);
+    background: var(--surface-active);
+    color: var(--text-strong);
+  }
+  .import:focus-within {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
   .import input {
-    display: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+  @media (max-width: 480px) {
+    .builtins {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .save-row {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
