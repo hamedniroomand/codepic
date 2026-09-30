@@ -11,7 +11,7 @@
     "sourceMap": true,
     "strict": true,
     "moduleResolution": "bundler",
-    "types": ["vite/client", "bun"],
+    "types": ["vite/client", "node"],
     "paths": {
       "$lib/*": ["./src/lib/*"],
       "$components/*": ["./src/components/*"]

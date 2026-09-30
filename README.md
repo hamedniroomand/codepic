@@ -77,7 +77,7 @@ Code comes from `--file` or standard input. `-o` sets the output path, and a `.s
 
 It uses the same highlighter, themes and layout numbers as the app, so images match closely. Two known differences: the drop shadow is an approximation, and text is wrapped by character count, so wide characters such as CJK or emoji can overrun a row. Highlighting and drawing run on your machine and nothing is uploaded.
 
-To run it from a checkout: `bun run cli:build`, then `node packages/cli/dist/cli.js --help`.
+To run it from a checkout: `pnpm run cli:build`, then `node packages/cli/dist/cli.js --help`.
 
 ## What you can change
 
@@ -95,11 +95,11 @@ The theme colours the code; the background sits behind the card. They are indepe
 ## Running it
 
 ```sh
-bun install
-bun run dev
+pnpm install
+pnpm dev
 ```
 
-Then `bun run check` for formatting, linting and types, `bun run test` for unit tests, and `bun run build` to produce `dist/`.
+Then `pnpm check` for formatting, linting and types, `pnpm test` for unit tests, and `pnpm build` to produce `dist/`.
 
 CI runs the same checks on every push and pull request, and publishes to GitHub Pages when `main` goes green.
 

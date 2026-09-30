@@ -5,3 +5,26 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    groups:
+      actions:
+        patterns: ['*']
+
+  - package-ecosystem: npm
+    directories:
+      - /
+      - /packages/cli
+    schedule:
+      interval: weekly
+    groups:
+      vite-plus:
+        patterns: [vite-plus, vite, '@voidzero-dev/*']
+      svelte:
+        patterns: [svelte, '@sveltejs/*']
+      shiki:
+        patterns: [shiki, '@shikijs/*']
+      pwa:
+        patterns: [vite-plugin-pwa, workbox-window]
+      fonts:
+        patterns: ['@fontsource/*', '@fontsource-variable/*']
+      minor-and-patch:
+        update-types: [minor, patch]
