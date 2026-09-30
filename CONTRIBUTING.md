@@ -8,20 +8,20 @@ bigger, open an issue first so the idea can be discussed before you spend time o
 You need Node 22 or newer and [pnpm](https://pnpm.io). The version is pinned in `package.json`.
 
 ```sh
-pnpm install
-pnpm dev
+vp i
+vpr dev
 ```
 
 Before you open a pull request, run:
 
 ```sh
-pnpm check   # formatting, lint and types
-pnpm test    # unit tests
-pnpm build   # production build
+vpr check   # formatting, lint and types
+vpr test    # unit tests
+vpr build   # production build
 ```
 
 CI runs the same checks. The command line tool lives in `packages/cli` and builds with
-`pnpm run cli:build`.
+`vpr cli:build`.
 
 ## Where things go
 
@@ -44,6 +44,17 @@ or `lib/share`, and a component or module should do one job.
   style, such as `fix(share): keep marks in old links`. A git hook checks this when you commit, and
   the pull request title has to follow it too.
 - Link the issue with `Closes #123` in the pull request description.
+
+## Releasing the command line tool
+
+1. Bump `version` in `packages/cli/package.json`.
+2. In [CHANGELOG.md](CHANGELOG.md), move the notes under `## Unreleased` to a new `## <version>` heading.
+3. Merge that change, then push a tag: `git tag cli-v<version> && git push origin cli-v<version>`.
+
+The tag starts a workflow that checks the tag against the package version, publishes to npm, and
+creates a GitHub release from that version's changelog section. A version with a hyphen, such as
+`0.2.0-beta.1`, is published under the `next` npm tag and marked as a prerelease. If the changelog
+has no notes for the version, the workflow stops before anything is published.
 
 By contributing you agree that your work is released under the [MIT license](LICENSE), and you agree
 to follow the [code of conduct](CODE_OF_CONDUCT.md).
