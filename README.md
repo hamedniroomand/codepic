@@ -2,7 +2,7 @@
 
 Turn a code snippet into a shareable PNG. Everything runs in the browser: no account, no upload, no server.
 
-**[Try it →](https://hamedniroomand.github.io/codepic/)**
+**[Try it →](https://codepic.kitdev.space/)**
 
 A [ray.so](https://ray.so) clone, built to learn Svelte 5.
 
