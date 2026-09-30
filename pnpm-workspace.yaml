@@ -11,3 +11,5 @@ peerDependencyRules:
     - vite
   allowedVersions:
     vite: '*'
+minimumReleaseAgeExclude:
+  - '@lucide/svelte@1.49.0'
