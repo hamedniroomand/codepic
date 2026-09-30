@@ -1,4 +1,8 @@
-import { DEFAULT_APPEARANCE, parseAppearance, type AppearanceConfig } from '$lib/appearance-config';
+import {
+  DEFAULT_APPEARANCE,
+  parseAppearance,
+  type AppearanceConfig,
+} from '$lib/config/appearance-config';
 
 const STORAGE_KEY = 'codepic-appearance-v2';
 const LEGACY_STORAGE_KEY = 'codepic-appearance-v1';

@@ -1,7 +1,8 @@
 import { expect, test } from 'bun:test';
 
+import { LANGUAGES } from '$lib/config/languages';
+
 import { detectLanguage } from './detect-language';
-import { LANGUAGES } from './languages';
 
 const SNIPPETS: Record<string, string> = {
   javascript: `const greet = (name) => {\n  console.log(\`Hello, \${name}\`);\n};\ngreet('CodePic');`,

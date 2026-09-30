@@ -1,4 +1,5 @@
-import type { AppearanceConfig } from '$lib/appearance-config';
+import type { AppearanceConfig } from '$lib/config/appearance-config';
+import { themeById } from '$lib/config/themes';
 import { escapePlain } from '$lib/highlight/highlighter';
 import {
   hasDiffMarks,
@@ -7,7 +8,6 @@ import {
   type LineMarks,
   type MarkKind,
 } from '$lib/marks/line-marks';
-import { themeById } from '$lib/themes';
 
 import { backgroundPaint } from './background';
 import { tokenize } from './tokenize';

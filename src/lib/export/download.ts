@@ -1,4 +1,4 @@
-import type { ExportFormat } from '$lib/appearance-config';
+import type { ExportFormat } from '$lib/config/appearance-config';
 
 export function filenameFor(title: string, format: ExportFormat): string {
   const name = title.trim().replace(/\s+/g, '-') || 'codepic';

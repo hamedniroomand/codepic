@@ -9,12 +9,12 @@ import {
   type ExportScale,
   type PaddingPx,
   type WindowStyle,
-} from '$lib/appearance-config';
-import { BACKGROUND_PRESETS } from '$lib/backgrounds';
-import { LANGUAGES } from '$lib/highlight/languages';
+} from '$lib/config/appearance-config';
+import { BACKGROUND_PRESETS } from '$lib/config/backgrounds';
+import { LANGUAGES } from '$lib/config/languages';
+import { THEMES } from '$lib/config/themes';
 import { NO_MARKS, type LineMarks } from '$lib/marks/line-marks';
 import { parseLineRanges } from '$lib/marks/line-ranges';
-import { THEMES } from '$lib/themes';
 
 export const MAX_CODE_PARAM_CHARS = 8_000;
 const MAX_TITLE_CHARS = 200;

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { AppearanceConfig } from '$lib/appearance-config';
-  import { backgroundStyle } from '$lib/backgrounds';
+  import type { AppearanceConfig } from '$lib/config/appearance-config';
+  import { backgroundStyle } from '$lib/config/backgrounds';
   import type { LineMarks } from '$lib/marks/line-marks';
 
   import CodeWindow from './CodeWindow.svelte';

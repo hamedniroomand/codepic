@@ -1,4 +1,4 @@
-import { parseAppearance, type AppearanceConfig } from '$lib/appearance-config';
+import { parseAppearance, type AppearanceConfig } from '$lib/config/appearance-config';
 
 /** Everything about how the card looks. The language and filename belong to the code. */
 export type Look = Omit<AppearanceConfig, 'language' | 'title'>;
