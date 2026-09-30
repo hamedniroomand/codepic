@@ -2,6 +2,7 @@
   import '@fontsource-variable/inter';
   import '@fontsource/jetbrains-mono/400.css';
   import PreviewStage from '$components/preview/PreviewStage.svelte';
+  import ShortcutsHelp from '$components/ShortcutsHelp.svelte';
   import SiteHeader from '$components/SiteHeader.svelte';
   import ControlDock from '$components/toolbar/ControlDock.svelte';
   import Toast from '$components/ui/Toast.svelte';
@@ -15,6 +16,12 @@
   import { loadAppearance, saveAppearance } from '$lib/persistence';
   import { buildShareUrl, type SharedSnapshot } from '$lib/share/share-url';
   import { createShareUsage } from '$lib/share/share-usage.svelte';
+  import {
+    HELP_PANEL_ID,
+    SETTINGS_PANEL_ID,
+    matchShortcut,
+    type ShortcutAction,
+  } from '$lib/shortcuts/shortcuts';
 
   type Props = { shared: SharedSnapshot };
   let { shared }: Props = $props();
@@ -59,6 +66,22 @@
     }
   }
 
+  const shortcutActions: Record<ShortcutAction, () => void> = {
+    download: () => exporter.run('download'),
+    copyImage: () => exporter.run('copy'),
+    shareLink: () => shareLink(),
+    toggleSettings: () => document.getElementById(SETTINGS_PANEL_ID)?.togglePopover(),
+    focusEditor: () => document.querySelector<HTMLTextAreaElement>('textarea')?.focus(),
+    showHelp: () => document.getElementById(HELP_PANEL_ID)?.togglePopover(),
+  };
+
+  function onKeydown(event: KeyboardEvent): void {
+    const action = matchShortcut(event);
+    if (!action) return;
+    event.preventDefault();
+    shortcutActions[action]();
+  }
+
   $effect(() => saveAppearance(appearance));
 
   $effect(() => {
@@ -69,6 +92,7 @@
 </script>
 
 <svelte:head><title>CodePic · Code to image</title></svelte:head>
+<svelte:window onkeydown={onKeydown} />
 
 <div class="shell">
   <SiteHeader
@@ -112,6 +136,7 @@
   </div>
 
   <footer class="about">
+    <ShortcutsHelp />
     <p>
       CodePic runs in your browser. Your code stays on your device. Inspired by
       <a
