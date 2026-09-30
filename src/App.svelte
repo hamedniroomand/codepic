@@ -1,5 +1,7 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
   import '@fontsource-variable/inter';
+
   import '@fontsource/jetbrains-mono/400.css';
   import PreviewStage from '$components/preview/PreviewStage.svelte';
   import ShortcutsHelp from '$components/ShortcutsHelp.svelte';
@@ -25,13 +27,14 @@
 
   type Props = { boot: Boot };
   let { boot }: Props = $props();
+  const initial = untrack(() => boot);
 
   const STATUS_TIMEOUT_MS = 6000;
 
-  let appearance = $state<AppearanceConfig>(boot.appearance);
-  let code = $state(boot.code);
-  let marks = $state<LineMarks>(boot.marks);
-  let status = $state(boot.notice);
+  let appearance = $state<AppearanceConfig>(initial.appearance);
+  let code = $state(initial.code);
+  let marks = $state<LineMarks>(initial.marks);
+  let status = $state(initial.notice);
   let exportNode = $state<HTMLDivElement | null>(null);
 
   const setStatus = (message: string): string => (status = message);
