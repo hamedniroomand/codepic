@@ -2,7 +2,7 @@ import { mount } from 'svelte';
 import { registerSW } from 'virtual:pwa-register';
 
 import App from './App.svelte';
-import { loadAppearance } from './lib/persistence';
+import { loadAppearance } from './lib/persistence/persistence';
 import { resolveBoot } from './lib/share/boot';
 import { parseShareHash } from './lib/share/share-url';
 

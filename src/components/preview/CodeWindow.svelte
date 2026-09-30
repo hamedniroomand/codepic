@@ -1,6 +1,7 @@
 <script lang="ts">
-  import type { AppearanceConfig } from '$lib/appearance-config';
-  import { DEFAULT_APPEARANCE } from '$lib/appearance-config';
+  import type { AppearanceConfig } from '$lib/config/appearance-config';
+  import { DEFAULT_APPEARANCE } from '$lib/config/appearance-config';
+  import { themeById } from '$lib/config/themes';
   import {
     NO_MARKS,
     cycleMark,
@@ -10,7 +11,6 @@
     type LineMarks,
     type MarkKind,
   } from '$lib/marks/line-marks';
-  import { themeById } from '$lib/themes';
 
   import CodeEditorOverlay from './CodeEditorOverlay.svelte';
 

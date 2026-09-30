@@ -20,8 +20,8 @@ import oneDarkPro from '@shikijs/themes/one-dark-pro';
 import { createHighlighterCore, type HighlighterCore } from 'shiki/core';
 import { createOnigurumaEngine } from 'shiki/engine/oniguruma';
 
-import { languageShikiId } from '$lib/highlight/languages';
-import { themeById } from '$lib/themes';
+import { languageShikiId } from '$lib/config/languages';
+import { themeById } from '$lib/config/themes';
 
 let highlighter: HighlighterCore | null = null;
 let loadPromise: Promise<HighlighterCore> | null = null;

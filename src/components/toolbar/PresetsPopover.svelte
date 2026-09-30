@@ -2,7 +2,7 @@
   import Button from '$components/ui/Button.svelte';
   import Popover from '$components/ui/Popover.svelte';
   import TextInput from '$components/ui/TextInput.svelte';
-  import type { AppearanceConfig } from '$lib/appearance-config';
+  import type { AppearanceConfig } from '$lib/config/appearance-config';
   import { downloadBlob } from '$lib/export/download';
   import { BUILTIN_PRESETS } from '$lib/presets/builtin-presets';
   import { lookOf, type Look } from '$lib/presets/presets';

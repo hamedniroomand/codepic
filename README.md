@@ -111,7 +111,14 @@ src/
   components/ui/         Button, Select, Toggle, Popover, Swatch, …
   components/toolbar/    the floating dock and its overflow panel
   components/preview/    the code card, resize handles, export frame
-  lib/                   config, themes, highlighting, export, sharing
+  lib/config/            appearance settings, themes, languages, backgrounds
+  lib/persistence/       saved settings in localStorage
+  lib/highlight/         Shiki, line splitting, language detection
+  lib/marks/             line highlight and diff marks
+  lib/export/            PNG and SVG capture, copy, download
+  lib/share/             share links, URL parameters, startup
+  lib/presets/           saved and built-in looks
+  lib/shortcuts/         keyboard shortcuts
 packages/cli/            the command line tool
 ```
 

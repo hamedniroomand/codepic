@@ -6,13 +6,13 @@
   import SiteHeader from '$components/SiteHeader.svelte';
   import ControlDock from '$components/toolbar/ControlDock.svelte';
   import Toast from '$components/ui/Toast.svelte';
-  import type { AppearanceConfig } from '$lib/appearance-config';
-  import { mergeAppearance } from '$lib/appearance-config';
+  import type { AppearanceConfig } from '$lib/config/appearance-config';
+  import { mergeAppearance } from '$lib/config/appearance-config';
   import { createExporter } from '$lib/export/exporter.svelte';
   import { createHighlightState } from '$lib/highlight/highlight.svelte';
   import { createLanguageDetection } from '$lib/highlight/language-detection.svelte';
   import type { LineMarks } from '$lib/marks/line-marks';
-  import { saveAppearance } from '$lib/persistence';
+  import { saveAppearance } from '$lib/persistence/persistence';
   import type { Boot } from '$lib/share/boot';
   import { buildShareUrl } from '$lib/share/share-url';
   import { createShareUsage } from '$lib/share/share-usage.svelte';
