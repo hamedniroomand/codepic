@@ -1,6 +1,6 @@
 import { tick } from 'svelte';
 
-import type { AppearanceConfig, ExportFormat } from '$lib/appearance-config';
+import type { AppearanceConfig, ExportFormat } from '$lib/config/appearance-config';
 
 import { captureImage } from './capture';
 import { copyImage } from './clipboard';

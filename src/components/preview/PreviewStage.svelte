@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { AppearanceConfig } from '$lib/appearance-config';
-  import { clampWidth } from '$lib/appearance-config';
+  import type { AppearanceConfig } from '$lib/config/appearance-config';
+  import { clampWidth } from '$lib/config/appearance-config';
   import type { LineMarks } from '$lib/marks/line-marks';
 
   import ResizeHandle from './ResizeHandle.svelte';

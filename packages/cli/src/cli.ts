@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 import { Resvg } from '@resvg/resvg-js';
 
-import { DEFAULT_APPEARANCE, mergeAppearance } from '$lib/appearance-config';
+import { DEFAULT_APPEARANCE, mergeAppearance } from '$lib/config/appearance-config';
 import { detectLanguage } from '$lib/highlight/detect-language';
 import { NO_MARKS } from '$lib/marks/line-marks';
 import { parseOpenParams } from '$lib/share/open-params';

@@ -1,6 +1,6 @@
 import { domToBlob, domToForeignObjectSvg } from 'modern-screenshot';
 
-import type { ExportFormat } from '$lib/appearance-config';
+import type { ExportFormat } from '$lib/config/appearance-config';
 
 type CaptureOptions = { format: ExportFormat; scale: number; transparent: boolean };
 

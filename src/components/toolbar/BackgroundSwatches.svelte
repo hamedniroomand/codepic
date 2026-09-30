@@ -1,8 +1,8 @@
 <script lang="ts">
   import Swatch from '$components/ui/Swatch.svelte';
-  import type { AppearanceConfig } from '$lib/appearance-config';
-  import { backgroundEnabled } from '$lib/appearance-config';
-  import { BACKGROUND_PRESETS } from '$lib/backgrounds';
+  import type { AppearanceConfig } from '$lib/config/appearance-config';
+  import { backgroundEnabled } from '$lib/config/appearance-config';
+  import { BACKGROUND_PRESETS } from '$lib/config/backgrounds';
 
   type Props = {
     appearance: AppearanceConfig;

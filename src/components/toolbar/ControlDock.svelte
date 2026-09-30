@@ -3,11 +3,11 @@
   import SegmentedControl from '$components/ui/SegmentedControl.svelte';
   import Select from '$components/ui/Select.svelte';
   import Toggle from '$components/ui/Toggle.svelte';
-  import type { AppearanceConfig, PaddingPx } from '$lib/appearance-config';
-  import { PADDING_OPTIONS } from '$lib/appearance-config';
-  import { LANGUAGES } from '$lib/highlight/languages';
+  import type { AppearanceConfig, PaddingPx } from '$lib/config/appearance-config';
+  import { PADDING_OPTIONS } from '$lib/config/appearance-config';
+  import { LANGUAGES } from '$lib/config/languages';
+  import { THEMES, isDarkTheme, toggleDarkTheme } from '$lib/config/themes';
   import type { LineMarks } from '$lib/marks/line-marks';
-  import { THEMES, isDarkTheme, toggleDarkTheme } from '$lib/themes';
 
   import AdvancedPopover from './AdvancedPopover.svelte';
   import BackgroundSwatches from './BackgroundSwatches.svelte';

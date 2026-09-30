@@ -1,4 +1,4 @@
-import type { BackgroundConfig } from '$lib/appearance-config';
+import type { BackgroundConfig } from '$lib/config/appearance-config';
 
 export type BackgroundPreset = {
   id: string;

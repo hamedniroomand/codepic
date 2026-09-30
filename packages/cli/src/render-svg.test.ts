@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 
-import { DEFAULT_APPEARANCE } from '$lib/appearance-config';
+import { DEFAULT_APPEARANCE } from '$lib/config/appearance-config';
 import { NO_MARKS } from '$lib/marks/line-marks';
 
 import { renderSvg } from './render-svg';

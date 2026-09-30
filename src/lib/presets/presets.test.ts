@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 
-import { DEFAULT_APPEARANCE } from '$lib/appearance-config';
+import { DEFAULT_APPEARANCE } from '$lib/config/appearance-config';
 
 import { BUILTIN_PRESETS } from './builtin-presets';
 import { createPreset, lookOf, parsePresets, serializePresets } from './presets';

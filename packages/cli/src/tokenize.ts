@@ -1,6 +1,6 @@
+import { languageShikiId } from '$lib/config/languages';
+import { themeById } from '$lib/config/themes';
 import { ensureHighlighter } from '$lib/highlight/highlighter';
-import { languageShikiId } from '$lib/highlight/languages';
-import { themeById } from '$lib/themes';
 
 import type { Token } from './wrap';
 

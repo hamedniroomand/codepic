@@ -1,5 +1,5 @@
-import type { BackgroundConfig } from '$lib/appearance-config';
-import { backgroundStyle } from '$lib/backgrounds';
+import type { BackgroundConfig } from '$lib/config/appearance-config';
+import { backgroundStyle } from '$lib/config/backgrounds';
 
 const GRADIENT_STOP = /(#[0-9a-f]{3,8})\s+(\d+)%/gi;
 

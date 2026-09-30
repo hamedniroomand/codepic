@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 
-import { DEFAULT_APPEARANCE, parseAppearance } from '$lib/appearance-config';
+import { DEFAULT_APPEARANCE, parseAppearance } from '$lib/config/appearance-config';
 
 test('falls back on corrupt input', () => {
   const config = parseAppearance({ themeId: 42, windowStyle: 'floating' });
