@@ -1,4 +1,4 @@
-import { expect, test } from 'bun:test';
+import { expect, test } from 'vite-plus/test';
 
 import { NO_MARKS, cycleMark, isDimmed, markAt, parseMarks } from './line-marks';
 
