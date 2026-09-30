@@ -16,5 +16,6 @@
       "$lib/*": ["./src/lib/*"],
       "$components/*": ["./src/components/*"]
     }
-  }
+  },
+  "exclude": ["node_modules", "dist", "packages/*/dist"]
 }
