@@ -10,6 +10,7 @@
   import { DEFAULT_CODE } from '$lib/default-code';
   import { createExporter } from '$lib/exporter.svelte';
   import { createHighlightState } from '$lib/highlight.svelte';
+  import { NO_MARKS, type LineMarks } from '$lib/marks/line-marks';
   import { loadAppearance, saveAppearance } from '$lib/persistence';
   import { buildShareUrl, parseShareFromLocation } from '$lib/share-url';
 
@@ -18,6 +19,7 @@
 
   let appearance = $state<AppearanceConfig>(shared.appearance ?? loadAppearance());
   let code = $state(shared.code ?? DEFAULT_CODE);
+  let marks = $state<LineMarks>(shared.marks ?? NO_MARKS);
   let status = $state('');
   let exportNode = $state<HTMLDivElement | null>(null);
 
@@ -36,7 +38,7 @@
   }
 
   async function shareLink(): Promise<void> {
-    const { url, codeOmitted } = buildShareUrl(appearance, code);
+    const { url, codeOmitted } = buildShareUrl(appearance, code, marks);
     try {
       await navigator.clipboard.writeText(url);
       setStatus(codeOmitted ? 'Link copied. The code was too long to include.' : 'Link copied.');
@@ -72,9 +74,11 @@
     <PreviewStage
       {appearance}
       lines={highlight.lines}
+      {marks}
       bind:code
       exportRef={(element) => (exportNode = element)}
       onChange={patch}
+      onMarksChange={(next) => (marks = next)}
     />
   </main>
 
@@ -84,7 +88,9 @@
   >
     <ControlDock
       {appearance}
+      {marks}
       onChange={patch}
+      onMarksChange={(next) => (marks = next)}
     />
   </div>
 

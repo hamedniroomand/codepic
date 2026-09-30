@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { AppearanceConfig } from '$lib/appearance-config';
   import { clampWidth } from '$lib/appearance-config';
+  import type { LineMarks } from '$lib/marks/line-marks';
 
   import ResizeHandle from './ResizeHandle.svelte';
   import SnapshotFrame from './SnapshotFrame.svelte';
@@ -8,12 +9,22 @@
   type Props = {
     appearance: AppearanceConfig;
     lines: string[];
+    marks: LineMarks;
     code: string;
     exportRef: (element: HTMLDivElement | null) => void;
     onChange: (patch: Partial<AppearanceConfig>) => void;
+    onMarksChange: (marks: LineMarks) => void;
   };
 
-  let { appearance, lines, code = $bindable(), exportRef, onChange }: Props = $props();
+  let {
+    appearance,
+    lines,
+    marks,
+    code = $bindable(),
+    exportRef,
+    onChange,
+    onMarksChange,
+  }: Props = $props();
 
   const SIDE_GUTTER = 64;
 
@@ -42,9 +53,11 @@
         <SnapshotFrame
           {appearance}
           {lines}
+          {marks}
           interactive
           bind:code
           onTitleChange={(title) => onChange({ title })}
+          {onMarksChange}
         />
       </div>
       {#each ['left', 'right'] as const as side (side)}
@@ -68,6 +81,7 @@
   <SnapshotFrame
     {appearance}
     {lines}
+    {marks}
     forExport
     frameRef={exportRef}
   />

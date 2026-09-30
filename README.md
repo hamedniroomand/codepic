@@ -12,6 +12,8 @@ Type or paste into the code window, adjust the dock at the bottom, then hit **Do
 
 The dock holds the settings you reach for most: background, theme, padding, language, and a light/dark switch. The `⋯` button opens the rest: width, font size, export scale, window style, line numbers, filename, and wrapping.
 
+**Line marks.** Click a line number to cycle it through highlighted, added (`+`) and removed (`−`). The `⋯` panel takes the same as text, such as `2,5-7`. When any line is highlighted, the rest are dimmed. Marks travel with the share link and appear in the exported image.
+
 **Share link** copies a URL containing your code and settings, so anyone who opens it lands on the same snapshot. Snippets over 1200 characters are dropped from the link and the app tells you.
 
 ## What you can change
