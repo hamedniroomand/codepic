@@ -34,6 +34,7 @@ or `lib/share`, and a component or module should do one job.
 - Reuse what the project already has before adding a helper or a dependency.
 - Comment only what the code cannot say by itself.
 - Add or update tests for behavior you change.
+- Add a line under `## Unreleased` in [CHANGELOG.md](CHANGELOG.md) for a change to the command line tool that users will notice.
 - Keep the privacy promise: no accounts, no uploads, no server, and the code is never stored.
 
 ## Commits and pull requests
