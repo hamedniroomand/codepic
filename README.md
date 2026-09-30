@@ -10,6 +10,8 @@ A [ray.so](https://ray.so) clone, built to learn Svelte 5.
 
 Type or paste into the code window, adjust the dock at the bottom, then hit **Download** or **Copy image**. Drag the handles on either side of the card to change the export width.
 
+Pasting into an empty editor, or over everything in it, guesses the language and marks the dock label as detected. When the guess is weak it falls back to plain text. Pick a language yourself and CodePic stops guessing.
+
 The dock holds the settings you reach for most: background, theme, padding, language, and a light/dark switch. The `⋯` button opens the rest: width, font size, export format, export scale, window style, line numbers, filename, and wrapping.
 
 **Line marks.** Click a line number to cycle it through highlighted, added (`+`) and removed (`−`). The `⋯` panel takes the same as text, such as `2,5-7`. When any line is highlighted, the rest are dimmed. Marks travel with the share link and appear in the exported image.

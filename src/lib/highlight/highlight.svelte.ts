@@ -1,5 +1,5 @@
-import { linesFromHighlight } from '$lib/highlight-lines';
-import { highlightCode } from '$lib/highlighter';
+import { linesFromHighlight } from '$lib/highlight/highlight-lines';
+import { highlightCode } from '$lib/highlight/highlighter';
 
 export type HighlightState = {
   /** One HTML string for each code line, safe to render with {@html}. */

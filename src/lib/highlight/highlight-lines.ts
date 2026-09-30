@@ -1,4 +1,4 @@
-import { escapePlain } from '$lib/highlighter';
+import { escapePlain } from '$lib/highlight/highlighter';
 
 export function linesFromHighlight(highlightedHtml: string, rawCode: string): string[] {
   const div = document.createElement('div');
