@@ -46,6 +46,31 @@ The grid button next to it holds **presets**. Apply a built-in look, or save the
 
 The theme colours the code; the background sits behind the card. They are independent, so changing one never disturbs the other.
 
+## Linking from docs and blogs
+
+A plain link is the simplest way to send readers to a snippet they can adjust:
+
+```html
+<a href="https://codepic.kitdev.space/?theme=nord&amp;lang=python&amp;code=print(%22hi%22)">
+  Open in CodePic
+</a>
+```
+
+A copied **Share link** works the same way as the `href`. There is no embed widget; the reasoning is in [docs/embed-decision.md](docs/embed-decision.md). If you want the app inside a page anyway, you can frame it:
+
+```html
+<iframe
+  title="CodePic"
+  src="https://codepic.kitdev.space/?theme=nord&amp;lang=python&amp;code=print(%22hi%22)"
+  width="100%"
+  height="560"
+  loading="lazy"
+  sandbox="allow-scripts allow-same-origin"
+></iframe>
+```
+
+The frame shows the whole app, not a small viewer. CodePic sends nothing to the host page, and the site's analytics script loads inside the frame too. A host with a strict content security policy must allow `codepic.kitdev.space` as a frame source. This has not been tried on specific hosts.
+
 ## Running it
 
 ```sh
