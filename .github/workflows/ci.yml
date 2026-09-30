@@ -20,21 +20,19 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
+      - uses: voidzero-dev/setup-vp@v1.21.1
         with:
-          node-version: 24
-          cache: pnpm
+          node-version: '24'
+          cache: true
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: vp install --frozen-lockfile
 
       - name: Format, lint and type check
-        run: pnpm run check
+        run: vp check
 
       - name: Test
-        run: pnpm run test
+        run: vp test run
 
   deploy:
     name: Deploy to GitHub Pages
@@ -50,18 +48,16 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
+      - uses: voidzero-dev/setup-vp@v1.21.1
         with:
-          node-version: 24
-          cache: pnpm
+          node-version: '24'
+          cache: true
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: vp install --frozen-lockfile
 
       - name: Build
-        run: pnpm run build
+        run: vp build
 
       - uses: actions/configure-pages@v6
 
