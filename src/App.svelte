@@ -8,13 +8,13 @@
   import Toast from '$components/ui/Toast.svelte';
   import type { AppearanceConfig } from '$lib/appearance-config';
   import { mergeAppearance } from '$lib/appearance-config';
-  import { DEFAULT_CODE } from '$lib/default-code';
   import { createExporter } from '$lib/export/exporter.svelte';
   import { createHighlightState } from '$lib/highlight/highlight.svelte';
   import { createLanguageDetection } from '$lib/highlight/language-detection.svelte';
-  import { NO_MARKS, type LineMarks } from '$lib/marks/line-marks';
-  import { loadAppearance, saveAppearance } from '$lib/persistence';
-  import { buildShareUrl, type SharedSnapshot } from '$lib/share/share-url';
+  import type { LineMarks } from '$lib/marks/line-marks';
+  import { saveAppearance } from '$lib/persistence';
+  import type { Boot } from '$lib/share/boot';
+  import { buildShareUrl } from '$lib/share/share-url';
   import { createShareUsage } from '$lib/share/share-usage.svelte';
   import {
     HELP_PANEL_ID,
@@ -23,15 +23,15 @@
     type ShortcutAction,
   } from '$lib/shortcuts/shortcuts';
 
-  type Props = { shared: SharedSnapshot };
-  let { shared }: Props = $props();
+  type Props = { boot: Boot };
+  let { boot }: Props = $props();
 
   const STATUS_TIMEOUT_MS = 6000;
 
-  let appearance = $state<AppearanceConfig>(shared.appearance ?? loadAppearance());
-  let code = $state(shared.code ?? DEFAULT_CODE);
-  let marks = $state<LineMarks>(shared.marks ?? NO_MARKS);
-  let status = $state('');
+  let appearance = $state<AppearanceConfig>(boot.appearance);
+  let code = $state(boot.code);
+  let marks = $state<LineMarks>(boot.marks);
+  let status = $state(boot.notice);
   let exportNode = $state<HTMLDivElement | null>(null);
 
   const setStatus = (message: string): string => (status = message);
