@@ -152,13 +152,13 @@ The theme colors the code and the background sits behind the card. They're indep
 You need Node 22 or newer and [pnpm](https://pnpm.io).
 
 ```sh
-pnpm install
-pnpm dev
+vp i
+vpr dev
 ```
 
-Then `pnpm check` runs formatting, linting and types, `pnpm test` runs the unit tests, and `pnpm build` writes the site to `dist/`. CI runs the same checks on every push and pull request, and publishes to GitHub Pages when `main` is green.
+Then `vpr check` runs formatting, linting and types, `vpr test` runs the unit tests, and `vpr build` writes the site to `dist/`. CI runs the same checks on every push and pull request, and publishes to GitHub Pages when `main` is green.
 
-To try the command line tool from a checkout, run `pnpm run cli:build` and then `node packages/cli/dist/cli.js --help`.
+To try the command line tool from a checkout, run `vpr run cli:build` and then `node packages/cli/dist/cli.js --help`.
 
 ## Under the hood
 
