@@ -67,11 +67,6 @@ export default defineConfig({
     vueIndentScriptAndStyle: true,
     svelte: true,
   },
-  // Ponytail: This alias supports test and expect. Use Bun for other Bun test APIs.
-  test: {
-    clearMocks: false,
-    alias: { 'bun:test': 'vite-plus/test' },
-  },
   lint: {
     categories: {
       correctness: 'error',

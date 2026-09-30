@@ -17,7 +17,7 @@
   "oxc.typeAware": true,
   "oxc.disableNestedConfig": true,
   "oxc.fmt.disableNestedConfig": true,
-  "npm.scriptRunner": "bun",
+  "npm.scriptRunner": "pnpm",
   "files.trimTrailingWhitespace": true,
   "js/ts.tsdk.path": "node_modules/typescript/lib",
   "js/ts.tsserver.maxMemory": 8192,
