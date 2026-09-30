@@ -1,0 +1,42 @@
+name: Publish CLI
+
+on:
+  push:
+    tags: ['cli-v*']
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: voidzero-dev/setup-vp@v1.21.1
+        with:
+          node-version: '24'
+          cache: true
+
+      - name: Install dependencies
+        run: vp install --frozen-lockfile
+
+      - name: Check the tag matches the package version
+        run: |
+          version=$(node -p "require('./packages/cli/package.json').version")
+          if [ "$GITHUB_REF_NAME" != "cli-v$version" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package version $version (expected cli-v$version)."
+            exit 1
+          fi
+
+      - name: Format, lint and type check
+        run: vp check
+
+      - name: Test
+        run: vp test run
+
+      - name: Publish
+        working-directory: packages/cli
+        run: npm publish
