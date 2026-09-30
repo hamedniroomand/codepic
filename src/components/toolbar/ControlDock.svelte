@@ -5,7 +5,7 @@
   import Toggle from '$components/ui/Toggle.svelte';
   import type { AppearanceConfig, PaddingPx } from '$lib/appearance-config';
   import { PADDING_OPTIONS } from '$lib/appearance-config';
-  import { LANGUAGES } from '$lib/languages';
+  import { LANGUAGES } from '$lib/highlight/languages';
   import type { LineMarks } from '$lib/marks/line-marks';
   import { THEMES, isDarkTheme, toggleDarkTheme } from '$lib/themes';
 
@@ -15,10 +15,11 @@
   type Props = {
     appearance: AppearanceConfig;
     marks: LineMarks;
+    languageDetected: boolean;
     onChange: (patch: Partial<AppearanceConfig>) => void;
     onMarksChange: (marks: LineMarks) => void;
   };
-  let { appearance, marks, onChange, onMarksChange }: Props = $props();
+  let { appearance, marks, languageDetected, onChange, onMarksChange }: Props = $props();
 
   const themeOptions = THEMES.map((theme) => ({ value: theme.id, label: theme.label }));
   const languageOptions = LANGUAGES.map((language) => ({
@@ -64,7 +65,7 @@
     {/snippet}
   </Field>
 
-  <Field label="Language">
+  <Field label={languageDetected ? 'Language · detected' : 'Language'}>
     {#snippet children(labelId)}
       <Select
         value={appearance.language}
