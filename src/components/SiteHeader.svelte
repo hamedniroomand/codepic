@@ -1,16 +1,18 @@
 <script lang="ts">
   import Button from '$components/ui/Button.svelte';
   import Spinner from '$components/ui/Spinner.svelte';
-  import type { ExportFormat } from '$lib/exporter.svelte';
+  import type { ExportFormat } from '$lib/appearance-config';
+  import type { ExportAction } from '$lib/export/exporter.svelte';
 
   type Props = {
     busy: boolean;
-    pending: ExportFormat | null;
+    exportFormat: ExportFormat;
+    pending: ExportAction | null;
     onShare: () => void;
     onCopy: () => void;
     onDownload: () => void;
   };
-  let { busy, pending, onShare, onCopy, onDownload }: Props = $props();
+  let { busy, exportFormat, pending, onShare, onCopy, onDownload }: Props = $props();
 </script>
 
 <header class="header">
@@ -90,7 +92,7 @@
           <path d="M10 2v10m-4-4 4 4 4-4M3 12v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" />
         </svg>
       {/if}
-      Download PNG
+      Download {exportFormat.toUpperCase()}
     </Button>
   </nav>
 </header>

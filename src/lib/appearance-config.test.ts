@@ -38,3 +38,9 @@ test('reads width stored as a legacy preset name', () => {
   expect(parseAppearance({ width: 'custom', customWidth: 1024 }).width).toBe(1024);
   expect(parseAppearance({ width: 'custom' }).width).toBe(DEFAULT_APPEARANCE.width);
 });
+
+test('reads the export format and falls back to png', () => {
+  expect(parseAppearance({ exportFormat: 'svg' }).exportFormat).toBe('svg');
+  expect(parseAppearance({ exportFormat: 'gif' }).exportFormat).toBe('png');
+  expect(parseAppearance({}).exportFormat).toBe('png');
+});
