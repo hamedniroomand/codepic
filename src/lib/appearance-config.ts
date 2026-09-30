@@ -2,6 +2,7 @@ export type PaddingPx = 16 | 32 | 64 | 128;
 export type WindowStyle = 'minimal' | 'controls' | 'borderless';
 export type BackgroundMode = 'solid' | 'gradient' | 'transparent';
 export type ExportScale = 1 | 2 | 3;
+export type ExportFormat = 'png' | 'svg';
 
 export type BackgroundConfig = {
   mode: BackgroundMode;
@@ -25,11 +26,13 @@ export type AppearanceConfig = {
   showTitle: boolean;
   title: string;
   exportScale: ExportScale;
+  exportFormat: ExportFormat;
 };
 
 export const PADDING_OPTIONS: PaddingPx[] = [16, 32, 64, 128];
 export const FONT_SIZE_OPTIONS = [12, 14, 15, 16, 18, 20, 24];
 export const EXPORT_SCALE_OPTIONS: ExportScale[] = [1, 2, 3];
+export const EXPORT_FORMATS: ExportFormat[] = ['png', 'svg'];
 
 export const MIN_WIDTH = 320;
 export const MAX_WIDTH = 1600;
@@ -54,6 +57,7 @@ export const DEFAULT_APPEARANCE: AppearanceConfig = {
   showTitle: true,
   title: 'hello.ts',
   exportScale: 2,
+  exportFormat: 'png',
 };
 
 export function clampWidth(value: number): number {
@@ -169,5 +173,6 @@ export function parseAppearance(raw: unknown): AppearanceConfig {
     showTitle: parseBoolean(o.showTitle, DEFAULT_APPEARANCE.showTitle),
     title: typeof o.title === 'string' ? o.title : DEFAULT_APPEARANCE.title,
     exportScale: parseExportScale(o.exportScale),
+    exportFormat: EXPORT_FORMATS.find((format) => format === o.exportFormat) ?? 'png',
   };
 }

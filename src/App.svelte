@@ -8,7 +8,7 @@
   import type { AppearanceConfig } from '$lib/appearance-config';
   import { mergeAppearance } from '$lib/appearance-config';
   import { DEFAULT_CODE } from '$lib/default-code';
-  import { createExporter } from '$lib/exporter.svelte';
+  import { createExporter } from '$lib/export/exporter.svelte';
   import { createHighlightState } from '$lib/highlight.svelte';
   import { NO_MARKS, type LineMarks } from '$lib/marks/line-marks';
   import { loadAppearance, saveAppearance } from '$lib/persistence';
@@ -61,6 +61,7 @@
 <div class="shell">
   <SiteHeader
     busy={exporter.busy}
+    exportFormat={appearance.exportFormat}
     pending={exporter.pending}
     onShare={shareLink}
     onCopy={() => exporter.run('copy')}
