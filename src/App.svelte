@@ -12,10 +12,13 @@
   import { createHighlightState } from '$lib/highlight.svelte';
   import { NO_MARKS, type LineMarks } from '$lib/marks/line-marks';
   import { loadAppearance, saveAppearance } from '$lib/persistence';
-  import { buildShareUrl, parseShareFromLocation } from '$lib/share-url';
+  import { buildShareUrl, type SharedSnapshot } from '$lib/share/share-url';
+  import { createShareUsage } from '$lib/share/share-usage.svelte';
+
+  type Props = { shared: SharedSnapshot };
+  let { shared }: Props = $props();
 
   const STATUS_TIMEOUT_MS = 6000;
-  const shared = parseShareFromLocation();
 
   let appearance = $state<AppearanceConfig>(shared.appearance ?? loadAppearance());
   let code = $state(shared.code ?? DEFAULT_CODE);
@@ -28,6 +31,7 @@
     () => ({ code, language: appearance.language, themeId: appearance.themeId }),
     setStatus,
   );
+  const shareUsage = createShareUsage(() => ({ appearance, code, marks }));
   const exporter = createExporter(
     () => ({ node: exportNode, appearance, highlightSettled: highlight.settled }),
     setStatus,
@@ -38,7 +42,7 @@
   }
 
   async function shareLink(): Promise<void> {
-    const { url, codeOmitted } = buildShareUrl(appearance, code, marks);
+    const { url, codeOmitted } = await buildShareUrl({ appearance, code, marks });
     try {
       await navigator.clipboard.writeText(url);
       setStatus(codeOmitted ? 'Link copied. The code was too long to include.' : 'Link copied.');
@@ -62,6 +66,7 @@
   <SiteHeader
     busy={exporter.busy}
     exportFormat={appearance.exportFormat}
+    shareRatio={shareUsage.ratio}
     pending={exporter.pending}
     onShare={shareLink}
     onCopy={() => exporter.run('copy')}
