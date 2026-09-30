@@ -49,14 +49,14 @@ The share link packs your code and settings into the URL itself, compressed in t
 
 Every shortcut uses Ctrl (⌘ on macOS), so nothing fires while you're typing. The keyboard button in the footer lists them too.
 
-| Action              | Shortcut               |
-| ------------------- | ---------------------- |
-| Download image      | Ctrl/⌘ + Enter         |
-| Copy image          | Ctrl/⌘ + Shift + Enter |
-| Copy share link     | Ctrl/⌘ + Shift + L     |
-| Open image settings | Ctrl/⌘ + .             |
-| Focus the editor    | Ctrl/⌘ + Shift + E     |
-| Show shortcuts      | Ctrl/⌘ + /             |
+| Action                  | Shortcut               |
+| ----------------------- | ---------------------- |
+| Download image          | Ctrl/⌘ + Enter         |
+| Copy image              | Ctrl/⌘ + Shift + Enter |
+| Copy share link         | Ctrl/⌘ + Shift + L     |
+| Open image settings     | Ctrl/⌘ + .             |
+| Focus the editor        | Ctrl/⌘ + Shift + E     |
+| Show keyboard shortcuts | Ctrl/⌘ + /             |
 
 ## Use it from other places
 
@@ -161,23 +161,6 @@ Then `vpr check` runs formatting, linting and types, `vpr test` runs the unit te
 To try the command line tool from a checkout, run `vpr run cli:build` and then `node packages/cli/dist/cli.js --help`.
 
 ## Under the hood
-
-```
-src/
-  styles/tokens.css      design tokens: color, spacing, radius, type
-  components/ui/         Bits UI wrappers: Button, Select, Dialog, Switch, …
-  components/toolbar/    settings inspector, mobile sheet and preset manager
-  components/preview/    the code card, resize handles, export frame
-  lib/config/            appearance settings, themes, languages, backgrounds
-  lib/persistence/       saved settings in localStorage
-  lib/highlight/         Shiki, line splitting, language detection
-  lib/marks/             line highlight and diff marks
-  lib/export/            PNG and SVG capture, copy, download
-  lib/share/             share links, URL parameters, startup
-  lib/presets/           saved and built-in looks
-  lib/shortcuts/         keyboard shortcuts
-packages/cli/            the command line tool
-```
 
 One `AppearanceConfig` object drives the whole snapshot. Code is kept apart from it, so saving and sharing can treat the two differently.
 

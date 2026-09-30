@@ -19,12 +19,11 @@ export const SHORTCUTS: readonly Shortcut[] = [
   { action: 'download', label: 'Download image', key: 'Enter' },
   { action: 'copyImage', label: 'Copy image', key: 'Enter', shift: true },
   { action: 'shareLink', label: 'Copy share link', key: 'l', shift: true },
-  { action: 'toggleSettings', label: 'Toggle more settings', key: '.' },
+  { action: 'toggleSettings', label: 'Open image settings', key: '.' },
   { action: 'focusEditor', label: 'Focus the editor', key: 'e', shift: true },
   { action: 'showHelp', label: 'Show keyboard shortcuts', key: '/' },
 ];
 
-export const SETTINGS_PANEL_ID = 'settings-panel';
 export const HELP_PANEL_ID = 'shortcuts-panel';
 
 type KeyEvent = Pick<KeyboardEvent, 'key' | 'ctrlKey' | 'metaKey' | 'altKey' | 'shiftKey'>;
