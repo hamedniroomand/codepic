@@ -40,7 +40,8 @@ or `lib/share`, and a component or module should do one job.
 
 - One purpose per pull request.
 - Commit messages are one line in the [Conventional Commits](https://www.conventionalcommits.org)
-  style, such as `fix(share): keep marks in old links`.
+  style, such as `fix(share): keep marks in old links`. A git hook checks this when you commit, and
+  the pull request title has to follow it too.
 - Link the issue with `Closes #123` in the pull request description.
 
 By contributing you agree that your work is released under the [MIT license](LICENSE), and you agree
