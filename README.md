@@ -14,7 +14,7 @@ The dock holds the settings you reach for most: background, theme, padding, lang
 
 **Line marks.** Click a line number to cycle it through highlighted, added (`+`) and removed (`−`). The `⋯` panel takes the same as text, such as `2,5-7`. When any line is highlighted, the rest are dimmed. Marks travel with the share link and appear in the exported image.
 
-**Share link** copies a URL containing your code and settings, so anyone who opens it lands on the same snapshot. Snippets over 1200 characters are dropped from the link and the app tells you.
+**Share link** copies a URL containing your code and settings, so anyone who opens it lands on the same snapshot. The code is compressed in the browser first, so far larger snippets fit. A small meter next to the button appears as the link nears its limit. A snippet that is still too large is left out of the link and the app tells you. Links from before compression keep working.
 
 ## What you can change
 
