@@ -18,6 +18,19 @@ The dock holds the settings you reach for most: background, theme, padding, lang
 
 The grid button next to it holds **presets**. Apply a built-in look, or save the current one under a name, rename it in place, and delete it. A preset covers the look only: theme, background, padding, size and window options. It never holds your code, language or filename. Saved presets live in `localStorage`, and **Export saved** and **Import** move them between browsers as a small JSON file. A file that is not a presets file is rejected with a message.
 
+**Install and offline.** After one visit CodePic loads and exports with no connection, and your browser can offer to install it. New versions replace the cached copy on the next visit.
+
+**Keyboard shortcuts.** Every shortcut uses Ctrl (⌘ on macOS), so nothing fires while you type. The keyboard button in the footer lists them too.
+
+| Action               | Shortcut               |
+| -------------------- | ---------------------- |
+| Download image       | Ctrl/⌘ + Enter         |
+| Copy image           | Ctrl/⌘ + Shift + Enter |
+| Copy share link      | Ctrl/⌘ + Shift + L     |
+| Toggle more settings | Ctrl/⌘ + .             |
+| Focus the editor     | Ctrl/⌘ + Shift + E     |
+| Show shortcuts       | Ctrl/⌘ + /             |
+
 **Share link** copies a URL containing your code and settings, so anyone who opens it lands on the same snapshot. The code is compressed in the browser first, so far larger snippets fit. A small meter next to the button appears as the link nears its limit. A snippet that is still too large is left out of the link and the app tells you. Links from before compression keep working.
 
 ## What you can change

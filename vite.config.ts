@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url';
 
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { VitePWA } from 'vite-plugin-pwa';
 import { defineConfig, lazyPlugins } from 'vite-plus';
 
 const resolvePath = (path: string): string => fileURLToPath(new URL(path, import.meta.url));
@@ -8,7 +9,29 @@ const resolvePath = (path: string): string => fileURLToPath(new URL(path, import
 export default defineConfig({
   // Relative, so the build works from any path (served from the codepic.kitdev.space root).
   base: './',
-  plugins: lazyPlugins(() => [svelte()]),
+  plugins: lazyPlugins(() => [
+    svelte(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      manifest: {
+        name: 'CodePic',
+        short_name: 'CodePic',
+        description: 'Turn code into shareable images in the browser.',
+        theme_color: '#0d0d0d',
+        background_color: '#0d0d0d',
+        display: 'standalone',
+        start_url: './',
+        scope: './',
+        icons: [
+          { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2,wasm}'],
+      },
+    }),
+  ]),
   resolve: {
     alias: {
       $lib: resolvePath('./src/lib'),
