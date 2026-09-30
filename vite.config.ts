@@ -94,6 +94,7 @@ export default defineConfig({
       ],
       'import/no-relative-parent-imports': 'error',
       'import/first': 'error',
+      'import/newline-after-import': 'error',
       'import/no-duplicates': 'error',
       'import/no-mutable-exports': 'error',
       'unicorn/prefer-node-protocol': 'error',

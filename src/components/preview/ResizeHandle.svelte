@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Button } from 'bits-ui';
+
   type Props = {
     side: 'left' | 'right';
     width: number;

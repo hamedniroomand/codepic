@@ -1,5 +1,6 @@
 <script lang="ts">
   import { RadioGroup } from 'bits-ui';
+
   type Props = {
     value: string;
     options: readonly { value: string; label: string }[];

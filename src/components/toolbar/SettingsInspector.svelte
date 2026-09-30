@@ -14,6 +14,7 @@
   import ExportFields from './ExportFields.svelte';
   import LayoutFields from './LayoutFields.svelte';
   import PresetsPopover from './PresetsPopover.svelte';
+
   type Props = {
     appearance: AppearanceConfig;
     marks: LineMarks;

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Label, Switch } from 'bits-ui';
+
   type Props = { label: string; checked: boolean; onchange: (checked: boolean) => void };
   let { label, checked, onchange }: Props = $props();
   const id = $props.id();
