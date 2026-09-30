@@ -1,6 +1,15 @@
 <script lang="ts">
   import type { AppearanceConfig } from '$lib/appearance-config';
   import { DEFAULT_APPEARANCE } from '$lib/appearance-config';
+  import {
+    NO_MARKS,
+    cycleMark,
+    hasDiffMarks,
+    isDimmed,
+    markAt,
+    type LineMarks,
+    type MarkKind,
+  } from '$lib/marks/line-marks';
   import { themeById } from '$lib/themes';
 
   import CodeEditorOverlay from './CodeEditorOverlay.svelte';
@@ -8,22 +17,30 @@
   type Props = {
     appearance: AppearanceConfig;
     lines: string[];
+    marks?: LineMarks;
     interactive?: boolean;
     code?: string;
     onTitleChange?: (title: string) => void;
+    onMarksChange?: (marks: LineMarks) => void;
   };
 
   let {
     appearance,
     lines,
+    marks = NO_MARKS,
     interactive = false,
     code = $bindable(''),
     onTitleChange = () => {},
+    onMarksChange,
   }: Props = $props();
+
+  const DIFF_SIGNS: Record<MarkKind, string> = { emphasized: '', added: '+', removed: '−' };
 
   let scroll = $state({ left: 0, top: 0 });
   let theme = $derived(themeById(appearance.themeId));
   let showTitleBar = $derived(appearance.showTitle || appearance.windowStyle === 'controls');
+  let showDiff = $derived(hasDiffMarks(marks));
+  let gutterWidth = $derived((appearance.lineNumbers ? 4 : 0) + (showDiff ? 2 : 0));
 
   // The untouched default reads as a placeholder, so clear it on focus and put
   // it back if the user leaves without typing. A name they chose is never touched.
@@ -50,7 +67,7 @@
     --win-muted: {theme.window.muted};
     --fs: {appearance.fontSize}px;
     --lh: {appearance.lineHeight};
-    --gutter: {appearance.lineNumbers ? '4ch' : '0px'}"
+    --gutter: {gutterWidth}ch"
 >
   {#if showTitleBar}
     <div class="title-bar">
@@ -89,8 +106,31 @@
       aria-hidden={interactive ? true : undefined}
     >
       {#each lines as line, index (index)}
-        <div class="row">
-          {#if appearance.lineNumbers}<span class="line-number">{index + 1}</span>{/if}
+        {@const number = index + 1}
+        {@const mark = markAt(number, marks)}
+        <div
+          class="row"
+          class:dimmed={isDimmed(number, marks)}
+          data-mark={mark}
+        >
+          {#if gutterWidth}
+            <span class="gutter">
+              {#if showDiff}<span class="sign">{mark ? DIFF_SIGNS[mark] : ''}</span>{/if}
+              {#if appearance.lineNumbers}
+                {#if interactive && onMarksChange}
+                  <button
+                    type="button"
+                    class="number"
+                    tabindex="-1"
+                    title="Click to highlight, then mark as added or removed"
+                    onclick={() => onMarksChange(cycleMark(marks, number))}>{number}</button
+                  >
+                {:else}
+                  <span class="number">{number}</span>
+                {/if}
+              {/if}
+            </span>
+          {/if}
           <span class="clip">
             <span
               class="code"
@@ -115,6 +155,8 @@
 
 <style>
   .window {
+    --diff-added: #3fb950;
+    --diff-removed: #f85149;
     overflow: hidden;
     border: 1px solid var(--win-border);
     border-radius: 18px;
@@ -190,13 +232,53 @@
     align-items: start;
     min-height: 1lh;
   }
-  .line-number {
+  .gutter {
+    display: flex;
     flex: 0 0 var(--gutter);
-    box-sizing: border-box;
-    padding-right: 1.5ch;
     color: var(--win-muted);
-    text-align: right;
     user-select: none;
+  }
+  .sign {
+    flex: 0 0 2ch;
+    text-align: center;
+  }
+  .number {
+    flex: 1;
+    box-sizing: border-box;
+    padding: 0 1.5ch 0 0;
+    text-align: right;
+  }
+  button.number {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+  button.number:hover {
+    color: var(--win-title);
+  }
+  .row[data-mark] {
+    margin: 0 -8px;
+    padding: 0 8px;
+    background: var(--mark-tint);
+  }
+  .row[data-mark='emphasized'] {
+    --mark-tint: color-mix(in srgb, var(--win-title) 14%, transparent);
+  }
+  .row[data-mark='added'] {
+    --mark-tint: color-mix(in srgb, var(--diff-added) 20%, transparent);
+    --mark-sign: var(--diff-added);
+  }
+  .row[data-mark='removed'] {
+    --mark-tint: color-mix(in srgb, var(--diff-removed) 20%, transparent);
+    --mark-sign: var(--diff-removed);
+  }
+  .row .sign {
+    color: var(--mark-sign, inherit);
+  }
+  .row.dimmed {
+    opacity: 0.4;
   }
   .clip {
     flex: 1;

@@ -12,12 +12,17 @@
     MIN_WIDTH,
     clampWidth,
   } from '$lib/appearance-config';
+  import type { LineMarks } from '$lib/marks/line-marks';
+
+  import LineMarksFields from './LineMarksFields.svelte';
 
   type Props = {
     appearance: AppearanceConfig;
+    marks: LineMarks;
     onChange: (patch: Partial<AppearanceConfig>) => void;
+    onMarksChange: (marks: LineMarks) => void;
   };
-  let { appearance, onChange }: Props = $props();
+  let { appearance, marks, onChange, onMarksChange }: Props = $props();
 
   const WINDOW_OPTIONS: { value: WindowStyle; label: string }[] = [
     { value: 'controls', label: 'With controls' },
@@ -118,6 +123,10 @@
       label="Wrap code"
       checked={appearance.wrap}
       onchange={(wrap) => onChange({ wrap })}
+    />
+    <LineMarksFields
+      {marks}
+      onChange={onMarksChange}
     />
   </div>
 </Popover>

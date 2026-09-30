@@ -6,6 +6,7 @@
   import type { AppearanceConfig, PaddingPx } from '$lib/appearance-config';
   import { PADDING_OPTIONS } from '$lib/appearance-config';
   import { LANGUAGES } from '$lib/languages';
+  import type { LineMarks } from '$lib/marks/line-marks';
   import { THEMES, isDarkTheme, toggleDarkTheme } from '$lib/themes';
 
   import AdvancedPopover from './AdvancedPopover.svelte';
@@ -13,9 +14,11 @@
 
   type Props = {
     appearance: AppearanceConfig;
+    marks: LineMarks;
     onChange: (patch: Partial<AppearanceConfig>) => void;
+    onMarksChange: (marks: LineMarks) => void;
   };
-  let { appearance, onChange }: Props = $props();
+  let { appearance, marks, onChange, onMarksChange }: Props = $props();
 
   const themeOptions = THEMES.map((theme) => ({ value: theme.id, label: theme.label }));
   const languageOptions = LANGUAGES.map((language) => ({
@@ -85,7 +88,9 @@
 
   <AdvancedPopover
     {appearance}
+    {marks}
     {onChange}
+    {onMarksChange}
   />
 </section>
 
