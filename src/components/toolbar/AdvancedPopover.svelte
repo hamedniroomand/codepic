@@ -4,8 +4,14 @@
   import Popover from '$components/ui/Popover.svelte';
   import Select from '$components/ui/Select.svelte';
   import Toggle from '$components/ui/Toggle.svelte';
-  import type { AppearanceConfig, ExportScale, WindowStyle } from '$lib/appearance-config';
+  import type {
+    AppearanceConfig,
+    ExportFormat,
+    ExportScale,
+    WindowStyle,
+  } from '$lib/appearance-config';
   import {
+    EXPORT_FORMATS,
     EXPORT_SCALE_OPTIONS,
     FONT_SIZE_OPTIONS,
     MAX_WIDTH,
@@ -32,6 +38,10 @@
   const fontSizeOptions = FONT_SIZE_OPTIONS.map((size) => ({
     value: String(size),
     label: `${size} px`,
+  }));
+  const formatOptions = EXPORT_FORMATS.map((format) => ({
+    value: format,
+    label: format.toUpperCase(),
   }));
   const scaleOptions = EXPORT_SCALE_OPTIONS.map((scale) => ({
     value: String(scale),
@@ -83,6 +93,17 @@
           options={fontSizeOptions}
           labelledby={labelId}
           onchange={(value) => onChange({ fontSize: Number(value) })}
+        />
+      {/snippet}
+    </Field>
+
+    <Field label="Download as">
+      {#snippet children(labelId)}
+        <Select
+          value={appearance.exportFormat}
+          options={formatOptions}
+          labelledby={labelId}
+          onchange={(value) => onChange({ exportFormat: value as ExportFormat })}
         />
       {/snippet}
     </Field>
