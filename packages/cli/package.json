@@ -1,6 +1,6 @@
 {
   "name": "codepic",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Turn code into PNG or SVG images from the command line.",
   "keywords": [
     "cli",

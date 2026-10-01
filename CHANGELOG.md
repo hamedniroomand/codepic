@@ -5,6 +5,12 @@ no versions of its own.
 
 ## Unreleased
 
+## 0.1.1
+
+### Added
+
+- The npm package now includes a README with install steps, usage and the option reference.
+
 ## 0.1.0
 
 The first release of the command line tool, published to npm by hand.
