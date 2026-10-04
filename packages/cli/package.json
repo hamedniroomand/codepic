@@ -38,8 +38,8 @@
   },
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2",
-    "@shikijs/langs": "^4.4.3",
-    "@shikijs/themes": "^4.4.3",
+    "@shikijs/langs": "^4.5.0",
+    "@shikijs/themes": "^4.5.0",
     "shiki": "^4.4.3"
   },
   "devDependencies": {
