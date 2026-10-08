@@ -4,12 +4,12 @@ packages:
 overrides:
   vite@*: 'catalog:'
 catalog:
-  vite: npm:@voidzero-dev/vite-plus-core@1.0.0
-  vite-plus: 1.0.0
+  vite: npm:@voidzero-dev/vite-plus-core@1.1.0
+  vite-plus: 1.1.0
 peerDependencyRules:
   allowAny:
     - vite
   allowedVersions:
     vite: '*'
 minimumReleaseAgeExclude:
-  - '@lucide/svelte@1.49.0'
+  - '@lucide/svelte@1.49.0 || 1.53.0'
