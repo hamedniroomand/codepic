@@ -22,7 +22,8 @@ export type SharedSnapshot = {
   marks: LineMarks | null;
 };
 
-type SharePayload = { a: AppearanceConfig; c?: string; m?: LineMarks };
+// A payload without `a` carries only code, so the reader keeps its own appearance.
+type SharePayload = { a?: AppearanceConfig; c?: string; m?: LineMarks };
 
 const EMPTY_SHARE: SharedSnapshot = { appearance: null, code: null, marks: null };
 
@@ -60,6 +61,11 @@ export async function buildShareUrl(
 
   const withoutCode = await encode(toPayload({ ...snapshot, code: '' }));
   return { url: `${base}${withoutCode}`, codeOmitted: true };
+}
+
+/** A link hash that carries only the code. The app keeps the appearance it has. */
+export async function buildCodeHash(code: string): Promise<string> {
+  return encode({ c: code });
 }
 
 export async function parseShareHash(hash: string): Promise<SharedSnapshot> {

@@ -121,6 +121,10 @@ You can also frame the whole app in a page if you want to:
 
 The frame shows the whole app, not a small viewer. CodePic sends nothing to the host page, and the site's analytics script loads inside the frame as well. A host with a strict content security policy has to allow `codepic.kitdev.space` as a frame source. This hasn't been tried on specific hosts.
 
+### From VS Code
+
+The extension in `packages/vscode` adds **Open in CodePic** to the editor's right-click menu. It opens the selected code (or the whole file) in CodePic, with the language and the file name filled in. The code is in the link hash, so the browser does not send it to a server. The language and the file name are in the link query. The extension is not on the Marketplace yet. To try it from a checkout, run `vpr vscode:build`. Then open the `packages/vscode` folder in VS Code and press F5 (Run Extension).
+
 ### From the command line
 
 ```sh
