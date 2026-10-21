@@ -5,6 +5,10 @@ no versions of its own.
 
 ## Unreleased
 
+### Added
+
+- `--bg` accepts a 6-digit hex color without `#`, such as `--bg ff8800`, or two colors for a gradient, such as `--bg ff8800,3355ff`.
+
 ## 0.1.1
 
 ### Added

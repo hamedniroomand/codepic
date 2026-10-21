@@ -48,6 +48,13 @@ export const BACKGROUND_PRESETS: BackgroundPreset[] = [
   },
 ];
 
+/** True when the background uses its own colors and not a preset. */
+export function customBackground(bg: BackgroundConfig): boolean {
+  if (bg.mode === 'solid') return Boolean(bg.solidColor);
+  if (bg.mode === 'gradient') return Boolean(bg.gradientFrom && bg.gradientTo);
+  return false;
+}
+
 export function backgroundStyle(bg: BackgroundConfig): Record<string, string> {
   if (bg.mode === 'transparent') {
     return { backgroundColor: 'transparent', backgroundImage: 'none' };
