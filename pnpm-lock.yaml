@@ -262,6 +262,18 @@ importers:
         specifier: ^24.19.0
         version: 24.19.0
 
+  packages/remark:
+    devDependencies:
+      '@types/mdast':
+        specifier: 4.0.4
+        version: 4.0.4
+      '@types/node':
+        specifier: ^24.19.0
+        version: 24.19.0
+      codepic:
+        specifier: workspace:*
+        version: link:../cli
+
   packages/vscode:
     devDependencies:
       '@types/vscode':
