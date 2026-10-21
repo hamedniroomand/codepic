@@ -1,5 +1,6 @@
 import type { AppearanceConfig } from '$lib/config/appearance-config';
 import { signatureColor } from '$lib/config/backgrounds';
+import { codeFontById } from '$lib/config/fonts';
 import { themeById } from '$lib/config/themes';
 import { escapePlain } from '$lib/highlight/highlighter';
 import {
@@ -15,17 +16,12 @@ import { tokenize } from './tokenize';
 import { wrapTokens, type Token } from './wrap';
 
 // Measurements mirror CodeWindow so the image matches what the app exports.
-const CHAR_WIDTH = 0.6; // JetBrains Mono advance, in em
-const ASCENT = 1.02;
-const CONTENT_HEIGHT = 1.32; // ascent + descent, in em
 const RADIUS = 18;
 const TITLE_BAR = 54;
 const MARGIN = { top: 8, side: 24, bottom: 24 };
 const TINT_BLEED = 8;
 const MARK_COLORS = { added: '#3fb950', removed: '#f85149' };
 const SIGNS = { added: '+', removed: '−' };
-
-const FONT = 'font-family="JetBrains Mono, monospace"';
 
 // ponytail: width is counted in characters, so wide glyphs (CJK, emoji) can overrun a row.
 // Upgrade path: measure with a font shaper such as opentype.js.
@@ -35,8 +31,9 @@ export async function renderSvg(
   marks: LineMarks,
 ): Promise<string> {
   const theme = themeById(appearance.themeId);
+  const font = codeFontById(appearance.codeFont);
   const size = appearance.fontSize;
-  const cell = size * CHAR_WIDTH;
+  const cell = size * font.metrics.advance;
   const lineHeight = size * appearance.lineHeight;
   const pad = appearance.paddingPx;
   const winW = appearance.width - pad * 2;
@@ -63,7 +60,9 @@ export async function renderSvg(
 
   const left = pad + MARGIN.side;
   const codeX = left + signW + numberW;
-  const baselineOffset = (lineHeight - CONTENT_HEIGHT * size) / 2 + ASCENT * size;
+  const baselineOffset =
+    (lineHeight - (font.metrics.ascent + font.metrics.descent) * size) / 2 +
+    font.metrics.ascent * size;
   let top = pad + titleBar + MARGIN.top;
 
   const body = rows.map((wrapped, index) => {
@@ -88,7 +87,13 @@ export async function renderSvg(
         ? `<text x="${left + signW + numberW - 1.5 * cell}" y="${baseline}" text-anchor="end" fill="${theme.window.muted}">${line}</text>`
         : '',
       ...wrapped.map((row, rowIndex) =>
-        rowText(row, codeX, baseline + rowIndex * lineHeight, theme.window.title),
+        rowText(
+          row,
+          codeX,
+          baseline + rowIndex * lineHeight,
+          theme.window.title,
+          appearance.ligatures ? null : cell,
+        ),
       ),
     ].join('');
 
@@ -97,7 +102,7 @@ export async function renderSvg(
   });
 
   const window = `x="${pad}" y="${pad}" width="${winW}" height="${winH}" rx="${RADIUS}"`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${appearance.width}" height="${frameH}" viewBox="0 0 ${appearance.width} ${frameH}" font-size="${size}" ${FONT}>
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${appearance.width}" height="${frameH}" viewBox="0 0 ${appearance.width} ${frameH}" font-size="${size}" font-family="${font.family}, monospace"${appearance.ligatures ? '' : ' style="font-variant-ligatures: none"'}>
 <defs>${paint.defs}<filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dy="24" stdDeviation="28" flood-opacity="0.3"/></filter><clipPath id="code"><rect x="${codeX}" y="${pad}" width="${codeW}" height="${winH}"/></clipPath></defs>
 ${appearance.background.mode === 'transparent' ? '' : `<rect width="100%" height="100%" fill="${paint.fill}"/>`}
 ${borderless ? '' : `<rect ${window} fill="${theme.window.bg}" filter="url(#shadow)"/>`}
@@ -135,11 +140,27 @@ function sign(mark: 'added' | 'removed', x: number, y: number): string {
   return `<text x="${x}" y="${y}" text-anchor="middle" fill="${MARK_COLORS[mark]}">${SIGNS[mark]}</text>`;
 }
 
-function rowText(row: Token[], x: number, y: number, fallback: string): string {
+/**
+ * With ligatures off, each character gets its own x. The PNG renderer ignores
+ * font-variant-ligatures, but it never joins glyphs across separate positions.
+ */
+function rowText(
+  row: Token[],
+  x: number,
+  y: number,
+  fallback: string,
+  cell: number | null,
+): string {
+  let column = 0;
   const spans = row
-    .map(
-      (token) => `<tspan fill="${token.color ?? fallback}">${escapePlain(token.content)}</tspan>`,
-    )
+    .map((token) => {
+      const fill = `fill="${token.color ?? fallback}"`;
+      if (cell === null) return `<tspan ${fill}>${escapePlain(token.content)}</tspan>`;
+      return Array.from(token.content, (char) => {
+        const at = x + column++ * cell;
+        return `<tspan x="${at}" ${fill}>${escapePlain(char)}</tspan>`;
+      }).join('');
+    })
     .join('');
   return `<text x="${x}" y="${y}" xml:space="preserve" clip-path="url(#code)">${spans}</text>`;
 }

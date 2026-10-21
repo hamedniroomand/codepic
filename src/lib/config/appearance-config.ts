@@ -1,3 +1,5 @@
+import { CODE_FONTS } from '$lib/config/fonts';
+
 export type PaddingPx = 16 | 32 | 64 | 128;
 export type WindowStyle = 'minimal' | 'controls' | 'borderless';
 export type BackgroundMode = 'solid' | 'gradient' | 'transparent';
@@ -28,6 +30,9 @@ export type AppearanceConfig = {
   title: string;
   exportScale: ExportScale;
   exportFormat: ExportFormat;
+  /** An id from CODE_FONTS. */
+  codeFont: string;
+  ligatures: boolean;
   /** Short text in a corner of the image. Empty means no signature. */
   signature: string;
   signaturePosition: SignaturePosition;
@@ -87,6 +92,8 @@ export const DEFAULT_APPEARANCE: AppearanceConfig = {
   title: 'hello.ts',
   exportScale: 2,
   exportFormat: 'png',
+  codeFont: 'jetbrains-mono',
+  ligatures: true,
   signature: '',
   signaturePosition: 'bottom-right',
 };
@@ -212,6 +219,10 @@ export function parseAppearance(raw: unknown): AppearanceConfig {
     title: typeof o.title === 'string' ? o.title : DEFAULT_APPEARANCE.title,
     exportScale: parseExportScale(o.exportScale),
     exportFormat: EXPORT_FORMATS.find((format) => format === o.exportFormat) ?? 'png',
+    codeFont: CODE_FONTS.some((font) => font.id === o.codeFont)
+      ? (o.codeFont as string)
+      : DEFAULT_APPEARANCE.codeFont,
+    ligatures: parseBoolean(o.ligatures, DEFAULT_APPEARANCE.ligatures),
     signature: typeof o.signature === 'string' ? cleanSignature(o.signature) : '',
     signaturePosition:
       SIGNATURE_POSITIONS.find((position) => position === o.signaturePosition) ??

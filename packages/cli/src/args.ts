@@ -39,6 +39,9 @@ Appearance options take the same values as the URL parameters in the README:
   --padding <px>        16, 32, 64 or 128
   --width <px>          320 to 1600
   --font <px>           12, 14, 15, 16, 18, 20 or 24
+  --codeFont <id>       jetbrains-mono (default), fira-code, source-code-pro
+                        or ibm-plex-mono
+  --ligatures <bool>    Join symbols such as => into one glyph (default true)
   --lh <number>         Line height, 1.2 to 2
   --window <style>      controls, minimal or borderless
   --lines <bool>        Line numbers, true or false

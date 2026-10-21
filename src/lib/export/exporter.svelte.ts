@@ -1,6 +1,7 @@
 import { tick } from 'svelte';
 
 import type { AppearanceConfig, ExportFormat } from '$lib/config/appearance-config';
+import { loadCodeFont } from '$lib/fonts/load-code-font';
 
 import { captureImage } from './capture';
 import { copyImage } from './clipboard';
@@ -41,6 +42,7 @@ export function createExporter(source: Source, onStatus: (message: string) => vo
       // The export node must be painted and fully styled before it is captured.
       await tick();
       await highlightSettled;
+      await loadCodeFont(appearance.codeFont, node.textContent ?? undefined);
       await document.fonts.ready;
       await tick();
       return captureImage(node, {

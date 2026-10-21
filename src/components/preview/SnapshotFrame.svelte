@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { AppearanceConfig } from '$lib/config/appearance-config';
   import { backgroundStyle, signatureColor } from '$lib/config/backgrounds';
+  import { codeFontStack } from '$lib/config/fonts';
   import type { LineMarks } from '$lib/marks/line-marks';
 
   import CodeWindow from './CodeWindow.svelte';
@@ -68,7 +69,9 @@
       style="{vertical}: {appearance.paddingPx /
         2}px; {horizontal}: {appearance.paddingPx}px; translate: 0 {vertical === 'top'
         ? '-50%'
-        : '50%'}; color: {signatureColor(appearance.background)}">{appearance.signature}</span
+        : '50%'}; color: {signatureColor(appearance.background)}; font-family: {codeFontStack(
+        appearance.codeFont,
+      )}">{appearance.signature}</span
     >
   {/if}
 </div>
@@ -82,7 +85,6 @@
   /* Centred on the middle of the padding, in line with the window edge. */
   .signature {
     position: absolute;
-    font-family: var(--font-mono);
     font-size: 12px;
     line-height: 1;
     white-space: pre;

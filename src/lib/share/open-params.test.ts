@@ -122,3 +122,10 @@ test('reports a bad signature and corner', () => {
   expect(appearance).toEqual({});
   expect(errors).toHaveLength(2);
 });
+
+test('reads the code font and ligatures', () => {
+  const { appearance, errors } = parseOpenParams('?codeFont=fira-code&ligatures=0');
+  expect(errors).toEqual([]);
+  expect(appearance).toMatchObject({ codeFont: 'fira-code', ligatures: false });
+  expect(parseOpenParams('?codeFont=comic-sans').errors[0]).toContain('Unknown codeFont');
+});

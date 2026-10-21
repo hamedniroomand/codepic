@@ -72,3 +72,17 @@ test('draws the signature only when it is set', async () => {
   const height = Number(/height="([\d.]+)"/.exec(bottom)?.[1]);
   expect(bottom).toContain(`x="616" y="${height - 32}" text-anchor="end"`);
 });
+
+test('uses the chosen code font and can turn ligatures off', async () => {
+  const fira = await renderSvg('a => b', { ...appearance, codeFont: 'fira-code' }, NO_MARKS);
+  const plain = await renderSvg(
+    'a => b',
+    { ...appearance, codeFont: 'fira-code', ligatures: false },
+    NO_MARKS,
+  );
+
+  expect(fira).toContain('font-family="Fira Code, monospace"');
+  expect(fira).not.toContain('font-variant-ligatures');
+  expect(plain).toContain('font-variant-ligatures: none');
+  expect(plain.match(/<tspan x="/g)?.length).toBe('a => b'.length);
+});

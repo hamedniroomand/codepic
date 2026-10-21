@@ -5,6 +5,7 @@
   import Toggle from '$components/ui/Toggle.svelte';
   import type { AppearanceConfig, WindowStyle } from '$lib/config/appearance-config';
   import { FONT_SIZE_OPTIONS } from '$lib/config/appearance-config';
+  import { CODE_FONTS } from '$lib/config/fonts';
   import { LANGUAGES } from '$lib/config/languages';
 
   let {
@@ -18,6 +19,7 @@
   } = $props();
   const languages = LANGUAGES.map((language) => ({ value: language.id, label: language.label }));
   const fonts = FONT_SIZE_OPTIONS.map((size) => ({ value: String(size), label: `${size} px` }));
+  const codeFonts = CODE_FONTS.map((font) => ({ value: font.id, label: font.label }));
   const windows = [
     { value: 'controls', label: 'With controls' },
     { value: 'minimal', label: 'Minimal' },
@@ -31,6 +33,14 @@
       options={languages}
       labelledby={labelId}
       onchange={(language) => onChange({ language })}
+    />{/snippet}</Field
+>
+<Field label="Code font"
+  >{#snippet children(labelId)}<Select
+      value={appearance.codeFont}
+      options={codeFonts}
+      labelledby={labelId}
+      onchange={(codeFont) => onChange({ codeFont })}
     />{/snippet}</Field
 >
 <div class="pair">
@@ -51,6 +61,11 @@
       />{/snippet}</Field
   >
 </div>
+<Toggle
+  label="Ligatures"
+  checked={appearance.ligatures}
+  onchange={(ligatures) => onChange({ ligatures })}
+/>
 <Toggle
   label="Line numbers"
   checked={appearance.lineNumbers}
