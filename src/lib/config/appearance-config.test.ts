@@ -1,6 +1,12 @@
 import { expect, test } from 'vite-plus/test';
 
-import { DEFAULT_APPEARANCE, cleanSignature, parseAppearance } from '$lib/config/appearance-config';
+import {
+  DEFAULT_APPEARANCE,
+  aspectHeight,
+  cleanSignature,
+  fitScale,
+  parseAppearance,
+} from '$lib/config/appearance-config';
 
 test('falls back on corrupt input', () => {
   const config = parseAppearance({ themeId: 42, windowStyle: 'floating' });
@@ -82,4 +88,22 @@ test('reads a config saved before code fonts existed', () => {
   expect(config.codeFont).toBe('jetbrains-mono');
   expect(config.ligatures).toBe(true);
   expect(parseAppearance({ codeFont: 'comic-sans' }).codeFont).toBe('jetbrains-mono');
+});
+
+test('gives each shape its exact height', () => {
+  expect(aspectHeight('free', 800)).toBeNull();
+  expect(aspectHeight('16:9', 1600)).toBe(900);
+  expect(aspectHeight('1:1', 680)).toBe(680);
+  expect(aspectHeight('4:5', 800)).toBe(1000);
+});
+
+test('shrinks a card only when it does not fit', () => {
+  expect(fitScale(900, 64, 300)).toBe(1);
+  expect(fitScale(900, 64, 1544)).toBe(0.5);
+  expect(fitScale(180, 128, 180)).toBe(0.5);
+});
+
+test('reads a config saved before shapes existed', () => {
+  expect(parseAppearance({}).aspect).toBe('free');
+  expect(parseAppearance({ aspect: '2:1' }).aspect).toBe('free');
 });

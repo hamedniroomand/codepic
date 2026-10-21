@@ -34,7 +34,7 @@ It's free, it has no accounts, and it has no server. The highlighting, the layou
 ## A quick tour
 
 1. **Paste your code.** CodePic guesses the language, and tells you it did, so you can change it in one click. If it isn't sure, it falls back to plain text instead of a wrong guess.
-2. **Make it yours.** The settings sidebar groups appearance, code, layout and export controls. Pick a background (or your own colors) and theme, search for a language, adjust padding and width, or change the window and line numbers. On smaller screens, **Customize image** opens the same controls in a settings sheet.
+2. **Make it yours.** The settings sidebar groups appearance, code, layout and export controls. Pick a background (or your own colors) and theme, search for a language, adjust padding, width and image shape, or change the window and line numbers. On smaller screens, **Customize image** opens the same controls in a settings sheet.
 3. **Get the image.** Download a PNG or an SVG, copy the image to your clipboard, or copy a link that opens the exact same snapshot. Drag the handles on the sides of the card to set the width.
 
 ### Keep a look you like
@@ -83,6 +83,7 @@ If you write docs or a blog, a plain link is the easiest way to let readers twea
 | `theme`        | `github-light`, `github-dark`, `dracula`, `nord`, `one-dark-pro`, `catppuccin-latte`, `catppuccin-mocha`, `tokyo-night`, `monokai`, `night-owl`, `rose-pine`, `solarized-light`, `solarized-dark`, `vitesse-light`, `vitesse-dark`                             |
 | `bg`           | A background preset (`ocean`, `slate`, `sunset`, `forest`, `paper`, `charcoal`, `violet`, `rose`), `transparent`, a 6-digit hex color without `#` (`ff8800`), or two hex colors for a gradient (`ff8800,3355ff`)                                               |
 | `padding`      | `16`, `32`, `64` or `128`                                                                                                                                                                                                                                      |
+| `aspect`       | Image shape: `free` (default, the height follows the code), `16:9`, `1:1` or `4:5`. A fixed shape puts the card in the centre. The card gets smaller when the code is too tall                                                                                 |
 | `width`        | `320` to `1600`                                                                                                                                                                                                                                                |
 | `font`         | `12`, `14`, `15`, `16`, `18`, `20` or `24`                                                                                                                                                                                                                     |
 | `codeFont`     | `jetbrains-mono` (default), `fira-code`, `source-code-pro` or `ibm-plex-mono`                                                                                                                                                                                  |
@@ -138,7 +139,7 @@ It uses the same highlighter, themes and layout numbers as the app, so the image
 | Themes      | GitHub Light, GitHub Dark, Dracula, Nord, One Dark Pro, Catppuccin Latte, Catppuccin Mocha, Tokyo Night, Monokai, Night Owl, Rosé Pine, Solarized Light, Solarized Dark, Vitesse Light, Vitesse Dark |
 | Backgrounds | Six gradients, two solids, transparent, or your own solid color or two-color gradient                                                                                                                |
 | Languages   | JavaScript, TypeScript, HTML, CSS, JSON, Shell, Python, Go, PHP, SQL, Java, C#, Rust, Markdown, JSX, TSX, C, C++, Kotlin, Swift, Ruby, YAML, TOML, Dockerfile, Svelte, Vue, plain text               |
-| Size        | Width 320–1600px, padding 16/32/64/128, export at 1×, 2× or 3×                                                                                                                                       |
+| Size        | Free height, or a fixed shape (16:9, 1:1, 4:5) for posts and slides. Width 320–1600px, padding 16/32/64/128, export at 1×, 2× or 3×                                                                  |
 | Export      | PNG, or SVG with the text kept as text and the code font embedded                                                                                                                                    |
 | Window      | Traffic-light controls, minimal, or borderless, each with an optional filename                                                                                                                       |
 | Fonts       | JetBrains Mono, Fira Code, Source Code Pro or IBM Plex Mono, with ligatures on or off                                                                                                                |
@@ -170,7 +171,7 @@ To try the command line tool from a checkout, run `vpr run cli:build` and then `
 
 One `AppearanceConfig` object drives the whole snapshot. Code is kept apart from it, so saving and sharing can treat the two differently.
 
-The preview and the exported image render from the same `CodeWindow` component, so what you see is what you get. The export copy sits off-screen at the exact configured width, which means the image matches your settings and not whatever size the preview happens to be scaled to.
+The preview and the exported image render from the same `CodeWindow` component, so what you see is what you get. The export copy sits off-screen at the exact configured width (and height, for a fixed shape), which means the image matches your settings and not whatever size the preview happens to be scaled to.
 
 Highlighting is [Shiki](https://shiki.style) running in the browser, and the PNG and SVG come from [modern-screenshot](https://github.com/qq15725/modern-screenshot). Editing is a plain `<textarea>` layered over the highlighted lines. That keeps your text exactly as you typed it, and it's deliberately not an IDE.
 

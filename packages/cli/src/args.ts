@@ -37,6 +37,8 @@ Appearance options take the same values as the URL parameters in the README:
   --bg <id>             A background preset, transparent, a 6-digit hex color
                         without # (ff8800), or two colors such as ff8800,3355ff
   --padding <px>        16, 32, 64 or 128
+  --aspect <shape>      free (default, the height follows the code), 16:9,
+                        1:1 or 4:5 (the card gets smaller to fit)
   --width <px>          320 to 1600
   --font <px>           12, 14, 15, 16, 18, 20 or 24
   --codeFont <id>       jetbrains-mono (default), fira-code, source-code-pro

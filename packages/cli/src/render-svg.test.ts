@@ -86,3 +86,27 @@ test('uses the chosen code font and can turn ligatures off', async () => {
   expect(plain).toContain('font-variant-ligatures: none');
   expect(plain.match(/<tspan x="/g)?.length).toBe('a => b'.length);
 });
+
+test.each(['16:9', '1:1', '4:5'] as const)('draws the exact %s shape', async (aspect) => {
+  const [w, h] = aspect.split(':').map(Number);
+  for (const code of ['a', 'x\n'.repeat(200)]) {
+    const svg = await renderSvg(code, { ...appearance, width: 800, aspect }, NO_MARKS);
+    expect(svg).toContain(`width="800" height="${Math.round((800 * h) / w)}"`);
+  }
+});
+
+test('shrinks code that is too tall for the shape', async () => {
+  const short = await renderSvg('a', { ...appearance, aspect: '16:9' }, NO_MARKS);
+  const tall = await renderSvg('x\n'.repeat(200), { ...appearance, aspect: '16:9' }, NO_MARKS);
+  expect(short).toContain('scale(1)');
+  expect(Number(/scale\(([\d.]+)\)/.exec(tall)?.[1])).toBeLessThan(0.2);
+});
+
+test('keeps the card visible when the padding is larger than the shape', async () => {
+  const svg = await renderSvg(
+    'a',
+    { ...appearance, width: 320, paddingPx: 128, aspect: '16:9' },
+    NO_MARKS,
+  );
+  expect(Number(/scale\(([\d.]+)\)/.exec(svg)?.[1])).toBeGreaterThan(0.3);
+});

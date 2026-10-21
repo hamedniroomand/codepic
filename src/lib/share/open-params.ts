@@ -5,6 +5,7 @@ import {
   MAX_SIGNATURE_CHARS,
   MAX_WIDTH,
   MIN_WIDTH,
+  ASPECT_RATIOS,
   PADDING_OPTIONS,
   SIGNATURE_POSITIONS,
   type AppearanceConfig,
@@ -122,6 +123,9 @@ const APPLY: Record<string, Apply> = {
   },
   font: (raw, { appearance }) => {
     appearance.fontSize = oneOf('font', FONT_SIZE_OPTIONS, raw);
+  },
+  aspect: (raw, { appearance }) => {
+    appearance.aspect = oneOf('aspect', ASPECT_RATIOS, raw);
   },
   codeFont: (raw, { appearance }) => {
     appearance.codeFont = oneOf(

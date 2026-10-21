@@ -5,8 +5,14 @@
   import Field from '$components/ui/Field.svelte';
   import NumberInput from '$components/ui/NumberInput.svelte';
   import SegmentedControl from '$components/ui/SegmentedControl.svelte';
-  import type { AppearanceConfig, PaddingPx } from '$lib/config/appearance-config';
-  import { PADDING_OPTIONS, MIN_WIDTH, MAX_WIDTH, clampWidth } from '$lib/config/appearance-config';
+  import type { AppearanceConfig, AspectRatio, PaddingPx } from '$lib/config/appearance-config';
+  import {
+    ASPECT_RATIOS,
+    PADDING_OPTIONS,
+    MIN_WIDTH,
+    MAX_WIDTH,
+    clampWidth,
+  } from '$lib/config/appearance-config';
   import type { LineMarks } from '$lib/marks/line-marks';
 
   import LineMarksFields from './LineMarksFields.svelte';
@@ -22,9 +28,21 @@
     onChange: (patch: Partial<AppearanceConfig>) => void;
     onMarksChange: (marks: LineMarks) => void;
   } = $props();
+  const shapes = ASPECT_RATIOS.map((value) => ({
+    value,
+    label: value === 'free' ? 'Free' : value,
+  }));
   const padding = PADDING_OPTIONS.map((value) => ({ value: String(value), label: String(value) }));
 </script>
 
+<Field label="Image shape"
+  >{#snippet children(labelId)}<SegmentedControl
+      value={appearance.aspect}
+      options={shapes}
+      labelledby={labelId}
+      onchange={(value) => onChange({ aspect: value as AspectRatio })}
+    />{/snippet}</Field
+>
 <Field label="Image width (px)"
   >{#snippet children(labelId)}<NumberInput
       value={appearance.width}

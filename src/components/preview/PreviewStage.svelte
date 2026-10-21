@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { AppearanceConfig } from '$lib/config/appearance-config';
-  import { clampWidth } from '$lib/config/appearance-config';
+  import { MIN_READABLE_FONT_PX, clampWidth } from '$lib/config/appearance-config';
   import type { LineMarks } from '$lib/marks/line-marks';
 
   import ResizeHandle from './ResizeHandle.svelte';
@@ -27,6 +27,8 @@
   }: Props = $props();
 
   const SIDE_GUTTER = 64;
+
+  let fit = $state(1);
 
   let stageWidth = $state(800);
 
@@ -58,6 +60,7 @@
           bind:code
           onTitleChange={(title) => onChange({ title })}
           {onMarksChange}
+          onFit={(value) => (fit = value)}
         />
       </div>
       {#each ['left', 'right'] as const as side (side)}
@@ -69,6 +72,15 @@
         />
       {/each}
     </div>
+    {#if fit < 1 && appearance.fontSize * fit < MIN_READABLE_FONT_PX}
+      <p
+        class="notice"
+        role="status"
+      >
+        The code is made smaller to fit this shape. It can be hard to read. Use a larger width, less
+        padding, a larger font size, less code, or the Free shape.
+      </p>
+    {/if}
     <p class="caption">
       <span
         class="hint"
@@ -104,6 +116,12 @@
   }
   .viewport {
     position: relative;
+  }
+  .notice {
+    max-width: 480px;
+    margin: 16px 0 0;
+    color: var(--text-strong);
+    font-size: 12px;
   }
   .caption {
     display: flex;

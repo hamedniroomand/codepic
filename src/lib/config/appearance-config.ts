@@ -5,6 +5,7 @@ export type WindowStyle = 'minimal' | 'controls' | 'borderless';
 export type BackgroundMode = 'solid' | 'gradient' | 'transparent';
 export type ExportScale = 1 | 2 | 3;
 export type ExportFormat = 'png' | 'svg';
+export type AspectRatio = 'free' | '16:9' | '1:1' | '4:5';
 export type SignaturePosition = 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
 
 export type BackgroundConfig = {
@@ -30,6 +31,8 @@ export type AppearanceConfig = {
   title: string;
   exportScale: ExportScale;
   exportFormat: ExportFormat;
+  /** A fixed image shape, or `free` to fit the height to the code. */
+  aspect: AspectRatio;
   /** An id from CODE_FONTS. */
   codeFont: string;
   ligatures: boolean;
@@ -49,6 +52,31 @@ export const SIGNATURE_POSITIONS: SignaturePosition[] = [
   'top-left',
 ];
 export const MAX_SIGNATURE_CHARS = 60;
+export const ASPECT_RATIOS: AspectRatio[] = ['free', '16:9', '1:1', '4:5'];
+
+/** Code drawn smaller than this, in px, is hard to read. */
+export const MIN_READABLE_FONT_PX = 9;
+
+/** Image height for a fixed shape, or null when the height follows the code. */
+export function aspectHeight(aspect: AspectRatio, width: number): number | null {
+  if (aspect === 'free') return null;
+  const [w, h] = aspect.split(':').map(Number);
+  return Math.round((width * h) / w);
+}
+
+/**
+ * Padding above and below the card in a fixed shape. It never takes more than half of the
+ * height, so a small shape with large padding still has room for the card.
+ */
+export function verticalPadding(frameHeight: number, padding: number): number {
+  return Math.min(padding, frameHeight / 4);
+}
+
+/** How much the card must shrink so it fits inside the padding of a fixed shape. */
+export function fitScale(frameHeight: number, padding: number, cardHeight: number): number {
+  const room = frameHeight - verticalPadding(frameHeight, padding) * 2;
+  return cardHeight > 0 ? Math.min(1, room / cardHeight) : 1;
+}
 
 /**
  * Removes control characters, which are not valid in SVG text, and cuts the text to
@@ -92,6 +120,7 @@ export const DEFAULT_APPEARANCE: AppearanceConfig = {
   title: 'hello.ts',
   exportScale: 2,
   exportFormat: 'png',
+  aspect: 'free',
   codeFont: 'jetbrains-mono',
   ligatures: true,
   signature: '',
@@ -219,6 +248,7 @@ export function parseAppearance(raw: unknown): AppearanceConfig {
     title: typeof o.title === 'string' ? o.title : DEFAULT_APPEARANCE.title,
     exportScale: parseExportScale(o.exportScale),
     exportFormat: EXPORT_FORMATS.find((format) => format === o.exportFormat) ?? 'png',
+    aspect: ASPECT_RATIOS.find((ratio) => ratio === o.aspect) ?? DEFAULT_APPEARANCE.aspect,
     codeFont: CODE_FONTS.some((font) => font.id === o.codeFont)
       ? (o.codeFont as string)
       : DEFAULT_APPEARANCE.codeFont,
