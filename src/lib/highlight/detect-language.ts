@@ -82,6 +82,61 @@ const SIGNALS: Record<string, Signal[]> = {
     [2, /=>\s*[{(]/],
     [2, /\b(?:require\s*\(|module\.exports|export\s+(?:default|const|function))/],
   ],
+  c: [
+    [5, /#include\s*<\w+\.h>/],
+    [3, /\bprintf\s*\(/],
+    [3, /\bint\s+main\s*\(/],
+    [2, /\b(?:malloc|free|sizeof)\s*\(/],
+  ],
+  cpp: [
+    [5, /#include\s*<(?:iostream|vector|string|memory|map|algorithm)>/],
+    [5, /\bstd::/],
+    [3, /\b(?:cout|cin|cerr)\s*<</],
+    [3, /\btemplate\s*</],
+  ],
+  kotlin: [
+    [5, /\bfun\s+\w+\s*\(/],
+    [4, /\bval\s+\w+\s*(?::\s*\w+)?\s*=/],
+    [3, /\bdata\s+class\b|\bwhen\s*\(/],
+  ],
+  swift: [
+    [5, /\bimport\s+(?:SwiftUI|Foundation|UIKit)\b/],
+    [4, /\bfunc\s+\w+\s*\([^)]*\)\s*(?:->|\{)/],
+    [3, /\b(?:guard|if)\s+let\b/],
+    [3, /\b(?:struct|class)\s+\w+\s*:\s*\w+\s*\{/],
+  ],
+  ruby: [
+    [4, /^\s*end\s*$/m],
+    [4, /\bputs\s+/],
+    [3, /\brequire\s+['"]/],
+    [3, /\bdo\s*\|\w+/],
+    [3, /\battr_(?:reader|accessor|writer)\b/],
+  ],
+  yaml: [
+    [3, /^[\w-]+:[ \t]*\n[ \t]+[\w-]+:/m],
+    [3, /^\s*-\s+[\w-]+:\s/m],
+    [2, /^[\w-]+:\s+\S+/m],
+    [2, /^---\s*$/m],
+  ],
+  toml: [
+    [5, /^\s*\[[\w.-]+\]\s*$/m],
+    [3, /^\s*\[\[[\w.-]+\]\]\s*$/m],
+    [2, /^[\w-]+\s*=\s*(?:"|\d|true\b|false\b|\[)/m],
+  ],
+  dockerfile: [
+    [6, /^FROM\s+[\w./-]+(?::[\w.-]+)?(?:\s+AS\s+\w+)?\s*$/m],
+    [4, /^(?:RUN|COPY|WORKDIR|CMD|ENTRYPOINT|EXPOSE|ENV)\s+/m],
+  ],
+  vue: [
+    [6, /^<template>/m],
+    [5, /<script\s+setup\b/],
+    [3, /\bv-(?:if|for|model|bind)\b|@click=/],
+  ],
+  svelte: [
+    [6, /\{#(?:if|each|await)\b/],
+    [4, /\$(?:state|derived|props|effect)\s*\(/],
+    [3, /\b(?:on|bind):\w+=/],
+  ],
   markdown: [
     [4, /^#{1,6}\s+\S+/m],
     [3, /^```[\w-]*$/m],
@@ -96,6 +151,13 @@ const TYPESCRIPT_ONLY: Signal[] = [
   [4, /:\s*(?:string|number|boolean|void|any|unknown|never|Record<|Promise<)/],
   [3, /\bas\s+const\b|\bas\s+[A-Z]\w*/],
   [3, /\b(?:readonly|implements|declare)\b/],
+];
+
+// JSX markup inside script. JSX and TSX are JavaScript and TypeScript plus these.
+const JSX_ONLY: Signal[] = [
+  [5, /\bclassName=|\breturn\s*\(\s*</],
+  [4, /<[A-Z]\w*(?:\s[^<>]*)?\/>|<\/[A-Z][\w.]*>/],
+  [2, /\s\w+=\{/],
 ];
 
 function isJson(text: string): boolean {
@@ -122,6 +184,11 @@ export function detectLanguage(code: string): string {
   if (isJson(code.trim())) scores.set('json', (scores.get('json') ?? 0) + 8);
   const typed = score(sample, TYPESCRIPT_ONLY);
   if (typed) scores.set('typescript', (scores.get('javascript') ?? 0) + typed);
+  const jsx = score(sample, JSX_ONLY);
+  if (jsx) {
+    scores.set('jsx', (scores.get('javascript') ?? 0) + jsx);
+    if (typed) scores.set('tsx', (scores.get('typescript') ?? 0) + jsx);
+  }
 
   const [[best, top], runnerUp] = [...scores].sort((a, b) => b[1] - a[1]);
   return top >= MIN_SCORE && top - runnerUp[1] >= MIN_LEAD ? best : 'plaintext';

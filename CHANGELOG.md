@@ -7,6 +7,8 @@ no versions of its own.
 
 ### Added
 
+- Ten more themes, such as `--theme tokyo-night` and `--theme catppuccin-latte`.
+- Twelve more languages: JSX, TSX, C, C++, Kotlin, Swift, Ruby, YAML, TOML, Dockerfile, Svelte and Vue. The language guess also finds them.
 - `--signature` and `--signaturePos` add short text, such as `@yourname`, in a corner of the image.
 - `--bg` accepts a 6-digit hex color without `#`, such as `--bg ff8800`, or two colors for a gradient, such as `--bg ff8800,3355ff`.
 

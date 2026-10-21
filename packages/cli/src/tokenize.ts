@@ -13,9 +13,10 @@ export async function tokenize(
   const plain = code.split('\n').map((line) => [{ content: line }]);
   if (lang === 'text') return plain;
 
-  const highlighter = await ensureHighlighter();
+  const theme = themeById(themeId).shiki;
+  const highlighter = await ensureHighlighter(theme, lang);
   try {
-    return highlighter.codeToTokens(code, { lang, theme: themeById(themeId).shiki }).tokens;
+    return highlighter.codeToTokens(code, { lang, theme }).tokens;
   } catch {
     return plain;
   }
