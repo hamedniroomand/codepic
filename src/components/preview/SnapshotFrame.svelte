@@ -1,5 +1,10 @@
 <script lang="ts">
-  import type { AppearanceConfig } from '$lib/config/appearance-config';
+  import {
+    aspectHeight,
+    fitScale,
+    verticalPadding,
+    type AppearanceConfig,
+  } from '$lib/config/appearance-config';
   import { backgroundStyle, signatureColor } from '$lib/config/backgrounds';
   import { codeFontStack } from '$lib/config/fonts';
   import type { LineMarks } from '$lib/marks/line-marks';
@@ -16,6 +21,8 @@
     code?: string;
     onTitleChange?: (title: string) => void;
     onMarksChange?: (marks: LineMarks) => void;
+    /** Reports how much a fixed shape shrinks the card. 1 means no change. */
+    onFit?: (scale: number) => void;
   };
 
   let {
@@ -28,7 +35,15 @@
     code = $bindable(''),
     onTitleChange = () => {},
     onMarksChange,
+    onFit = () => {},
   }: Props = $props();
+
+  let cardHeight = $state(0);
+  let fixedHeight = $derived(aspectHeight(appearance.aspect, appearance.width));
+  let fit = $derived(
+    fixedHeight === null ? 1 : fitScale(fixedHeight, appearance.paddingPx, cardHeight),
+  );
+  $effect(() => onFit(fit));
 
   let element = $state<HTMLDivElement | null>(null);
   let transparent = $derived(appearance.background.mode === 'transparent');
@@ -49,19 +64,28 @@
   class="frame"
   class:checker={transparent && !forExport}
   class:offscreen={forExport}
+  class:fixed={fixedHeight !== null}
   aria-hidden={forExport ? true : undefined}
   inert={forExport}
-  style="padding: {appearance.paddingPx}px; width: {appearance.width}px; {background}"
+  style="padding: {appearance.paddingPx}px; width: {appearance.width}px; {fixedHeight === null
+    ? ''
+    : `height: ${fixedHeight}px; padding-block: ${verticalPadding(fixedHeight, appearance.paddingPx)}px;`} {background}"
 >
-  <CodeWindow
-    {appearance}
-    {lines}
-    {marks}
-    {interactive}
-    bind:code
-    {onTitleChange}
-    {onMarksChange}
-  />
+  <div
+    class="card"
+    bind:offsetHeight={cardHeight}
+    style:transform={fit === 1 ? null : `scale(${fit})`}
+  >
+    <CodeWindow
+      {appearance}
+      {lines}
+      {marks}
+      {interactive}
+      bind:code
+      {onTitleChange}
+      {onMarksChange}
+    />
+  </div>
   {#if appearance.signature}
     {@const [vertical, horizontal] = appearance.signaturePosition.split('-')}
     <span
@@ -80,6 +104,16 @@
   .frame {
     position: relative;
     box-sizing: border-box;
+    flex: none;
+  }
+  /* A fixed shape centres the card. A card that is too tall overflows evenly and is scaled back in. */
+  .fixed {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .card {
     flex: none;
   }
   /* Centred on the middle of the padding, in line with the window edge. */

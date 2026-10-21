@@ -1,4 +1,4 @@
-import type { AppearanceConfig } from '$lib/config/appearance-config';
+import { aspectHeight, fitScale, type AppearanceConfig } from '$lib/config/appearance-config';
 import { signatureColor } from '$lib/config/backgrounds';
 import { codeFontById } from '$lib/config/fonts';
 import { themeById } from '$lib/config/themes';
@@ -54,7 +54,9 @@ export async function renderSvg(
 
   const titleBar = appearance.showTitle || appearance.windowStyle === 'controls' ? TITLE_BAR : 0;
   const winH = titleBar + MARGIN.top + rowCount * lineHeight + MARGIN.bottom;
-  const frameH = winH + pad * 2;
+  const fixedH = aspectHeight(appearance.aspect, appearance.width);
+  const frameH = fixedH ?? winH + pad * 2;
+  const fit = fixedH === null ? 1 : fitScale(fixedH, pad, winH);
   const borderless = appearance.windowStyle === 'borderless';
   const paint = backgroundPaint(appearance.background, appearance.width, frameH);
 
@@ -105,10 +107,12 @@ export async function renderSvg(
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${appearance.width}" height="${frameH}" viewBox="0 0 ${appearance.width} ${frameH}" font-size="${size}" font-family="${font.family}, monospace"${appearance.ligatures ? '' : ' style="font-variant-ligatures: none"'}>
 <defs>${paint.defs}<filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dy="24" stdDeviation="28" flood-opacity="0.3"/></filter><clipPath id="code"><rect x="${codeX}" y="${pad}" width="${codeW}" height="${winH}"/></clipPath></defs>
 ${appearance.background.mode === 'transparent' ? '' : `<rect width="100%" height="100%" fill="${paint.fill}"/>`}
+<g transform="translate(${appearance.width / 2} ${frameH / 2}) scale(${fit}) translate(${-appearance.width / 2} ${-(pad + winH / 2)})">
 ${borderless ? '' : `<rect ${window} fill="${theme.window.bg}" filter="url(#shadow)"/>`}
 <rect ${window} fill="${theme.window.bg}" stroke="${borderless ? 'none' : theme.window.border}"/>
 ${titleBar ? titleBarSvg(appearance, pad, winW, theme.window.title) : ''}
 ${body.join('\n')}
+</g>
 ${signatureSvg(appearance, frameH)}
 </svg>
 `;

@@ -129,3 +129,8 @@ test('reads the code font and ligatures', () => {
   expect(appearance).toMatchObject({ codeFont: 'fira-code', ligatures: false });
   expect(parseOpenParams('?codeFont=comic-sans').errors[0]).toContain('Unknown codeFont');
 });
+
+test('reads the image shape', () => {
+  expect(parseOpenParams('?aspect=16:9').appearance.aspect).toBe('16:9');
+  expect(parseOpenParams('?aspect=2:1').errors[0]).toContain('Unknown aspect');
+});
