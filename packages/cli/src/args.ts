@@ -25,8 +25,15 @@ Nothing is uploaded: highlighting and drawing both run on this machine.
 
 Appearance options take the same values as the URL parameters in the README:
 
-  --lang <id>           Language (default: guessed from the code)
-  --theme <id>          github-light, github-dark, dracula, nord, one-dark-pro
+  --lang <id>           Language (default: guessed from the code): javascript,
+                        typescript, jsx, tsx, html, css, json, shell, python,
+                        go, php, sql, java, csharp, rust, markdown, c, cpp,
+                        kotlin, swift, ruby, yaml, toml, dockerfile, svelte,
+                        vue, plaintext
+  --theme <id>          github-light, github-dark, dracula, nord, one-dark-pro,
+                        catppuccin-latte, catppuccin-mocha, tokyo-night,
+                        monokai, night-owl, rose-pine, solarized-light,
+                        solarized-dark, vitesse-light, vitesse-dark
   --bg <id>             A background preset, transparent, a 6-digit hex color
                         without # (ff8800), or two colors such as ff8800,3355ff
   --padding <px>        16, 32, 64 or 128

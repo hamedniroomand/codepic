@@ -15,6 +15,18 @@ export const LANGUAGES: LanguageDef[] = [
   { id: 'csharp', label: 'C#', shiki: 'csharp' },
   { id: 'rust', label: 'Rust', shiki: 'rust' },
   { id: 'markdown', label: 'Markdown', shiki: 'markdown' },
+  { id: 'jsx', label: 'JSX', shiki: 'jsx' },
+  { id: 'tsx', label: 'TSX', shiki: 'tsx' },
+  { id: 'c', label: 'C', shiki: 'c' },
+  { id: 'cpp', label: 'C++', shiki: 'cpp' },
+  { id: 'kotlin', label: 'Kotlin', shiki: 'kotlin' },
+  { id: 'swift', label: 'Swift', shiki: 'swift' },
+  { id: 'ruby', label: 'Ruby', shiki: 'ruby' },
+  { id: 'yaml', label: 'YAML', shiki: 'yaml' },
+  { id: 'toml', label: 'TOML', shiki: 'toml' },
+  { id: 'dockerfile', label: 'Dockerfile', shiki: 'docker' },
+  { id: 'svelte', label: 'Svelte', shiki: 'svelte' },
+  { id: 'vue', label: 'Vue', shiki: 'vue' },
   { id: 'plaintext', label: 'Plain Text', shiki: 'text' },
 ];
 

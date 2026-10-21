@@ -32,13 +32,6 @@
   };
   let { appearance, marks, languageDetected, store, onChange, onMarksChange, onStatus }: Props =
     $props();
-  const palettes: Record<string, string[]> = {
-    'github-light': ['#cf222e', '#0550ae', '#116329'],
-    'github-dark': ['#ff7b72', '#79c0ff', '#a5d6ff'],
-    dracula: ['#ff79c6', '#bd93f9', '#50fa7b'],
-    nord: ['#81a1c1', '#88c0d0', '#a3be8c'],
-    'one-dark-pro': ['#e06c75', '#c678dd', '#98c379'],
-  };
   const corners: Record<SignaturePosition, string> = {
     'bottom-right': 'Bottom right',
     'bottom-left': 'Bottom left',
@@ -49,7 +42,7 @@
   const themes = THEMES.map((theme) => ({
     value: theme.id,
     label: theme.label,
-    colors: palettes[theme.id],
+    colors: theme.palette,
   }));
 </script>
 
