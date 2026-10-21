@@ -23,7 +23,7 @@ codepic --file app.ts --theme nord -o out.png
 cat app.ts | codepic --lang typescript -o out.svg
 ```
 
-Code comes from `--file` or standard input. `-o` / `--output` sets the path (default `codepic.png`). A `.svg` extension writes SVG. Language is guessed when you omit `--lang`; with `--file`, the filename is used as the title unless you pass `--title`.
+Code comes from `--file` or standard input. `-o` / `--output` sets the path (default `codepic.png`). A `.svg` extension writes SVG. The SVG names the code font but does not embed it, so a viewer without that font installed draws another monospace font. PNG output always uses the chosen font. Language is guessed when you omit `--lang`; with `--file`, the filename is used as the title unless you pass `--title`.
 
 ```sh
 codepic --help
@@ -41,6 +41,8 @@ These match the [CodePic web app](https://codepic.kitdev.space/) URL parameters 
 | `--padding`      | `16`, `32`, `64`, `128`                                                                                                                                                                                                                                      |
 | `--width`        | `320`–`1600`                                                                                                                                                                                                                                                 |
 | `--font`         | `12`, `14`, `15`, `16`, `18`, `20`, `24`                                                                                                                                                                                                                     |
+| `--codeFont`     | `jetbrains-mono` (default), `fira-code`, `source-code-pro` or `ibm-plex-mono`                                                                                                                                                                                |
+| `--ligatures`    | `true` (default) or `false`                                                                                                                                                                                                                                  |
 | `--lh`           | Line height, `1.2`–`2`                                                                                                                                                                                                                                       |
 | `--window`       | `controls`, `minimal`, `borderless`                                                                                                                                                                                                                          |
 | `--lines`        | Line numbers: `true` or `false`                                                                                                                                                                                                                              |

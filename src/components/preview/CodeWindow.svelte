@@ -3,6 +3,7 @@
 
   import type { AppearanceConfig } from '$lib/config/appearance-config';
   import { DEFAULT_APPEARANCE } from '$lib/config/appearance-config';
+  import { codeFontStack } from '$lib/config/fonts';
   import { themeById } from '$lib/config/themes';
   import {
     NO_MARKS,
@@ -69,6 +70,8 @@
     --win-muted: {theme.window.muted};
     --fs: {appearance.fontSize}px;
     --lh: {appearance.lineHeight};
+    --code-font: {codeFontStack(appearance.codeFont)};
+    --ligatures: {appearance.ligatures ? 'normal' : 'none'};
     --gutter: {gutterWidth}ch"
 >
   {#if showTitleBar}
@@ -173,9 +176,8 @@
       #00000012 0 22.3px 17.9px 0,
       #00000016 0 41.8px 33.4px 0,
       #0000001f 0 100px 80px 0;
-    font:
-      var(--fs) / var(--lh) 'JetBrains Mono',
-      monospace;
+    font: var(--fs) / var(--lh) var(--code-font);
+    font-variant-ligatures: var(--ligatures);
   }
   .window.borderless {
     border-color: transparent;
@@ -209,9 +211,7 @@
     border: 0;
     background: transparent;
     color: var(--win-title);
-    font:
-      12px / 18px 'JetBrains Mono',
-      monospace;
+    font: 12px / 18px var(--code-font);
     text-align: center;
     text-overflow: ellipsis;
     white-space: nowrap;

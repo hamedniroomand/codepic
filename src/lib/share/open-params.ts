@@ -16,6 +16,7 @@ import {
   parseHexColor,
 } from '$lib/config/appearance-config';
 import { BACKGROUND_PRESETS } from '$lib/config/backgrounds';
+import { CODE_FONTS } from '$lib/config/fonts';
 import { LANGUAGES } from '$lib/config/languages';
 import { THEMES } from '$lib/config/themes';
 import { NO_MARKS, type LineMarks } from '$lib/marks/line-marks';
@@ -121,6 +122,16 @@ const APPLY: Record<string, Apply> = {
   },
   font: (raw, { appearance }) => {
     appearance.fontSize = oneOf('font', FONT_SIZE_OPTIONS, raw);
+  },
+  codeFont: (raw, { appearance }) => {
+    appearance.codeFont = oneOf(
+      'codeFont',
+      CODE_FONTS.map((font) => font.id),
+      raw,
+    );
+  },
+  ligatures: (raw, { appearance }) => {
+    appearance.ligatures = boolean('ligatures', raw);
   },
   lh: (raw, { appearance }) => {
     appearance.lineHeight = numberBetween('lh', 1.2, 2, raw);

@@ -14,6 +14,7 @@
   import type { AppearanceConfig } from '$lib/config/appearance-config';
   import { mergeAppearance } from '$lib/config/appearance-config';
   import { createExporter } from '$lib/export/exporter.svelte';
+  import { loadCodeFont } from '$lib/fonts/load-code-font';
   import { createHighlightState } from '$lib/highlight/highlight.svelte';
   import { createLanguageDetection } from '$lib/highlight/language-detection.svelte';
   import type { LineMarks } from '$lib/marks/line-marks';
@@ -113,6 +114,9 @@
   }
 
   $effect(() => saveAppearance(appearance));
+  $effect(() => {
+    loadCodeFont(appearance.codeFont).catch(() => {});
+  });
 
   $effect(() => {
     if (!status) return;

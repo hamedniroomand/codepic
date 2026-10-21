@@ -76,3 +76,10 @@ test('removes control characters from the signature and keeps emoji whole', () =
   expect(cleanSignature('@me\u0001\n\u009f!')).toBe('@me!');
   expect(cleanSignature(`${'x'.repeat(59)}🙂🙂`)).toBe(`${'x'.repeat(59)}🙂`);
 });
+
+test('reads a config saved before code fonts existed', () => {
+  const config = parseAppearance({ themeId: 'nord' });
+  expect(config.codeFont).toBe('jetbrains-mono');
+  expect(config.ligatures).toBe(true);
+  expect(parseAppearance({ codeFont: 'comic-sans' }).codeFont).toBe('jetbrains-mono');
+});

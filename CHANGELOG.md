@@ -7,6 +7,7 @@ no versions of its own.
 
 ### Added
 
+- `--codeFont <id>` picks the code font for PNG and SVG output: `jetbrains-mono` (default), `fira-code`, `source-code-pro` or `ibm-plex-mono`. `--ligatures false` turns ligatures off.
 - Ten more themes, such as `--theme tokyo-night` and `--theme catppuccin-latte`.
 - Twelve more languages: JSX, TSX, C, C++, Kotlin, Swift, Ruby, YAML, TOML, Dockerfile, Svelte and Vue. The language guess also finds them.
 - `--signature` and `--signaturePos` add short text, such as `@yourname`, in a corner of the image.

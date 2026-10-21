@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { Resvg } from '@resvg/resvg-js';
 
 import { DEFAULT_APPEARANCE, mergeAppearance } from '$lib/config/appearance-config';
+import { codeFontById } from '$lib/config/fonts';
 import { detectLanguage } from '$lib/highlight/detect-language';
 import { NO_MARKS } from '$lib/marks/line-marks';
 import { parseOpenParams } from '$lib/share/open-params';
@@ -13,7 +14,9 @@ import { parseOpenParams } from '$lib/share/open-params';
 import { HELP, parseCliArgs } from './args';
 import { renderSvg } from './render-svg';
 
-const FONT_FILE = fileURLToPath(new URL('../assets/JetBrainsMono-Regular.ttf', import.meta.url));
+function fontFile(name: string): string {
+  return fileURLToPath(new URL(`../assets/${name}`, import.meta.url));
+}
 
 async function readInput(file: string | undefined): Promise<string> {
   if (file) return readFileSync(file, 'utf8');
@@ -48,9 +51,14 @@ async function run(argv: string[]): Promise<void> {
   if (appearance.exportFormat === 'svg') {
     writeFileSync(output, svg);
   } else {
+    const font = codeFontById(appearance.codeFont);
     const image = new Resvg(svg, {
       fitTo: { mode: 'zoom', value: appearance.exportScale },
-      font: { fontFiles: [FONT_FILE], loadSystemFonts: false, defaultFontFamily: 'JetBrains Mono' },
+      font: {
+        fontFiles: [fontFile(font.file)],
+        loadSystemFonts: false,
+        defaultFontFamily: font.family,
+      },
     });
     writeFileSync(output, image.render().asPng());
   }
