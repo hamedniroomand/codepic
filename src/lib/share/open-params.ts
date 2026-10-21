@@ -2,13 +2,17 @@ import {
   EXPORT_FORMATS,
   EXPORT_SCALE_OPTIONS,
   FONT_SIZE_OPTIONS,
+  MAX_SIGNATURE_CHARS,
   MAX_WIDTH,
   MIN_WIDTH,
   PADDING_OPTIONS,
+  SIGNATURE_POSITIONS,
   type AppearanceConfig,
   type ExportScale,
   type PaddingPx,
   type WindowStyle,
+  characters,
+  cleanSignature,
   parseHexColor,
 } from '$lib/config/appearance-config';
 import { BACKGROUND_PRESETS } from '$lib/config/backgrounds';
@@ -143,6 +147,14 @@ const APPLY: Record<string, Apply> = {
   },
   format: (raw, { appearance }) => {
     appearance.exportFormat = oneOf('format', EXPORT_FORMATS, raw);
+  },
+  signature: (raw, { appearance }) => {
+    if (characters(raw).length > MAX_SIGNATURE_CHARS)
+      throw new Error(`The signature is over ${MAX_SIGNATURE_CHARS} characters.`);
+    appearance.signature = cleanSignature(raw);
+  },
+  signaturePos: (raw, { appearance }) => {
+    appearance.signaturePosition = oneOf('signaturePos', SIGNATURE_POSITIONS, raw);
   },
   highlight: marks('emphasized'),
   added: marks('added'),

@@ -3,8 +3,14 @@
 
   import Field from '$components/ui/Field.svelte';
   import Select from '$components/ui/Select.svelte';
+  import TextInput from '$components/ui/TextInput.svelte';
   import Toggle from '$components/ui/Toggle.svelte';
-  import type { AppearanceConfig } from '$lib/config/appearance-config';
+  import {
+    cleanSignature,
+    SIGNATURE_POSITIONS,
+    type AppearanceConfig,
+    type SignaturePosition,
+  } from '$lib/config/appearance-config';
   import { THEMES, isDarkTheme, toggleDarkTheme } from '$lib/config/themes';
   import type { LineMarks } from '$lib/marks/line-marks';
   import type { PresetStore } from '$lib/presets/presets.svelte';
@@ -33,6 +39,13 @@
     nord: ['#81a1c1', '#88c0d0', '#a3be8c'],
     'one-dark-pro': ['#e06c75', '#c678dd', '#98c379'],
   };
+  const corners: Record<SignaturePosition, string> = {
+    'bottom-right': 'Bottom right',
+    'bottom-left': 'Bottom left',
+    'top-right': 'Top right',
+    'top-left': 'Top left',
+  };
+  const cornerOptions = SIGNATURE_POSITIONS.map((value) => ({ value, label: corners[value] }));
   const themes = THEMES.map((theme) => ({
     value: theme.id,
     label: theme.label,
@@ -74,6 +87,25 @@
       checked={isDarkTheme(appearance.themeId)}
       onchange={() => onChange({ themeId: toggleDarkTheme(appearance.themeId) })}
     />
+    <Field label="Signature"
+      >{#snippet children(labelId)}<TextInput
+          value={appearance.signature}
+          placeholder="@yourname"
+          labelledby={labelId}
+          live
+          onchange={(value) => onChange({ signature: cleanSignature(value) })}
+        />{/snippet}</Field
+    >
+    {#if appearance.signature}
+      <Field label="Corner"
+        >{#snippet children(labelId)}<Select
+            value={appearance.signaturePosition}
+            options={cornerOptions}
+            labelledby={labelId}
+            onchange={(value) => onChange({ signaturePosition: value as SignaturePosition })}
+          />{/snippet}</Field
+      >
+    {/if}
   </section>
   <section class="settings-section">
     <h2><Code2 size={15} /> Code</h2>

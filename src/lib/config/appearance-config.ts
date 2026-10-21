@@ -3,6 +3,7 @@ export type WindowStyle = 'minimal' | 'controls' | 'borderless';
 export type BackgroundMode = 'solid' | 'gradient' | 'transparent';
 export type ExportScale = 1 | 2 | 3;
 export type ExportFormat = 'png' | 'svg';
+export type SignaturePosition = 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
 
 export type BackgroundConfig = {
   mode: BackgroundMode;
@@ -27,12 +28,40 @@ export type AppearanceConfig = {
   title: string;
   exportScale: ExportScale;
   exportFormat: ExportFormat;
+  /** Short text in a corner of the image. Empty means no signature. */
+  signature: string;
+  signaturePosition: SignaturePosition;
 };
 
 export const PADDING_OPTIONS: PaddingPx[] = [16, 32, 64, 128];
 export const FONT_SIZE_OPTIONS = [12, 14, 15, 16, 18, 20, 24];
 export const EXPORT_SCALE_OPTIONS: ExportScale[] = [1, 2, 3];
 export const EXPORT_FORMATS: ExportFormat[] = ['png', 'svg'];
+export const SIGNATURE_POSITIONS: SignaturePosition[] = [
+  'bottom-right',
+  'bottom-left',
+  'top-right',
+  'top-left',
+];
+export const MAX_SIGNATURE_CHARS = 60;
+
+/**
+ * Removes control characters, which are not valid in SVG text, and cuts the text to
+ * MAX_SIGNATURE_CHARS characters without splitting an emoji in two.
+ */
+const graphemes = new Intl.Segmenter();
+
+/** Counts what a reader sees as one character, so an emoji is never split. */
+export function characters(raw: string): string[] {
+  return Array.from(graphemes.segment(raw), (part) => part.segment);
+}
+
+export function cleanSignature(raw: string): string {
+  // eslint-disable-next-line no-control-regex
+  return characters(raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, ''))
+    .slice(0, MAX_SIGNATURE_CHARS)
+    .join('');
+}
 
 export const MIN_WIDTH = 320;
 export const MAX_WIDTH = 1600;
@@ -58,6 +87,8 @@ export const DEFAULT_APPEARANCE: AppearanceConfig = {
   title: 'hello.ts',
   exportScale: 2,
   exportFormat: 'png',
+  signature: '',
+  signaturePosition: 'bottom-right',
 };
 
 export function clampWidth(value: number): number {
@@ -181,5 +212,9 @@ export function parseAppearance(raw: unknown): AppearanceConfig {
     title: typeof o.title === 'string' ? o.title : DEFAULT_APPEARANCE.title,
     exportScale: parseExportScale(o.exportScale),
     exportFormat: EXPORT_FORMATS.find((format) => format === o.exportFormat) ?? 'png',
+    signature: typeof o.signature === 'string' ? cleanSignature(o.signature) : '',
+    signaturePosition:
+      SIGNATURE_POSITIONS.find((position) => position === o.signaturePosition) ??
+      DEFAULT_APPEARANCE.signaturePosition,
   };
 }

@@ -7,6 +7,7 @@ no versions of its own.
 
 ### Added
 
+- `--signature` and `--signaturePos` add short text, such as `@yourname`, in a corner of the image.
 - `--bg` accepts a 6-digit hex color without `#`, such as `--bg ff8800`, or two colors for a gradient, such as `--bg ff8800,3355ff`.
 
 ## 0.1.1

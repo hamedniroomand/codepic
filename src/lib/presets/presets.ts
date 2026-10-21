@@ -1,7 +1,10 @@
 import { parseAppearance, type AppearanceConfig } from '$lib/config/appearance-config';
 
-/** Everything about how the card looks. The language and filename belong to the code. */
-export type Look = Omit<AppearanceConfig, 'language' | 'title'>;
+/**
+ * Everything about how the card looks. The language and filename belong to the code, and the
+ * signature belongs to the person, so a preset never changes them.
+ */
+export type Look = Omit<AppearanceConfig, 'language' | 'title' | 'signature' | 'signaturePosition'>;
 
 export type Preset = { id: string; name: string; look: Look };
 
@@ -11,6 +14,8 @@ export function lookOf(appearance: AppearanceConfig): Look {
   const look: Partial<AppearanceConfig> = { ...appearance };
   delete look.language;
   delete look.title;
+  delete look.signature;
+  delete look.signaturePosition;
   return look as Look;
 }
 

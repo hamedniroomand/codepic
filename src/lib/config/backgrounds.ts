@@ -77,3 +77,21 @@ export function backgroundStyle(bg: BackgroundConfig): Record<string, string> {
   }
   return { backgroundColor: 'transparent', backgroundImage: preset.css };
 }
+
+const HEX = /#([0-9a-f]{6})\b/gi;
+
+/**
+ * Text color for a signature on this background: light on dark colors and dark on light
+ * colors. A transparent background has no known color, so a middle gray is used.
+ */
+export function signatureColor(bg: BackgroundConfig): string {
+  const { backgroundColor, backgroundImage } = backgroundStyle(bg);
+  const hexes = [...`${backgroundColor} ${backgroundImage}`.matchAll(HEX)].map((match) => match[1]);
+  if (!hexes.length) return '#808080';
+  const luminance =
+    hexes.reduce((sum, hex) => {
+      const [r, g, b] = [0, 2, 4].map((at) => parseInt(hex.slice(at, at + 2), 16));
+      return sum + 0.299 * r + 0.587 * g + 0.114 * b;
+    }, 0) / hexes.length;
+  return luminance > 150 ? '#0f172acc' : '#ffffffd9';
+}

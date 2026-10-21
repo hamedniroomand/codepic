@@ -51,3 +51,24 @@ test('adds a sign column for diff lines', async () => {
   expect(svg).toContain('>+</text>');
   expect(svg).toContain('>−</text>');
 });
+
+test('draws the signature only when it is set', async () => {
+  const plain = await renderSvg('a', appearance, NO_MARKS);
+  const signed = await renderSvg(
+    'a',
+    { ...appearance, signature: '<@me>', signaturePosition: 'top-left' },
+    NO_MARKS,
+  );
+
+  expect(plain).not.toContain('dominant-baseline');
+  expect(signed).toContain('&lt;@me&gt;');
+  expect(signed).toContain('x="64" y="32" text-anchor="start"');
+
+  const bottom = await renderSvg(
+    'a',
+    { ...appearance, signature: '@me', signaturePosition: 'bottom-right' },
+    NO_MARKS,
+  );
+  const height = Number(/height="([\d.]+)"/.exec(bottom)?.[1]);
+  expect(bottom).toContain(`x="616" y="${height - 32}" text-anchor="end"`);
+});

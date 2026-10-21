@@ -40,6 +40,10 @@ Appearance options take the same values as the URL parameters in the README:
   --title <text>        Filename (default: the name of --file)
   --scale <n>           PNG scale, 1, 2 or 3
   --format <type>       png or svg (default: from --output)
+  --signature <text>    Short text in a corner, up to 60 characters
+                        (default: none)
+  --signaturePos <pos>  bottom-right (default), bottom-left, top-right
+                        or top-left
   --highlight <lines>   Lines to emphasize, such as 2,5-7
   --added <lines>       Lines marked as added
   --removed <lines>     Lines marked as removed

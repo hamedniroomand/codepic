@@ -108,3 +108,17 @@ test('reports a bad background color', () => {
     expect(errors[0]).toContain('Invalid bg');
   }
 });
+
+test('reads a signature and its corner', () => {
+  const { appearance, errors } = parseOpenParams('?signature=%40me&signaturePos=top-left');
+  expect(errors).toEqual([]);
+  expect(appearance).toMatchObject({ signature: '@me', signaturePosition: 'top-left' });
+});
+
+test('reports a bad signature and corner', () => {
+  const { appearance, errors } = parseOpenParams(
+    `?signature=${'x'.repeat(61)}&signaturePos=middle`,
+  );
+  expect(appearance).toEqual({});
+  expect(errors).toHaveLength(2);
+});
