@@ -1,6 +1,6 @@
 import { expect, test } from 'vite-plus/test';
 
-import { DEFAULT_APPEARANCE, parseAppearance } from '$lib/config/appearance-config';
+import { DEFAULT_APPEARANCE, cleanSignature, parseAppearance } from '$lib/config/appearance-config';
 
 test('falls back on corrupt input', () => {
   const config = parseAppearance({ themeId: 42, windowStyle: 'floating' });
@@ -58,4 +58,21 @@ test('keeps only hex background colors', () => {
   expect(config.background.gradientFrom).toBe('#ff8800');
   expect(config.background.gradientTo).toBeNull();
   expect(config.background.solidColor).toBeNull();
+});
+
+test('reads a config saved before signatures existed', () => {
+  const config = parseAppearance({ themeId: 'nord' });
+  expect(config.signature).toBe('');
+  expect(config.signaturePosition).toBe('bottom-right');
+});
+
+test('keeps the signature short and its corner known', () => {
+  const config = parseAppearance({ signature: 'x'.repeat(500), signaturePosition: 'middle' });
+  expect(config.signature).toHaveLength(60);
+  expect(config.signaturePosition).toBe('bottom-right');
+});
+
+test('removes control characters from the signature and keeps emoji whole', () => {
+  expect(cleanSignature('@me\u0001\n\u009f!')).toBe('@me!');
+  expect(cleanSignature(`${'x'.repeat(59)}🙂🙂`)).toBe(`${'x'.repeat(59)}🙂`);
 });

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { AppearanceConfig } from '$lib/config/appearance-config';
-  import { backgroundStyle } from '$lib/config/backgrounds';
+  import { backgroundStyle, signatureColor } from '$lib/config/backgrounds';
   import type { LineMarks } from '$lib/marks/line-marks';
 
   import CodeWindow from './CodeWindow.svelte';
@@ -61,13 +61,33 @@
     {onTitleChange}
     {onMarksChange}
   />
+  {#if appearance.signature}
+    {@const [vertical, horizontal] = appearance.signaturePosition.split('-')}
+    <span
+      class="signature"
+      style="{vertical}: {appearance.paddingPx /
+        2}px; {horizontal}: {appearance.paddingPx}px; translate: 0 {vertical === 'top'
+        ? '-50%'
+        : '50%'}; color: {signatureColor(appearance.background)}">{appearance.signature}</span
+    >
+  {/if}
 </div>
 
 <style>
   .frame {
+    position: relative;
     box-sizing: border-box;
     flex: none;
   }
+  /* Centred on the middle of the padding, in line with the window edge. */
+  .signature {
+    position: absolute;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1;
+    white-space: pre;
+  }
+
   /* Transparent exports need a visible checkerboard on screen only. */
   .checker {
     background-color: #ddd !important;

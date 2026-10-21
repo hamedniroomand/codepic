@@ -1,4 +1,5 @@
 import type { AppearanceConfig } from '$lib/config/appearance-config';
+import { signatureColor } from '$lib/config/backgrounds';
 import { themeById } from '$lib/config/themes';
 import { escapePlain } from '$lib/highlight/highlighter';
 import {
@@ -103,8 +104,19 @@ ${borderless ? '' : `<rect ${window} fill="${theme.window.bg}" filter="url(#shad
 <rect ${window} fill="${theme.window.bg}" stroke="${borderless ? 'none' : theme.window.border}"/>
 ${titleBar ? titleBarSvg(appearance, pad, winW, theme.window.title) : ''}
 ${body.join('\n')}
+${signatureSvg(appearance, frameH)}
 </svg>
 `;
+}
+
+function signatureSvg(appearance: AppearanceConfig, frameH: number): string {
+  if (!appearance.signature) return '';
+  const pad = appearance.paddingPx;
+  const [vertical, horizontal] = appearance.signaturePosition.split('-');
+  const x = horizontal === 'left' ? pad : appearance.width - pad;
+  const y = vertical === 'top' ? pad / 2 : frameH - pad / 2;
+  const anchor = horizontal === 'left' ? 'start' : 'end';
+  return `<text x="${x}" y="${y}" text-anchor="${anchor}" dominant-baseline="central" font-size="12" xml:space="preserve" fill="${signatureColor(appearance.background)}">${escapePlain(appearance.signature)}</text>`;
 }
 
 function tint(

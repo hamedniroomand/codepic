@@ -60,3 +60,13 @@ test('built-in presets have distinct names and ids', () => {
   expect(new Set(names).size).toBe(names.length);
   expect(new Set(ids).size).toBe(ids.length);
 });
+
+test('a preset never holds the signature', () => {
+  const look = lookOf({ ...appearance, signature: '@me', signaturePosition: 'top-left' });
+  expect(look).not.toHaveProperty('signature');
+  expect(look).not.toHaveProperty('signaturePosition');
+  const [imported] = parsePresets(
+    JSON.stringify({ version: 1, presets: [{ name: 'Team', look: { signature: '@author' } }] }),
+  );
+  expect(imported.look).not.toHaveProperty('signature');
+});
