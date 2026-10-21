@@ -47,6 +47,12 @@ test('reads the marker and the options from the meta', () => {
   expect(parseMeta(null)).toBeNull();
 });
 
+test('reads a long option string in linear time', () => {
+  const started = performance.now();
+  parseMeta(`codepic ${'-'.repeat(50_000)}`);
+  expect(performance.now() - started).toBeLessThan(200);
+});
+
 test('passes only appearance options to the command line tool', () => {
   expect(cliArgs({ theme: 'nord', title: '-o x' })).toEqual(['--theme=nord', '--title=-o x']);
   expect(() => cliArgs({ file: '/etc/passwd' })).toThrow('Unknown option "file"');

@@ -61,7 +61,9 @@ export function blockLanguage(lang: string | null | undefined): string | null {
   return LANGUAGES.some((language) => language.id === id) ? id : null;
 }
 // key=value or key="value with spaces"
-const META_OPTION = /([\w-]+)=(?:"([^"]*)"|(\S+))/g;
+// A key starts only after a space or at the start, so a long run of key characters is
+// scanned once and not from each position.
+const META_OPTION = /(?<![\w-])([\w-]+)=(?:"([^"]*)"|(\S+))/g;
 
 /** Reads `codepic theme=nord alt="Setup"` from the code block meta. Null when the marker is not there. */
 export function parseMeta(meta: string | null | undefined): Record<string, string> | null {
