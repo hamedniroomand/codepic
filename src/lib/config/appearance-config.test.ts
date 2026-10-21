@@ -44,3 +44,18 @@ test('reads the export format and falls back to png', () => {
   expect(parseAppearance({ exportFormat: 'gif' }).exportFormat).toBe('png');
   expect(parseAppearance({}).exportFormat).toBe('png');
 });
+
+test('keeps only hex background colors', () => {
+  const config = parseAppearance({
+    background: {
+      mode: 'gradient',
+      presetId: '',
+      gradientFrom: '#FF8800',
+      gradientTo: 'red; background: url(x)',
+      solidColor: 42,
+    },
+  });
+  expect(config.background.gradientFrom).toBe('#ff8800');
+  expect(config.background.gradientTo).toBeNull();
+  expect(config.background.solidColor).toBeNull();
+});

@@ -1,5 +1,7 @@
 import { expect, test } from 'vite-plus/test';
 
+import { parseOpenParams } from '$lib/share/open-params';
+
 import { parseCliArgs } from './args';
 
 test('reads the file, the output and appearance options', () => {
@@ -34,4 +36,15 @@ test('rejects an unknown option', () => {
 
 test('rejects an option that is missing its value', () => {
   expect(() => parseCliArgs(['--theme'])).toThrow();
+});
+
+test('passes custom background colors to the appearance', () => {
+  const { appearance, errors } = parseOpenParams(parseCliArgs(['--bg', 'ff8800,3355ff']).query);
+
+  expect(errors).toEqual([]);
+  expect(appearance.background).toMatchObject({
+    mode: 'gradient',
+    gradientFrom: '#ff8800',
+    gradientTo: '#3355ff',
+  });
 });

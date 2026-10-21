@@ -88,3 +88,23 @@ test('a share link wins over parameters', () => {
 test('reports ignored parameters as a notice', () => {
   expect(resolveBoot(empty, '?theme=neon', saved).notice).toContain('Unknown theme');
 });
+
+test('reads custom background colors', () => {
+  expect(parseOpenParams('?bg=FF8800').appearance.background).toMatchObject({
+    mode: 'solid',
+    solidColor: '#ff8800',
+  });
+  expect(parseOpenParams('?bg=ff8800,3355ff').appearance.background).toMatchObject({
+    mode: 'gradient',
+    gradientFrom: '#ff8800',
+    gradientTo: '#3355ff',
+  });
+});
+
+test('reports a bad background color', () => {
+  for (const raw of ['ff88', 'ff8800,', 'ff8800,3355ff,000000', '%23ff8800', 'red']) {
+    const { appearance, errors } = parseOpenParams(`?bg=${raw}`);
+    expect(appearance.background).toBeUndefined();
+    expect(errors[0]).toContain('Invalid bg');
+  }
+});

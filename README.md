@@ -34,7 +34,7 @@ It's free, it has no accounts, and it has no server. The highlighting, the layou
 ## A quick tour
 
 1. **Paste your code.** CodePic guesses the language, and tells you it did, so you can change it in one click. If it isn't sure, it falls back to plain text and doesn't guess wrong.
-2. **Make it yours.** The settings sidebar groups appearance, code, layout and export controls. Pick a background and theme, search for a language, adjust padding and width, or change the window and line numbers. On smaller screens, **Customize image** opens the same controls in a settings sheet.
+2. **Make it yours.** The settings sidebar groups appearance, code, layout and export controls. Pick a background (or your own colors) and theme, search for a language, adjust padding and width, or change the window and line numbers. On smaller screens, **Customize image** opens the same controls in a settings sheet.
 3. **Get the image.** Download a PNG or an SVG, copy the image to your clipboard, or copy a link that opens the exact same snapshot. Drag the handles on the sides of the card to set the width.
 
 ### Keep a look you like
@@ -76,26 +76,26 @@ If you write docs or a blog, a plain link is the easiest way to let readers twea
 </a>
 ```
 
-| Parameter   | Values                                                                                                             |
-| ----------- | ------------------------------------------------------------------------------------------------------------------ |
-| `code`      | The snippet, URL-encoded. Up to 8,000 characters                                                                   |
-| `lang`      | A language id, such as `typescript`, `python`, `shell`                                                             |
-| `theme`     | `github-light`, `github-dark`, `dracula`, `nord`, `one-dark-pro`                                                   |
-| `bg`        | A background preset (`ocean`, `slate`, `sunset`, `forest`, `paper`, `charcoal`, `violet`, `rose`) or `transparent` |
-| `padding`   | `16`, `32`, `64` or `128`                                                                                          |
-| `width`     | `320` to `1600`                                                                                                    |
-| `font`      | `12`, `14`, `15`, `16`, `18`, `20` or `24`                                                                         |
-| `lh`        | Line height, `1.2` to `2`                                                                                          |
-| `window`    | `controls`, `minimal` or `borderless`                                                                              |
-| `lines`     | Line numbers: `true`, `false`, `1` or `0`                                                                          |
-| `wrap`      | Wrap long lines, same values                                                                                       |
-| `showTitle` | Show the filename, same values                                                                                     |
-| `title`     | The filename, up to 200 characters                                                                                 |
-| `scale`     | PNG scale: `1`, `2` or `3`                                                                                         |
-| `format`    | Download format: `png` or `svg`                                                                                    |
-| `highlight` | Lines to emphasize, such as `2,5-7`                                                                                |
-| `added`     | Lines marked as added                                                                                              |
-| `removed`   | Lines marked as removed                                                                                            |
+| Parameter   | Values                                                                                                                                                                                                           |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `code`      | The snippet, URL-encoded. Up to 8,000 characters                                                                                                                                                                 |
+| `lang`      | A language id, such as `typescript`, `python`, `shell`                                                                                                                                                           |
+| `theme`     | `github-light`, `github-dark`, `dracula`, `nord`, `one-dark-pro`                                                                                                                                                 |
+| `bg`        | A background preset (`ocean`, `slate`, `sunset`, `forest`, `paper`, `charcoal`, `violet`, `rose`), `transparent`, a 6-digit hex color without `#` (`ff8800`), or two hex colors for a gradient (`ff8800,3355ff`) |
+| `padding`   | `16`, `32`, `64` or `128`                                                                                                                                                                                        |
+| `width`     | `320` to `1600`                                                                                                                                                                                                  |
+| `font`      | `12`, `14`, `15`, `16`, `18`, `20` or `24`                                                                                                                                                                       |
+| `lh`        | Line height, `1.2` to `2`                                                                                                                                                                                        |
+| `window`    | `controls`, `minimal` or `borderless`                                                                                                                                                                            |
+| `lines`     | Line numbers: `true`, `false`, `1` or `0`                                                                                                                                                                        |
+| `wrap`      | Wrap long lines, same values                                                                                                                                                                                     |
+| `showTitle` | Show the filename, same values                                                                                                                                                                                   |
+| `title`     | The filename, up to 200 characters                                                                                                                                                                               |
+| `scale`     | PNG scale: `1`, `2` or `3`                                                                                                                                                                                       |
+| `format`    | Download format: `png` or `svg`                                                                                                                                                                                  |
+| `highlight` | Lines to emphasize, such as `2,5-7`                                                                                                                                                                              |
+| `added`     | Lines marked as added                                                                                                                                                                                            |
+| `removed`   | Lines marked as removed                                                                                                                                                                                          |
 
 Unknown parameters are ignored. A value that isn't allowed is skipped and the page tells you, and the rest still apply. Nothing in a link ever runs as code.
 
@@ -132,7 +132,7 @@ It uses the same highlighter, themes and layout numbers as the app, so the image
 | Setting     | Options                                                                                                    |
 | ----------- | ---------------------------------------------------------------------------------------------------------- |
 | Themes      | GitHub Light, GitHub Dark, Dracula, Nord, One Dark Pro                                                     |
-| Backgrounds | Six gradients, two solids, or transparent                                                                  |
+| Backgrounds | Six gradients, two solids, transparent, or your own solid color or two-color gradient                      |
 | Languages   | JavaScript, TypeScript, HTML, CSS, JSON, Shell, Python, Go, PHP, SQL, Java, C#, Rust, Markdown, plain text |
 | Size        | Width 320–1600px, padding 16/32/64/128, export at 1×, 2× or 3×                                             |
 | Export      | PNG, or SVG with the text kept as text and the code font embedded                                          |

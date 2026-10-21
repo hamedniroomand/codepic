@@ -9,6 +9,7 @@ import {
   type ExportScale,
   type PaddingPx,
   type WindowStyle,
+  parseHexColor,
 } from '$lib/config/appearance-config';
 import { BACKGROUND_PRESETS } from '$lib/config/backgrounds';
 import { LANGUAGES } from '$lib/config/languages';
@@ -53,10 +54,25 @@ function numberBetween(name: string, min: number, max: number, raw: string): num
 function background(raw: string): AppearanceConfig['background'] {
   const empty = { solidColor: null, gradientFrom: null, gradientTo: null };
   if (raw === 'transparent') return { mode: 'transparent', presetId: '', ...empty };
+  const colors = raw.split(',').map((part) => parseHexColor(`#${part}`));
+  if (colors.length === 1 && colors[0]) {
+    return { mode: 'solid', presetId: '', ...empty, solidColor: colors[0] };
+  }
+  if (colors.length === 2 && colors[0] && colors[1]) {
+    return {
+      mode: 'gradient',
+      presetId: '',
+      ...empty,
+      gradientFrom: colors[0],
+      gradientTo: colors[1],
+    };
+  }
   const preset = BACKGROUND_PRESETS.find((option) => option.id === raw);
   if (!preset) {
     const allowed = ['transparent', ...BACKGROUND_PRESETS.map((option) => option.id)];
-    throw new Error(`Unknown bg "${raw}". Use one of: ${allowed.join(', ')}.`);
+    throw new Error(
+      `Invalid bg "${raw}". Use one of: ${allowed.join(', ')}, a 6-digit hex color without # such as ff8800, or two such colors such as ff8800,3355ff.`,
+    );
   }
   return { mode: preset.mode, presetId: preset.id, ...empty };
 }

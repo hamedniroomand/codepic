@@ -27,7 +27,8 @@ Appearance options take the same values as the URL parameters in the README:
 
   --lang <id>           Language (default: guessed from the code)
   --theme <id>          github-light, github-dark, dracula, nord, one-dark-pro
-  --bg <id>             A background preset, or transparent
+  --bg <id>             A background preset, transparent, a 6-digit hex color
+                        without # (ff8800), or two colors such as ff8800,3355ff
   --padding <px>        16, 32, 64 or 128
   --width <px>          320 to 1600
   --font <px>           12, 14, 15, 16, 18, 20 or 24

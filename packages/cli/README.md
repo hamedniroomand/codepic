@@ -33,25 +33,25 @@ codepic --help
 
 These match the [CodePic web app](https://codepic.kitdev.space/) URL parameters and the same option names on the command line.
 
-| Option        | Values                                                                                                           |
-| ------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `--lang`      | Language id, e.g. `typescript`, `python`, `shell`                                                                |
-| `--theme`     | `github-light`, `github-dark`, `dracula`, `nord`, `one-dark-pro`                                                 |
-| `--bg`        | Background preset (`ocean`, `slate`, `sunset`, `forest`, `paper`, `charcoal`, `violet`, `rose`) or `transparent` |
-| `--padding`   | `16`, `32`, `64`, `128`                                                                                          |
-| `--width`     | `320`–`1600`                                                                                                     |
-| `--font`      | `12`, `14`, `15`, `16`, `18`, `20`, `24`                                                                         |
-| `--lh`        | Line height, `1.2`–`2`                                                                                           |
-| `--window`    | `controls`, `minimal`, `borderless`                                                                              |
-| `--lines`     | Line numbers: `true` or `false`                                                                                  |
-| `--wrap`      | Wrap long lines: `true` or `false`                                                                               |
-| `--showTitle` | Show filename: `true` or `false`                                                                                 |
-| `--title`     | Window title (up to 200 characters)                                                                              |
-| `--scale`     | PNG scale: `1`, `2`, `3`                                                                                         |
-| `--format`    | `png` or `svg`                                                                                                   |
-| `--highlight` | Lines to emphasize, e.g. `2,5-7`                                                                                 |
-| `--added`     | Lines marked as added                                                                                            |
-| `--removed`   | Lines marked as removed                                                                                          |
+| Option        | Values                                                                                                                                                                                                         |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--lang`      | Language id, e.g. `typescript`, `python`, `shell`                                                                                                                                                              |
+| `--theme`     | `github-light`, `github-dark`, `dracula`, `nord`, `one-dark-pro`                                                                                                                                               |
+| `--bg`        | Background preset (`ocean`, `slate`, `sunset`, `forest`, `paper`, `charcoal`, `violet`, `rose`), `transparent`, a 6-digit hex color without `#` (`ff8800`), or two hex colors for a gradient (`ff8800,3355ff`) |
+| `--padding`   | `16`, `32`, `64`, `128`                                                                                                                                                                                        |
+| `--width`     | `320`–`1600`                                                                                                                                                                                                   |
+| `--font`      | `12`, `14`, `15`, `16`, `18`, `20`, `24`                                                                                                                                                                       |
+| `--lh`        | Line height, `1.2`–`2`                                                                                                                                                                                         |
+| `--window`    | `controls`, `minimal`, `borderless`                                                                                                                                                                            |
+| `--lines`     | Line numbers: `true` or `false`                                                                                                                                                                                |
+| `--wrap`      | Wrap long lines: `true` or `false`                                                                                                                                                                             |
+| `--showTitle` | Show filename: `true` or `false`                                                                                                                                                                               |
+| `--title`     | Window title (up to 200 characters)                                                                                                                                                                            |
+| `--scale`     | PNG scale: `1`, `2`, `3`                                                                                                                                                                                       |
+| `--format`    | `png` or `svg`                                                                                                                                                                                                 |
+| `--highlight` | Lines to emphasize, e.g. `2,5-7`                                                                                                                                                                               |
+| `--added`     | Lines marked as added                                                                                                                                                                                          |
+| `--removed`   | Lines marked as removed                                                                                                                                                                                        |
 
 Invalid values print a clear error and exit with status 1.
 

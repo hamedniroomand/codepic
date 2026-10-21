@@ -137,6 +137,13 @@ function parseExportScale(raw: unknown): ExportScale {
   return n === 1 || n === 2 || n === 3 ? n : DEFAULT_APPEARANCE.exportScale;
 }
 
+const HEX_COLOR = /^#[0-9a-f]{6}$/i;
+
+/** Returns the color in `#rrggbb` lower case, or null. Other CSS text is never accepted. */
+export function parseHexColor(raw: unknown): string | null {
+  return typeof raw === 'string' && HEX_COLOR.test(raw) ? raw.toLowerCase() : null;
+}
+
 function parseBackground(raw: unknown): BackgroundConfig {
   const bg = raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {};
   return {
@@ -146,9 +153,9 @@ function parseBackground(raw: unknown): BackgroundConfig {
         : DEFAULT_APPEARANCE.background.mode,
     presetId:
       typeof bg.presetId === 'string' ? bg.presetId : DEFAULT_APPEARANCE.background.presetId,
-    solidColor: typeof bg.solidColor === 'string' ? bg.solidColor : null,
-    gradientFrom: typeof bg.gradientFrom === 'string' ? bg.gradientFrom : null,
-    gradientTo: typeof bg.gradientTo === 'string' ? bg.gradientTo : null,
+    solidColor: parseHexColor(bg.solidColor),
+    gradientFrom: parseHexColor(bg.gradientFrom),
+    gradientTo: parseHexColor(bg.gradientTo),
   };
 }
 
