@@ -2,8 +2,9 @@ import { expect, test } from 'vite-plus/test';
 
 import { DEFAULT_APPEARANCE } from '$lib/config/appearance-config';
 import { NO_MARKS } from '$lib/marks/line-marks';
+import type { Panel } from '$lib/panels/panels';
 
-import { renderSvg } from './render-svg';
+import { renderPanelsSvg, renderSvg } from './render-svg';
 
 const appearance = { ...DEFAULT_APPEARANCE, language: 'typescript', title: 'a.ts' };
 
@@ -122,10 +123,57 @@ test.each([
     [{ line: 1, from: 4, to: 6, kind: 'box', note: 'n' }],
   );
   const cell = look.fontSize * 0.6;
-  const codeX = look.paddingPx + 24;
+  // Each window is drawn at (0, 0) and moved into place by its group.
+  const codeX = 24;
+  expect(svg).toContain(`<g transform="translate(${look.paddingPx} ${look.paddingPx})">`);
   // The tab before column 4 takes two cells, so the box starts after "ab" and two spaces.
   const rect = /<rect x="([\d.]+)" y="[\d.]+" width="([\d.]+)"[^>]*stroke="#facc15"/.exec(svg);
   expect(Number(rect?.[1])).toBeCloseTo(codeX + 4 * cell - 0.75, 5);
   expect(Number(rect?.[2])).toBeCloseTo(3 * cell + 1.5, 5);
   expect(svg).toContain('>n</text>');
+});
+
+const panel = (code: string, title = ''): Panel => ({
+  code,
+  language: 'typescript',
+  title,
+  marks: NO_MARKS,
+  annotations: [],
+});
+
+test('draws panels side by side with the same height', async () => {
+  const svg = await renderPanelsSvg([panel('a', 'a.ts'), panel('b\nc\nd', 'b.ts')], {
+    ...appearance,
+    width: 800,
+    paddingPx: 64,
+  });
+  // (800 - 2 * 64 - 24) / 2 = 324 for each window.
+  expect(svg).toContain('<g transform="translate(64 64)">');
+  expect(svg).toContain('<g transform="translate(412 64)">');
+  const heights = [...svg.matchAll(/<rect x="0" y="0" width="324" height="([\d.]+)"/g)].map(
+    (match) => match[1],
+  );
+  expect(new Set(heights).size).toBe(1);
+  expect(svg).toContain('a.ts');
+  expect(svg).toContain('b.ts');
+  expect(svg).toContain('clip-path="url(#code-1)"');
+});
+
+test('stacks panels in a column', async () => {
+  const one = await renderPanelsSvg([panel('a')], { ...appearance, panelLayout: 'column' });
+  const two = await renderPanelsSvg([panel('a'), panel('a')], {
+    ...appearance,
+    panelLayout: 'column',
+  });
+  const height = (svg: string): number => Number(/height="([\d.]+)"/.exec(svg)?.[1]);
+  expect(height(two) - height(one)).toBeCloseTo(height(one) - 2 * 64 + 24, 5);
+});
+
+test('keeps the clip width valid in a very narrow panel', async () => {
+  const svg = await renderPanelsSvg([panel('a'), panel('b'), panel('c')], {
+    ...appearance,
+    width: 320,
+    paddingPx: 128,
+  });
+  expect(svg).not.toMatch(/width="-/);
 });

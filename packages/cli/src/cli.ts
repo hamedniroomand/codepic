@@ -9,10 +9,11 @@ import { DEFAULT_APPEARANCE, mergeAppearance } from '$lib/config/appearance-conf
 import { codeFontById } from '$lib/config/fonts';
 import { detectLanguage } from '$lib/highlight/detect-language';
 import { NO_MARKS } from '$lib/marks/line-marks';
+import { MAX_PANELS, newPanel, type Panel } from '$lib/panels/panels';
 import { parseOpenParams } from '$lib/share/open-params';
 
 import { HELP, parseCliArgs } from './args';
-import { renderSvg } from './render-svg';
+import { renderPanelsSvg } from './render-svg';
 
 function fontFile(name: string): string {
   return fileURLToPath(new URL(`../assets/${name}`, import.meta.url));
@@ -36,18 +37,37 @@ async function run(argv: string[]): Promise<void> {
   const params = parseOpenParams(options.query);
   if (params.errors.length) throw new Error(params.errors.join('\n'));
 
-  const code = await readInput(options.file);
-  if (!code.trim()) throw new Error('The input is empty.');
+  if (options.files.length > MAX_PANELS) {
+    throw new Error(`Give --file at most ${MAX_PANELS} times, one panel for each file.`);
+  }
+  const [first, ...others] = options.files;
+  const code = await readInput(first);
+  if (!code.trim()) throw new Error(first ? `The file ${first} is empty.` : 'The input is empty.');
 
   const appearance = mergeAppearance(DEFAULT_APPEARANCE, {
     language: detectLanguage(code),
-    title: options.file ? basename(options.file) : DEFAULT_APPEARANCE.title,
+    title: first ? basename(first) : DEFAULT_APPEARANCE.title,
     exportFormat: extname(options.output ?? '') === '.svg' ? 'svg' : 'png',
     ...params.appearance,
   });
   const output = options.output ?? `codepic.${appearance.exportFormat}`;
 
-  const svg = await renderSvg(code, appearance, params.marks ?? NO_MARKS, params.annotations ?? []);
+  // Marks and annotations from the options belong to the first panel.
+  const panels: Panel[] = [
+    {
+      code,
+      language: appearance.language,
+      title: appearance.title,
+      marks: params.marks ?? NO_MARKS,
+      annotations: params.annotations ?? [],
+    },
+    ...others.map((file) => {
+      const text = readFileSync(file, 'utf8');
+      if (!text.trim()) throw new Error(`The file ${file} is empty.`);
+      return { ...newPanel(detectLanguage(text)), code: text, title: basename(file) };
+    }),
+  ];
+  const svg = await renderPanelsSvg(panels, appearance);
   if (appearance.exportFormat === 'svg') {
     writeFileSync(output, svg);
   } else {
