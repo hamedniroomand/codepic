@@ -19,6 +19,7 @@
   import { createLanguageDetection } from '$lib/highlight/language-detection.svelte';
   import { MAX_ANNOTATIONS, rangeFromSelection, type Annotation } from '$lib/marks/annotations';
   import type { LineMarks } from '$lib/marks/line-marks';
+  import { MAX_PANELS, newPanel, type Panel } from '$lib/panels/panels';
   import { saveAppearance } from '$lib/persistence/persistence';
   import { createPresetStore } from '$lib/presets/presets.svelte';
   import type { Boot } from '$lib/share/boot';
@@ -50,16 +51,34 @@
   let code = $state(initial.code);
   let marks = $state<LineMarks>(initial.marks);
   let annotations = $state<Annotation[]>(initial.annotations);
-  let selection = $state({ start: 0, end: 0 });
+  let extraPanels = $state<Panel[]>(initial.extraPanels);
+  let activePanel = $state(0);
+  let selection = $state({ panel: 0, start: 0, end: 0 });
+  // Only App knows that the first panel keeps its language and filename in the appearance.
+  let panels = $derived<Panel[]>([
+    { code, language: appearance.language, title: appearance.title, marks, annotations },
+    ...extraPanels,
+  ]);
+  let active = $derived(panels[activePanel] ?? panels[0]);
+  // A string, so a change to marks, annotations or a title does not start a new highlight.
+  let highlightKey = $derived(
+    JSON.stringify(panels.map(({ code, language }) => ({ code, language }))),
+  );
   let status = $state(initial.notice);
   let exportNode = $state<HTMLDivElement | null>(null);
 
   const setStatus = (message: string): string => (status = message);
   const highlight = createHighlightState(
-    () => ({ code, language: appearance.language, themeId: appearance.themeId }),
+    () => ({ panels: JSON.parse(highlightKey) as Panel[], themeId: appearance.themeId }),
     setStatus,
   );
-  const shareUsage = createShareUsage(() => ({ appearance, code, marks, annotations }));
+  const shareUsage = createShareUsage(() => ({
+    appearance,
+    code,
+    marks,
+    annotations,
+    extraPanels,
+  }));
   const exporter = createExporter(
     () => ({ node: exportNode, appearance, highlightSettled: highlight.settled }),
     setStatus,
@@ -70,34 +89,77 @@
     appearance = mergeAppearance(appearance, next);
   }
 
-  function changeMarks(next: LineMarks): void {
-    if (!exporter.busy) marks = next;
+  function changePanel(index: number, next: Partial<Panel>): void {
+    // Typing is never dropped, as before panels. Other changes wait for the export.
+    if (exporter.busy && Object.keys(next).some((key) => key !== 'code')) return;
+    if (index > 0) {
+      extraPanels = extraPanels.map((panel, at) =>
+        at === index - 1 ? { ...panel, ...next } : panel,
+      );
+      return;
+    }
+    if (next.code !== undefined) code = next.code;
+    if (next.marks) marks = next.marks;
+    if (next.annotations) annotations = next.annotations;
+    if (next.language !== undefined || next.title !== undefined) {
+      const { language = appearance.language, title = appearance.title } = next;
+      patch({ language, title });
+    }
   }
 
-  function changeAnnotations(next: Annotation[]): void {
-    if (!exporter.busy) annotations = next;
+  function addPanel(): void {
+    if (exporter.busy || panels.length >= MAX_PANELS) return;
+    extraPanels = [...extraPanels, newPanel(appearance.language)];
+    activePanel = panels.length;
   }
 
-  /** Marks the selected text, or the whole line of the caret when nothing is selected. */
+  function removePanel(index: number): void {
+    if (exporter.busy || index === 0) return;
+    extraPanels = extraPanels.filter((_, at) => at !== index - 1);
+    if (activePanel >= index) activePanel = Math.max(0, activePanel - 1);
+    selection = { panel: activePanel, start: 0, end: 0 };
+  }
+
+  /** Annotates the selected text, or the whole line of the caret when nothing is selected. */
   function annotateSelection(): void {
-    if (annotations.length >= MAX_ANNOTATIONS) {
+    // The settings show the active panel, so the annotation goes there. A selection from
+    // another panel does not apply, so the first line gets it.
+    const panel = active;
+    const { start, end } = selection.panel === activePanel ? selection : { start: 0, end: 0 };
+    if (panel.annotations.length >= MAX_ANNOTATIONS) {
       setStatus(`You can add up to ${MAX_ANNOTATIONS} annotations.`);
       return;
     }
-    const range = rangeFromSelection(code, selection.start, selection.end);
-    changeAnnotations([...annotations, { ...range, kind: 'box' }]);
+    const range = rangeFromSelection(panel.code, start, end);
+    changePanel(activePanel, {
+      annotations: [...panel.annotations, { ...range, kind: 'box' }],
+    });
   }
 
-  const languageDetection = createLanguageDetection((language) => patch({ language }));
+  // A paste fills the panel whose text field it lands in. Only the first panel's language
+  // shows the "(detected)" label, and a language the user picks stops detection.
+  const languageDetection = createLanguageDetection((language, editor) => {
+    const index = [...document.querySelectorAll('main textarea')].indexOf(editor);
+    changePanel(Math.max(0, index), { language });
+  });
 
   function changeFromDock(next: Partial<AppearanceConfig>): void {
     if (exporter.busy) return;
-    if (next.language !== undefined) languageDetection.pick();
-    patch(next);
+    const { language, title, ...rest } = next;
+    if (language !== undefined && activePanel === 0) languageDetection.pick();
+    if (language !== undefined || title !== undefined)
+      changePanel(activePanel, { language, title });
+    if (Object.keys(rest).length) patch(rest);
   }
 
   async function shareLink(): Promise<void> {
-    const { url, codeOmitted } = await buildShareUrl({ appearance, code, marks, annotations });
+    const { url, codeOmitted } = await buildShareUrl({
+      appearance,
+      code,
+      marks,
+      annotations,
+      extraPanels,
+    });
     try {
       await navigator.clipboard.writeText(url);
       setStatus(codeOmitted ? 'Link copied. The code was too long to include.' : 'Link copied.');
@@ -117,7 +179,8 @@
           .querySelector<HTMLElement>('#codepic-inspector button, #codepic-inspector input')
           ?.focus();
     },
-    focusEditor: () => document.querySelector<HTMLTextAreaElement>('textarea')?.focus(),
+    focusEditor: () =>
+      document.querySelectorAll<HTMLTextAreaElement>('main textarea')[activePanel]?.focus(),
     annotate: () => annotateSelection(),
     showHelp: () => {
       helpOpen = !helpOpen;
@@ -169,14 +232,15 @@
         </div>
         <PreviewStage
           {appearance}
+          {panels}
           lines={highlight.lines}
-          {marks}
-          {annotations}
-          bind:code
-          onSelect={(next) => (selection = next)}
+          onSelect={(next) => {
+            selection = next;
+            activePanel = next.panel;
+          }}
           exportRef={(element) => (exportNode = element)}
           onChange={patch}
-          onMarksChange={changeMarks}
+          onPanelChange={changePanel}
         />
         <footer class="about">
           <div class="privacy">
@@ -203,15 +267,20 @@
         busy={exporter.busy}
       >
         <SettingsInspector
-          {appearance}
-          {marks}
-          {annotations}
+          appearance={{ ...appearance, language: active.language, title: active.title }}
+          marks={active.marks}
+          annotations={active.annotations}
+          {panels}
+          {activePanel}
           store={presetStore}
-          languageDetected={languageDetection.detected}
+          languageDetected={languageDetection.detected && activePanel === 0}
           onChange={changeFromDock}
-          onMarksChange={changeMarks}
-          onAnnotationsChange={changeAnnotations}
+          onMarksChange={(next) => changePanel(activePanel, { marks: next })}
+          onAnnotationsChange={(next) => changePanel(activePanel, { annotations: next })}
           onAnnotate={annotateSelection}
+          onActivatePanel={(index) => (activePanel = index)}
+          onAddPanel={addPanel}
+          onRemovePanel={removePanel}
           onStatus={setStatus}
         />
       </SettingsPanel>

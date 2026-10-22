@@ -37,6 +37,10 @@ It's free, it has no accounts, and it has no server. The highlighting, the layou
 2. **Make it yours.** The settings sidebar groups appearance, code, layout and export controls. Pick a background (or your own colors) and theme, search for a language, adjust padding, width and image shape, or change the window and line numbers. On smaller screens, **Customize image** opens the same controls in a settings sheet.
 3. **Get the image.** Download a PNG or an SVG, copy the image to your clipboard, or copy a link that opens the exact same snapshot. Drag the handles on the sides of the card to set the width.
 
+### Show more than one file
+
+Use **Add panel** in the Panels section of the settings to show up to 3 code windows in one image, side by side or stacked. Each panel has its own code, language, filename, line highlights and annotations. After you add a panel, a list of the panels shows in the Panels section. Click in a panel's code, or select it in the list, and the settings change that panel. You cannot remove the first panel. The theme, the background and the window style are the same for all panels. Share links keep every panel. A plain link cannot add panels, and the `highlight` and `annotate` parameters apply to the first panel. The command line tool draws one panel for now.
+
 ### Annotate part of a line
 
 Select text in the code and press Ctrl/⌘ + Shift + Space, or use **Add annotation** under **Annotations** in the settings. The text gets a box. You can change it to an underline in the Annotations list.
@@ -94,6 +98,7 @@ If you write docs or a blog, a plain link is the easiest way to let readers twea
 | `theme`        | `github-light`, `github-dark`, `dracula`, `nord`, `one-dark-pro`, `catppuccin-latte`, `catppuccin-mocha`, `tokyo-night`, `monokai`, `night-owl`, `rose-pine`, `solarized-light`, `solarized-dark`, `vitesse-light`, `vitesse-dark`                                                                                             |
 | `bg`           | A background preset (`ocean`, `slate`, `sunset`, `forest`, `paper`, `charcoal`, `violet`, `rose`), `transparent`, a 6-digit hex color without `#` (`ff8800`), or two hex colors for a gradient (`ff8800,3355ff`)                                                                                                               |
 | `padding`      | `16`, `32`, `64` or `128`                                                                                                                                                                                                                                                                                                      |
+| `panelLayout`  | How more than one panel is laid out: `row` (default, side by side) or `column` (stacked). It has no effect with one panel. The command line tool does not use it yet                                                                                                                                                           |
 | `aspect`       | Image shape: `free` (default, the height follows the code), `16:9`, `1:1` or `4:5`. A fixed shape puts the card in the centre. The card gets smaller when the code is too tall                                                                                                                                                 |
 | `width`        | `320` to `1600`                                                                                                                                                                                                                                                                                                                |
 | `font`         | `12`, `14`, `15`, `16`, `18`, `20` or `24`                                                                                                                                                                                                                                                                                     |
@@ -154,7 +159,7 @@ npx codepic --file app.ts --theme nord -o out.png
 cat app.ts | npx codepic --lang typescript -o out.svg
 ```
 
-Code comes from `--file` or standard input. `-o` sets the output path, and a `.svg` name writes SVG. The language is guessed when you don't pass `--lang`, and the filename comes from `--file`. Every parameter in the table above works as an option with the same name and values, for example `--theme nord --highlight 2,5-7`. Run `codepic --help` for the full list. Mistakes name the option and the values it accepts, and exit with status 1.
+Code comes from `--file` or standard input. `-o` sets the output path, and a `.svg` name writes SVG. The language is guessed when you don't pass `--lang`, and the filename comes from `--file`. Every parameter in the table above, except `panelLayout`, works as an option with the same name and values, for example `--theme nord --highlight 2,5-7`. Run `codepic --help` for the full list. Mistakes name the option and the values it accepts, and exit with status 1.
 
 It uses the same highlighter, themes and layout numbers as the app, so the images match closely. Two differences to know about: the drop shadow is an approximation, and text wraps by character count, so wide characters like CJK or emoji can overrun a row. Nothing is uploaded.
 

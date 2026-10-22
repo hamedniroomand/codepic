@@ -2,7 +2,9 @@ import { expect, test } from 'vite-plus/test';
 
 import { DEFAULT_APPEARANCE } from '$lib/config/appearance-config';
 import { NO_MARKS } from '$lib/marks/line-marks';
+import { parsePanels } from '$lib/panels/panels';
 
+import { fromBase64Url, inflate } from './codec';
 import {
   SHARE_HASH_LIMIT,
   buildShareUrl,
@@ -18,6 +20,7 @@ const snapshot = (code: string): ShareSnapshot => ({
   code,
   marks: NO_MARKS,
   annotations: [],
+  extraPanels: [],
 });
 const hashOf = (url: string): string => url.slice(BASE.length);
 
@@ -81,7 +84,7 @@ test('links made before compression still open', async () => {
 });
 
 test('ignores hashes that are not share links', async () => {
-  const empty = { appearance: null, code: null, marks: null, annotations: null };
+  const empty = { appearance: null, code: null, marks: null, annotations: null, extraPanels: null };
   expect(await parseShareHash('')).toEqual(empty);
   expect(await parseShareHash('#other=1')).toEqual(empty);
   expect(await parseShareHash('#z=not-a-link')).toEqual(empty);
@@ -94,4 +97,35 @@ test('keeps annotations in a link and reads old links without them', async () =>
 
   const old = await buildShareUrl(snapshot('const a = 1;'), 'https://x/');
   expect((await parseShareHash(new URL(old.url).hash)).annotations).toBeNull();
+});
+
+test('keeps every panel with its marks and annotations', async () => {
+  const extraPanels = [
+    {
+      code: 'b = 2',
+      language: 'python',
+      title: 'b.py',
+      marks: { emphasized: [1], added: [], removed: [] },
+      annotations: [{ line: 1, from: 1, to: 1, kind: 'underline' as const, note: 'B' }],
+    },
+    { code: 'c', language: 'go', title: '', marks: NO_MARKS, annotations: [] },
+  ];
+  const { url } = await buildShareUrl({ ...snapshot('a'), extraPanels }, 'https://x/');
+  expect((await parseShareHash(new URL(url).hash)).extraPanels).toEqual(extraPanels);
+});
+
+test('a link with one panel has no panel list', async () => {
+  const { url } = await buildShareUrl(snapshot('a'), 'https://x/');
+  const hash = new URL(url).hash;
+  expect((await parseShareHash(hash)).extraPanels).toBeNull();
+  expect(await inflate(fromBase64Url(hash.slice(3)))).not.toContain('"p"');
+});
+
+test('drops bad panels from a link', () => {
+  expect(
+    parsePanels([{ c: 'x', l: 'klingon', t: 7 }, { l: 'go' }, 'x', { c: 'y' }, { c: 'z' }]),
+  ).toEqual([
+    { code: 'x', language: 'plaintext', title: '', marks: NO_MARKS, annotations: [] },
+    { code: 'y', language: 'plaintext', title: '', marks: NO_MARKS, annotations: [] },
+  ]);
 });

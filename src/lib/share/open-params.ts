@@ -6,6 +6,7 @@ import {
   MAX_WIDTH,
   MIN_WIDTH,
   ASPECT_RATIOS,
+  PANEL_LAYOUTS,
   PADDING_OPTIONS,
   SIGNATURE_POSITIONS,
   type AppearanceConfig,
@@ -125,6 +126,9 @@ const APPLY: Record<string, Apply> = {
   },
   font: (raw, { appearance }) => {
     appearance.fontSize = oneOf('font', FONT_SIZE_OPTIONS, raw);
+  },
+  panelLayout: (raw, { appearance }) => {
+    appearance.panelLayout = oneOf('panelLayout', PANEL_LAYOUTS, raw);
   },
   aspect: (raw, { appearance }) => {
     appearance.aspect = oneOf('aspect', ASPECT_RATIOS, raw);

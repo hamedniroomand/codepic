@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Palette, Code2, Scan, Download, SlidersHorizontal } from '@lucide/svelte';
+  import { Palette, Code2, Columns2, Scan, Download, SlidersHorizontal } from '@lucide/svelte';
 
   import Field from '$components/ui/Field.svelte';
   import Select from '$components/ui/Select.svelte';
@@ -14,36 +14,48 @@
   import { THEMES, isDarkTheme, toggleDarkTheme } from '$lib/config/themes';
   import type { Annotation } from '$lib/marks/annotations';
   import type { LineMarks } from '$lib/marks/line-marks';
+  import type { Panel } from '$lib/panels/panels';
   import type { PresetStore } from '$lib/presets/presets.svelte';
 
   import BackgroundSwatches from './BackgroundSwatches.svelte';
   import CodeFields from './CodeFields.svelte';
   import ExportFields from './ExportFields.svelte';
   import LayoutFields from './LayoutFields.svelte';
+  import PanelsFields from './PanelsFields.svelte';
   import PresetsPopover from './PresetsPopover.svelte';
 
   type Props = {
     appearance: AppearanceConfig;
     marks: LineMarks;
     annotations: Annotation[];
+    panels: Panel[];
+    activePanel: number;
     languageDetected: boolean;
     store: PresetStore;
     onChange: (patch: Partial<AppearanceConfig>) => void;
     onMarksChange: (marks: LineMarks) => void;
     onAnnotationsChange: (annotations: Annotation[]) => void;
     onAnnotate: () => void;
+    onActivatePanel: (index: number) => void;
+    onAddPanel: () => void;
+    onRemovePanel: (index: number) => void;
     onStatus: (message: string) => void;
   };
   let {
     appearance,
     marks,
     annotations,
+    panels,
+    activePanel,
     languageDetected,
     store,
     onChange,
     onMarksChange,
     onAnnotationsChange,
     onAnnotate,
+    onActivatePanel,
+    onAddPanel,
+    onRemovePanel,
     onStatus,
   }: Props = $props();
   const corners: Record<SignaturePosition, string> = {
@@ -115,7 +127,21 @@
     {/if}
   </section>
   <section class="settings-section">
-    <h2><Code2 size={15} /> Code</h2>
+    <h2><Columns2 size={15} /> Panels</h2>
+    <PanelsFields
+      {appearance}
+      {panels}
+      {activePanel}
+      {onChange}
+      onActivate={onActivatePanel}
+      onAdd={onAddPanel}
+      onRemove={onRemovePanel}
+    />
+  </section>
+  <section class="settings-section">
+    <h2>
+      <Code2 size={15} /> Code{panels.length > 1 ? ` for panel ${activePanel + 1}` : ''}
+    </h2>
     <CodeFields
       {appearance}
       {languageDetected}
