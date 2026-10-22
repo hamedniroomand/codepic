@@ -29,7 +29,7 @@ export async function captureCanvas(
   // SnapshotFrame styles `data-hide-code`.
   if (hideCode) node.setAttribute('data-hide-code', '');
   try {
-    // A GIF has no partial transparency, so a see-through background becomes white.
+    // GIF and MP4 have no partial transparency, so a see-through background becomes white.
     return await domToCanvas(node, { scale: 1, backgroundColor: '#ffffff' });
   } finally {
     node.removeAttribute('data-hide-code');

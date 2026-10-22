@@ -52,9 +52,9 @@ async function run(argv: string[]): Promise<void> {
   });
   if (
     (appearance.exportFormat !== 'png' && appearance.exportFormat !== 'svg') ||
-    extname(options.output ?? '').toLowerCase() === '.gif'
+    ['.gif', '.mp4'].includes(extname(options.output ?? '').toLowerCase())
   ) {
-    throw new Error('--format must be png or svg. Animated GIFs need the web app.');
+    throw new Error('--format must be png or svg. Animated GIF and MP4 images need the web app.');
   }
   const output = options.output ?? `codepic.${appearance.exportFormat}`;
 

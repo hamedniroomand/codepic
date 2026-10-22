@@ -7,7 +7,7 @@ no versions of its own.
 
 ### Changed
 
-- `--format gif`, or an output name that ends in `.gif`, stops with an error. Animated GIFs need the web app.
+- `--format gif` or `mp4`, or an output name that ends in `.gif` or `.mp4`, stops with an error. Animated images need the web app.
 
 ### Added
 

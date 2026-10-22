@@ -4,7 +4,7 @@ export type PaddingPx = 16 | 32 | 64 | 128;
 export type WindowStyle = 'minimal' | 'controls' | 'borderless';
 export type BackgroundMode = 'solid' | 'gradient' | 'transparent';
 export type ExportScale = 1 | 2 | 3;
-export type ExportFormat = 'png' | 'svg' | 'gif';
+export type ExportFormat = 'png' | 'svg' | 'gif' | 'mp4';
 export type PanelLayout = 'row' | 'column';
 export type AspectRatio = 'free' | '16:9' | '1:1' | '4:5';
 export type SignaturePosition = 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
@@ -36,7 +36,7 @@ export type AppearanceConfig = {
   typingSpeed: number;
   /** Seconds the full code stays on screen at the end of an animated export. */
   endPause: number;
-  /** An animated GIF plays again from the start. */
+  /** An animated GIF plays again from the start. A video player decides this for an MP4. */
   loop: boolean;
   /** How more than one panel is laid out: side by side, or one above the other. */
   panelLayout: PanelLayout;
@@ -53,8 +53,8 @@ export type AppearanceConfig = {
 export const PADDING_OPTIONS: PaddingPx[] = [16, 32, 64, 128];
 export const FONT_SIZE_OPTIONS = [12, 14, 15, 16, 18, 20, 24];
 export const EXPORT_SCALE_OPTIONS: ExportScale[] = [1, 2, 3];
-export const EXPORT_FORMATS: ExportFormat[] = ['png', 'svg', 'gif'];
-export const ANIMATED_FORMATS: ExportFormat[] = ['gif'];
+export const EXPORT_FORMATS: ExportFormat[] = ['png', 'svg', 'gif', 'mp4'];
+export const ANIMATED_FORMATS: ExportFormat[] = ['gif', 'mp4'];
 export const TYPING_SPEEDS = [15, 30, 60];
 export const END_PAUSES = [0.5, 1, 2, 3];
 export const SIGNATURE_POSITIONS: SignaturePosition[] = [

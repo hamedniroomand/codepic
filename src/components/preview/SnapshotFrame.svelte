@@ -128,7 +128,7 @@
     flex: none;
   }
   /*
-    Set only during a GIF capture, for the frame without the code text. Global, because the
+    Set only during an animated capture, for the frame without the code text. Global, because the
     attribute is set from script and Svelte would drop the rule. The capture ignores a
     transparent text color, so the text is hidden. Annotation boxes stay, without their text.
   */
