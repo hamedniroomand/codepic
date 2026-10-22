@@ -48,3 +48,10 @@ test('passes custom background colors to the appearance', () => {
     gradientTo: '#3355ff',
   });
 });
+
+test('passes each --annotate on', () => {
+  const { annotations } = parseOpenParams(
+    parseCliArgs(['--annotate', '1:2-3', '--annotate', '2:box:Two']).query,
+  );
+  expect(annotations).toHaveLength(2);
+});

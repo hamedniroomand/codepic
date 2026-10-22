@@ -47,7 +47,7 @@ async function run(argv: string[]): Promise<void> {
   });
   const output = options.output ?? `codepic.${appearance.exportFormat}`;
 
-  const svg = await renderSvg(code, appearance, params.marks ?? NO_MARKS);
+  const svg = await renderSvg(code, appearance, params.marks ?? NO_MARKS, params.annotations ?? []);
   if (appearance.exportFormat === 'svg') {
     writeFileSync(output, svg);
   } else {

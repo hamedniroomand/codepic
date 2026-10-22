@@ -1,6 +1,12 @@
 import { expect, test } from 'vite-plus/test';
 
-import { markColumns, noteNumbers, parseAnnotations, rangeFromSelection } from './annotations';
+import {
+  markColumns,
+  noteNumbers,
+  parseAnnotationParam,
+  parseAnnotations,
+  rangeFromSelection,
+} from './annotations';
 
 type Range = { from: number; to: number; kind: 'box'; number?: number };
 
@@ -74,4 +80,27 @@ test('turns a selection into a range on its first line', () => {
   expect(rangeFromSelection(code, 4, 4)).toEqual({ line: 1 });
   expect(rangeFromSelection('😀 foo', 3, 6)).toEqual({ line: 1, from: 3, to: 5 });
   expect(markColumns('😀 foo', [box(3, 5)])).toBe('😀 <mark class="ann ann-box">foo</mark>');
+});
+
+test('reads an annotate link parameter', () => {
+  expect(parseAnnotationParam('3')).toEqual({ line: 3, kind: 'box' });
+  expect(parseAnnotationParam('3:5-12:underline:Read: the file')).toEqual({
+    line: 3,
+    from: 5,
+    to: 12,
+    kind: 'underline',
+    note: 'Read: the file',
+  });
+  expect(parseAnnotationParam('2:7:Note')).toEqual({
+    line: 2,
+    from: 7,
+    to: 7,
+    kind: 'box',
+    note: 'Note',
+  });
+  expect(() => parseAnnotationParam('x:1-2')).toThrow('Start with a line number');
+  expect(() => parseAnnotationParam('1e2')).toThrow('Start with a line number');
+  expect(parseAnnotationParam('3:Underline')).toEqual({ line: 3, kind: 'underline' });
+  expect(parseAnnotationParam('3::box')).toEqual({ line: 3, kind: 'box' });
+  expect(() => parseAnnotationParam('3:9-2')).toThrow('Invalid annotate columns');
 });

@@ -24,7 +24,7 @@ export function resolveBoot(shared: SharedSnapshot, search: string, saved: Appea
     appearance: shared.appearance ?? mergeAppearance(saved, params.appearance),
     code: shared.code ?? params.code ?? DEFAULT_CODE,
     marks: shared.marks ?? params.marks ?? NO_MARKS,
-    annotations: shared.annotations ?? [],
+    annotations: shared.annotations ?? params.annotations ?? [],
     notice: params.errors.join(' '),
   };
 }

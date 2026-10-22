@@ -45,6 +45,7 @@ test('reads the marker and the options from the meta', () => {
   expect(parseMeta('notcodepic')).toBeNull();
   expect(parseMeta('title="about codepic"')).toBeNull();
   expect(parseMeta(null)).toBeNull();
+  expect(() => parseMeta('codepic annotate=1 annotate=2')).toThrow('more than once');
 });
 
 test('reads a long option string in linear time', () => {

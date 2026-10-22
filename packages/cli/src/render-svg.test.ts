@@ -110,3 +110,22 @@ test('keeps the card visible when the padding is larger than the shape', async (
   );
   expect(Number(/scale\(([\d.]+)\)/.exec(svg)?.[1])).toBeGreaterThan(0.3);
 });
+
+test.each([
+  { fontSize: 12, width: 680, paddingPx: 16 as const },
+  { fontSize: 20, width: 900, paddingPx: 128 as const },
+])('places an annotation box on its columns at %o', async (look) => {
+  const svg = await renderSvg(
+    'ab\tcdefgh',
+    { ...appearance, ...look, lineNumbers: false },
+    NO_MARKS,
+    [{ line: 1, from: 4, to: 6, kind: 'box', note: 'n' }],
+  );
+  const cell = look.fontSize * 0.6;
+  const codeX = look.paddingPx + 24;
+  // The tab before column 4 takes two cells, so the box starts after "ab" and two spaces.
+  const rect = /<rect x="([\d.]+)" y="[\d.]+" width="([\d.]+)"[^>]*stroke="#facc15"/.exec(svg);
+  expect(Number(rect?.[1])).toBeCloseTo(codeX + 4 * cell - 0.75, 5);
+  expect(Number(rect?.[2])).toBeCloseTo(3 * cell + 1.5, 5);
+  expect(svg).toContain('>n</text>');
+});

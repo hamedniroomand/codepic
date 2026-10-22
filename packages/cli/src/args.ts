@@ -2,8 +2,11 @@ import { parseArgs } from 'node:util';
 
 import { APPEARANCE_PARAMS } from '$lib/share/open-params';
 
+// `annotate` can be given more than once, one annotation each time.
 const APPEARANCE_OPTIONS = Object.fromEntries(
-  APPEARANCE_PARAMS.map((name) => [name, { type: 'string' }] as const),
+  APPEARANCE_PARAMS.map(
+    (name) => [name, { type: 'string', multiple: name === 'annotate' }] as const,
+  ),
 );
 
 export type CliOptions = {
@@ -56,6 +59,10 @@ Appearance options take the same values as the URL parameters in the README:
                         (default: none)
   --signaturePos <pos>  bottom-right (default), bottom-left, top-right
                         or top-left
+  --annotate <spec>     Box or underline part of a line. The note is optional:
+                        LINE[:FROM-TO][:box|underline][:NOTE], such as
+                        3:5-12:box:Reads the file. Without columns, the
+                        whole line is marked. Give it up to 50 times.
   --highlight <lines>   Lines to emphasize, such as 2,5-7
   --added <lines>       Lines marked as added
   --removed <lines>     Lines marked as removed
@@ -63,6 +70,14 @@ Appearance options take the same values as the URL parameters in the README:
 Example:
   npx codepic --file app.ts --theme nord -o out.png
 `;
+
+function toQuery(options: Record<string, string | string[]>): string {
+  const query = new URLSearchParams();
+  for (const [name, value] of Object.entries(options)) {
+    for (const item of Array.isArray(value) ? value : [value]) query.append(name, item);
+  }
+  return query.toString();
+}
 
 export function parseCliArgs(argv: string[]): CliOptions {
   const { values } = parseArgs({
@@ -79,6 +94,6 @@ export function parseCliArgs(argv: string[]): CliOptions {
     file,
     output,
     help: help ?? false,
-    query: new URLSearchParams(appearance as Record<string, string>).toString(),
+    query: toQuery(appearance as Record<string, string | string[]>),
   };
 }
