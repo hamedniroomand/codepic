@@ -1,5 +1,6 @@
 import { mergeAppearance, type AppearanceConfig } from '$lib/config/appearance-config';
 import { DEFAULT_CODE } from '$lib/config/default-code';
+import type { Annotation } from '$lib/marks/annotations';
 import { NO_MARKS, type LineMarks } from '$lib/marks/line-marks';
 
 import { parseOpenParams } from './open-params';
@@ -9,6 +10,7 @@ export type Boot = {
   appearance: AppearanceConfig;
   code: string;
   marks: LineMarks;
+  annotations: Annotation[];
   notice: string;
 };
 
@@ -22,6 +24,7 @@ export function resolveBoot(shared: SharedSnapshot, search: string, saved: Appea
     appearance: shared.appearance ?? mergeAppearance(saved, params.appearance),
     code: shared.code ?? params.code ?? DEFAULT_CODE,
     marks: shared.marks ?? params.marks ?? NO_MARKS,
+    annotations: shared.annotations ?? [],
     notice: params.errors.join(' '),
   };
 }

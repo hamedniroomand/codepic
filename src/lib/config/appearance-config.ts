@@ -78,10 +78,6 @@ export function fitScale(frameHeight: number, padding: number, cardHeight: numbe
   return cardHeight > 0 ? Math.min(1, room / cardHeight) : 1;
 }
 
-/**
- * Removes control characters, which are not valid in SVG text, and cuts the text to
- * MAX_SIGNATURE_CHARS characters without splitting an emoji in two.
- */
 const graphemes = new Intl.Segmenter();
 
 /** Counts what a reader sees as one character, so an emoji is never split. */
@@ -90,9 +86,17 @@ export function characters(raw: string): string[] {
 }
 
 export function cleanSignature(raw: string): string {
+  return cleanText(raw, MAX_SIGNATURE_CHARS);
+}
+
+/**
+ * Removes control characters, which are not valid in SVG text, and cuts the text to `max`
+ * characters without splitting an emoji in two.
+ */
+export function cleanText(raw: string, max: number): string {
   // eslint-disable-next-line no-control-regex
   return characters(raw.replace(/[\u0000-\u001f\u007f-\u009f]/g, ''))
-    .slice(0, MAX_SIGNATURE_CHARS)
+    .slice(0, max)
     .join('');
 }
 

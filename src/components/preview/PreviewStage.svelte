@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { AppearanceConfig } from '$lib/config/appearance-config';
   import { MIN_READABLE_FONT_PX, clampWidth } from '$lib/config/appearance-config';
+  import type { Annotation } from '$lib/marks/annotations';
   import type { LineMarks } from '$lib/marks/line-marks';
 
   import ResizeHandle from './ResizeHandle.svelte';
@@ -10,7 +11,9 @@
     appearance: AppearanceConfig;
     lines: string[];
     marks: LineMarks;
+    annotations: Annotation[];
     code: string;
+    onSelect: (selection: { start: number; end: number }) => void;
     exportRef: (element: HTMLDivElement | null) => void;
     onChange: (patch: Partial<AppearanceConfig>) => void;
     onMarksChange: (marks: LineMarks) => void;
@@ -20,7 +23,9 @@
     appearance,
     lines,
     marks,
+    annotations,
     code = $bindable(),
+    onSelect,
     exportRef,
     onChange,
     onMarksChange,
@@ -56,6 +61,8 @@
           {appearance}
           {lines}
           {marks}
+          {annotations}
+          {onSelect}
           interactive
           bind:code
           onTitleChange={(title) => onChange({ title })}
@@ -94,6 +101,7 @@
     {appearance}
     {lines}
     {marks}
+    {annotations}
     forExport
     frameRef={exportRef}
   />

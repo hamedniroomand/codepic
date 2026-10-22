@@ -13,20 +13,28 @@
     MAX_WIDTH,
     clampWidth,
   } from '$lib/config/appearance-config';
+  import type { Annotation } from '$lib/marks/annotations';
   import type { LineMarks } from '$lib/marks/line-marks';
 
+  import AnnotationsFields from './AnnotationsFields.svelte';
   import LineMarksFields from './LineMarksFields.svelte';
 
   let {
     appearance,
     marks,
+    annotations,
     onChange,
     onMarksChange,
+    onAnnotationsChange,
+    onAnnotate,
   }: {
     appearance: AppearanceConfig;
     marks: LineMarks;
+    annotations: Annotation[];
     onChange: (patch: Partial<AppearanceConfig>) => void;
     onMarksChange: (marks: LineMarks) => void;
+    onAnnotationsChange: (annotations: Annotation[]) => void;
+    onAnnotate: () => void;
   } = $props();
   const shapes = ASPECT_RATIOS.map((value) => ({
     value,
@@ -71,6 +79,22 @@
       <LineMarksFields
         {marks}
         onChange={onMarksChange}
+      />
+    </div>
+  </Collapsible.Content>
+</Collapsible.Root>
+<Collapsible.Root>
+  <Collapsible.Trigger class="marks-trigger"
+    >Annotations{annotations.length ? ` (${annotations.length})` : ''}<ChevronDown
+      size={13}
+    /></Collapsible.Trigger
+  >
+  <Collapsible.Content>
+    <div class="marks">
+      <AnnotationsFields
+        {annotations}
+        onChange={onAnnotationsChange}
+        {onAnnotate}
       />
     </div>
   </Collapsible.Content>

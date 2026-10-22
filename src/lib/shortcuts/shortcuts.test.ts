@@ -46,3 +46,8 @@ test('formats for each platform', () => {
   expect(formatShortcut(SHORTCUTS[1], true)).toBe('⌘⇧Enter');
   expect(formatShortcut(SHORTCUTS[1], false)).toBe('Ctrl+Shift+Enter');
 });
+
+test('names the space key', () => {
+  const annotate = SHORTCUTS.find((shortcut) => shortcut.action === 'annotate');
+  expect(annotate && formatShortcut(annotate, false)).toBe('Ctrl+Shift+Space');
+});

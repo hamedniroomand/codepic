@@ -13,7 +13,12 @@ import {
 
 const BASE = 'https://example.test/';
 const appearance = { ...DEFAULT_APPEARANCE, title: 'share.ts' };
-const snapshot = (code: string): ShareSnapshot => ({ appearance, code, marks: NO_MARKS });
+const snapshot = (code: string): ShareSnapshot => ({
+  appearance,
+  code,
+  marks: NO_MARKS,
+  annotations: [],
+});
 const hashOf = (url: string): string => url.slice(BASE.length);
 
 function noisyCode(length: number): string {
@@ -76,8 +81,17 @@ test('links made before compression still open', async () => {
 });
 
 test('ignores hashes that are not share links', async () => {
-  const empty = { appearance: null, code: null, marks: null };
+  const empty = { appearance: null, code: null, marks: null, annotations: null };
   expect(await parseShareHash('')).toEqual(empty);
   expect(await parseShareHash('#other=1')).toEqual(empty);
   expect(await parseShareHash('#z=not-a-link')).toEqual(empty);
+});
+
+test('keeps annotations in a link and reads old links without them', async () => {
+  const annotations = [{ line: 1, from: 1, to: 3, kind: 'box' as const, note: 'Look' }];
+  const { url } = await buildShareUrl({ ...snapshot('const a = 1;'), annotations }, 'https://x/');
+  expect((await parseShareHash(new URL(url).hash)).annotations).toEqual(annotations);
+
+  const old = await buildShareUrl(snapshot('const a = 1;'), 'https://x/');
+  expect((await parseShareHash(new URL(old.url).hash)).annotations).toBeNull();
 });

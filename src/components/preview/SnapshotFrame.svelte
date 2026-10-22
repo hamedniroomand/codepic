@@ -7,6 +7,7 @@
   } from '$lib/config/appearance-config';
   import { backgroundStyle, signatureColor } from '$lib/config/backgrounds';
   import { codeFontStack } from '$lib/config/fonts';
+  import type { Annotation } from '$lib/marks/annotations';
   import type { LineMarks } from '$lib/marks/line-marks';
 
   import CodeWindow from './CodeWindow.svelte';
@@ -15,6 +16,8 @@
     appearance: AppearanceConfig;
     lines: string[];
     marks?: LineMarks;
+    annotations?: Annotation[];
+    onSelect?: (selection: { start: number; end: number }) => void;
     interactive?: boolean;
     forExport?: boolean;
     frameRef?: (element: HTMLDivElement | null) => void;
@@ -29,6 +32,8 @@
     appearance,
     lines,
     marks,
+    annotations = [],
+    onSelect,
     interactive = false,
     forExport = false,
     frameRef = () => {},
@@ -80,6 +85,8 @@
       {appearance}
       {lines}
       {marks}
+      {annotations}
+      {onSelect}
       {interactive}
       bind:code
       {onTitleChange}

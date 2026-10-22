@@ -1,4 +1,5 @@
 import { parseAppearance, type AppearanceConfig } from '$lib/config/appearance-config';
+import { parseAnnotations, type Annotation } from '$lib/marks/annotations';
 import { MARK_KINDS, parseMarks, type LineMarks } from '$lib/marks/line-marks';
 
 import { deflate, fromBase64Url, inflate, toBase64Url } from './codec';
@@ -14,23 +15,32 @@ export type ShareSnapshot = {
   appearance: AppearanceConfig;
   code: string;
   marks: LineMarks;
+  annotations: Annotation[];
 };
 
 export type SharedSnapshot = {
   appearance: AppearanceConfig | null;
   code: string | null;
   marks: LineMarks | null;
+  annotations: Annotation[] | null;
 };
 
 // A payload without `a` carries only code, so the reader keeps its own appearance.
-type SharePayload = { a?: AppearanceConfig; c?: string; m?: LineMarks };
+type SharePayload = { a?: AppearanceConfig; c?: string; m?: LineMarks; n?: Annotation[] };
 
-const EMPTY_SHARE: SharedSnapshot = { appearance: null, code: null, marks: null };
+const EMPTY_SHARE: SharedSnapshot = {
+  appearance: null,
+  code: null,
+  marks: null,
+  annotations: null,
+};
 
-function toPayload({ appearance, code, marks }: ShareSnapshot): SharePayload {
+function toPayload({ appearance, code, marks, annotations }: ShareSnapshot): SharePayload {
   const payload: SharePayload = { a: appearance };
   if (code) payload.c = code;
   if (MARK_KINDS.some((kind) => marks[kind].length)) payload.m = marks;
+  // Annotations point into the code, so they go only where the code goes.
+  if (code && annotations.length) payload.n = annotations;
   return payload;
 }
 
@@ -76,6 +86,7 @@ export async function parseShareHash(hash: string): Promise<SharedSnapshot> {
       appearance: data.a ? parseAppearance(data.a) : null,
       code: typeof data.c === 'string' ? data.c : null,
       marks: data.m ? parseMarks(data.m) : null,
+      annotations: data.n ? parseAnnotations(data.n) : null,
     };
   } catch {
     return EMPTY_SHARE;

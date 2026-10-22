@@ -4,6 +4,7 @@ export type ShortcutAction =
   | 'shareLink'
   | 'toggleSettings'
   | 'focusEditor'
+  | 'annotate'
   | 'showHelp';
 
 export type Shortcut = {
@@ -21,6 +22,8 @@ export const SHORTCUTS: readonly Shortcut[] = [
   { action: 'shareLink', label: 'Copy share link', key: 'l', shift: true },
   { action: 'toggleSettings', label: 'Open image settings', key: '.' },
   { action: 'focusEditor', label: 'Focus the editor', key: 'e', shift: true },
+  // Ctrl+Shift+M and most letter keys with Shift are taken by Chrome or Firefox.
+  { action: 'annotate', label: 'Annotate the selected text', key: ' ', shift: true },
   { action: 'showHelp', label: 'Show keyboard shortcuts', key: '/' },
 ];
 
@@ -41,7 +44,7 @@ export function formatShortcut({ key, shift }: Shortcut, mac: boolean): string {
   const parts = [
     mac ? '⌘' : 'Ctrl',
     ...(shift ? [mac ? '⇧' : 'Shift'] : []),
-    key.length === 1 ? key.toUpperCase() : key,
+    key === ' ' ? 'Space' : key.length === 1 ? key.toUpperCase() : key,
   ];
   return parts.join(mac ? '' : '+');
 }

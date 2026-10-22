@@ -12,6 +12,7 @@
     type SignaturePosition,
   } from '$lib/config/appearance-config';
   import { THEMES, isDarkTheme, toggleDarkTheme } from '$lib/config/themes';
+  import type { Annotation } from '$lib/marks/annotations';
   import type { LineMarks } from '$lib/marks/line-marks';
   import type { PresetStore } from '$lib/presets/presets.svelte';
 
@@ -24,14 +25,27 @@
   type Props = {
     appearance: AppearanceConfig;
     marks: LineMarks;
+    annotations: Annotation[];
     languageDetected: boolean;
     store: PresetStore;
     onChange: (patch: Partial<AppearanceConfig>) => void;
     onMarksChange: (marks: LineMarks) => void;
+    onAnnotationsChange: (annotations: Annotation[]) => void;
+    onAnnotate: () => void;
     onStatus: (message: string) => void;
   };
-  let { appearance, marks, languageDetected, store, onChange, onMarksChange, onStatus }: Props =
-    $props();
+  let {
+    appearance,
+    marks,
+    annotations,
+    languageDetected,
+    store,
+    onChange,
+    onMarksChange,
+    onAnnotationsChange,
+    onAnnotate,
+    onStatus,
+  }: Props = $props();
   const corners: Record<SignaturePosition, string> = {
     'bottom-right': 'Bottom right',
     'bottom-left': 'Bottom left',
@@ -113,8 +127,11 @@
     <LayoutFields
       {appearance}
       {marks}
+      {annotations}
       {onChange}
       {onMarksChange}
+      {onAnnotationsChange}
+      {onAnnotate}
     />
   </section>
   <section class="settings-section">
