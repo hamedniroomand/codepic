@@ -52,6 +52,8 @@ type Window = {
 export async function renderPanelsSvg(
   panels: Panel[],
   appearance: AppearanceConfig,
+  /** The code font file in base64. When set, the SVG carries the font, so any viewer shows it. */
+  fontBase64?: string,
 ): Promise<string> {
   const font = codeFontById(appearance.codeFont);
   const pad = appearance.paddingPx;
@@ -80,7 +82,7 @@ export async function renderPanelsSvg(
   });
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${appearance.width}" height="${frameH}" viewBox="0 0 ${appearance.width} ${frameH}" font-size="${appearance.fontSize}" font-family="${font.family}, monospace"${appearance.ligatures ? '' : ' style="font-variant-ligatures: none"'}>
-<defs>${paint.defs}<filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dy="24" stdDeviation="28" flood-opacity="0.3"/></filter></defs>
+<defs>${fontBase64 ? `<style>@font-face{font-family:"${font.family}";src:url(data:font/ttf;base64,${fontBase64}) format("truetype")}</style>` : ''}${paint.defs}<filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dy="24" stdDeviation="28" flood-opacity="0.3"/></filter></defs>
 ${appearance.background.mode === 'transparent' ? '' : `<rect width="100%" height="100%" fill="${paint.fill}"/>`}
 <g transform="translate(${appearance.width / 2} ${frameH / 2}) scale(${fit}) translate(${-appearance.width / 2} ${-(pad + cardH / 2)})">
 ${placed.join('\n')}

@@ -7,6 +7,7 @@ no versions of its own.
 
 ### Changed
 
+- SVG output now carries the code font, so browsers show it without the font installed. Each SVG is about 230 to 390 KB larger.
 - `--format gif` or `mp4`, or an output name that ends in `.gif` or `.mp4`, stops with an error. Animated images need the web app.
 
 ### Added

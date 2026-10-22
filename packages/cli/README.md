@@ -23,7 +23,7 @@ codepic --file app.ts --theme nord -o out.png
 cat app.ts | codepic --lang typescript -o out.svg
 ```
 
-Code comes from `--file` or standard input. Give `--file` up to 3 times for one panel per file. Each extra panel gets its language from its code and its title from its file name. `--lang`, `--title`, `--highlight`, `--added`, `--removed` and `--annotate` apply to the first panel. `-o` / `--output` sets the path (default `codepic.png`). A `.svg` extension writes SVG. The SVG names the code font but does not embed it, so a viewer without that font installed draws another monospace font. PNG output always uses the chosen font. Language is guessed when you omit `--lang`; with `--file`, the filename is used as the title unless you pass `--title`.
+Code comes from `--file` or standard input. Give `--file` up to 3 times for one panel per file. Each extra panel gets its language from its code and its title from its file name. `--lang`, `--title`, `--highlight`, `--added`, `--removed` and `--annotate` apply to the first panel. `-o` / `--output` sets the path (default `codepic.png`). A `.svg` extension writes SVG. The SVG carries the code font, so browsers show it without the font installed. Some design tools ignore a font in an SVG and use another monospace font. This makes each SVG about 230 to 390 KB larger. Language is guessed when you omit `--lang`; with `--file`, the filename is used as the title unless you pass `--title`.
 
 ```sh
 codepic --help

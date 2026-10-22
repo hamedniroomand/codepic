@@ -177,3 +177,16 @@ test('keeps the clip width valid in a very narrow panel', async () => {
   });
   expect(svg).not.toMatch(/width="-/);
 });
+
+test('carries the code font only when it is given', async () => {
+  const plain = await renderPanelsSvg([panel('a')], { ...appearance, codeFont: 'fira-code' });
+  const embedded = await renderPanelsSvg(
+    [panel('a')],
+    { ...appearance, codeFont: 'fira-code' },
+    'AAAA',
+  );
+  expect(plain).not.toContain('@font-face');
+  expect(embedded).toContain(
+    '@font-face{font-family:"Fira Code";src:url(data:font/ttf;base64,AAAA)',
+  );
+});
