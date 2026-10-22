@@ -4,7 +4,7 @@ export type PaddingPx = 16 | 32 | 64 | 128;
 export type WindowStyle = 'minimal' | 'controls' | 'borderless';
 export type BackgroundMode = 'solid' | 'gradient' | 'transparent';
 export type ExportScale = 1 | 2 | 3;
-export type ExportFormat = 'png' | 'svg';
+export type ExportFormat = 'png' | 'svg' | 'gif';
 export type PanelLayout = 'row' | 'column';
 export type AspectRatio = 'free' | '16:9' | '1:1' | '4:5';
 export type SignaturePosition = 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
@@ -32,6 +32,12 @@ export type AppearanceConfig = {
   title: string;
   exportScale: ExportScale;
   exportFormat: ExportFormat;
+  /** Characters that appear each second in an animated export. */
+  typingSpeed: number;
+  /** Seconds the full code stays on screen at the end of an animated export. */
+  endPause: number;
+  /** An animated GIF plays again from the start. */
+  loop: boolean;
   /** How more than one panel is laid out: side by side, or one above the other. */
   panelLayout: PanelLayout;
   /** A fixed image shape, or `free` to fit the height to the code. */
@@ -47,7 +53,10 @@ export type AppearanceConfig = {
 export const PADDING_OPTIONS: PaddingPx[] = [16, 32, 64, 128];
 export const FONT_SIZE_OPTIONS = [12, 14, 15, 16, 18, 20, 24];
 export const EXPORT_SCALE_OPTIONS: ExportScale[] = [1, 2, 3];
-export const EXPORT_FORMATS: ExportFormat[] = ['png', 'svg'];
+export const EXPORT_FORMATS: ExportFormat[] = ['png', 'svg', 'gif'];
+export const ANIMATED_FORMATS: ExportFormat[] = ['gif'];
+export const TYPING_SPEEDS = [15, 30, 60];
+export const END_PAUSES = [0.5, 1, 2, 3];
 export const SIGNATURE_POSITIONS: SignaturePosition[] = [
   'bottom-right',
   'bottom-left',
@@ -128,6 +137,9 @@ export const DEFAULT_APPEARANCE: AppearanceConfig = {
   title: 'hello.ts',
   exportScale: 2,
   exportFormat: 'png',
+  typingSpeed: 30,
+  endPause: 1,
+  loop: true,
   panelLayout: 'row',
   aspect: 'free',
   codeFont: 'jetbrains-mono',
@@ -257,6 +269,10 @@ export function parseAppearance(raw: unknown): AppearanceConfig {
     title: typeof o.title === 'string' ? o.title : DEFAULT_APPEARANCE.title,
     exportScale: parseExportScale(o.exportScale),
     exportFormat: EXPORT_FORMATS.find((format) => format === o.exportFormat) ?? 'png',
+    typingSpeed:
+      TYPING_SPEEDS.find((speed) => speed === o.typingSpeed) ?? DEFAULT_APPEARANCE.typingSpeed,
+    endPause: END_PAUSES.find((pause) => pause === o.endPause) ?? DEFAULT_APPEARANCE.endPause,
+    loop: parseBoolean(o.loop, DEFAULT_APPEARANCE.loop),
     panelLayout:
       PANEL_LAYOUTS.find((layout) => layout === o.panelLayout) ?? DEFAULT_APPEARANCE.panelLayout,
     aspect: ASPECT_RATIOS.find((ratio) => ratio === o.aspect) ?? DEFAULT_APPEARANCE.aspect,

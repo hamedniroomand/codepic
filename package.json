@@ -36,6 +36,7 @@
     "@shikijs/langs": "^4.5.0",
     "@shikijs/themes": "^4.5.0",
     "bits-ui": "^2.19.5",
+    "gifenc": "1.0.3",
     "modern-screenshot": "^4.7.0",
     "shiki": "^4.5.0"
   },

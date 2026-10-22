@@ -1,4 +1,4 @@
-import { domToBlob, domToForeignObjectSvg } from 'modern-screenshot';
+import { domToBlob, domToCanvas, domToForeignObjectSvg } from 'modern-screenshot';
 
 import type { ExportFormat } from '$lib/config/appearance-config';
 
@@ -15,4 +15,23 @@ export function captureImage(node: HTMLElement, options: CaptureOptions): Promis
   return options.format === 'svg'
     ? captureSvg(node, backgroundColor)
     : domToBlob(node, { scale: options.scale, backgroundColor });
+}
+
+/**
+ * Draws the snapshot on a canvas for an animation. With `hideCode`, the code text is hidden.
+ * Line highlights and annotation boxes stay, so only the text appears as it types.
+ */
+export async function captureCanvas(
+  node: HTMLElement,
+  hideCode: boolean,
+): Promise<HTMLCanvasElement> {
+  // The capture copies computed styles, so the style must change on the node itself.
+  // SnapshotFrame styles `data-hide-code`.
+  if (hideCode) node.setAttribute('data-hide-code', '');
+  try {
+    // A GIF has no partial transparency, so a see-through background becomes white.
+    return await domToCanvas(node, { scale: 1, backgroundColor: '#ffffff' });
+  } finally {
+    node.removeAttribute('data-hide-code');
+  }
 }

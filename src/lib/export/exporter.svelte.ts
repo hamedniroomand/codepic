@@ -3,7 +3,8 @@ import { tick } from 'svelte';
 import type { AppearanceConfig, ExportFormat } from '$lib/config/appearance-config';
 import { loadCodeFont } from '$lib/fonts/load-code-font';
 
-import { captureImage } from './capture';
+import { AnimationError, encodeGif, glyphRects, GIF_FPS, revealSchedule } from './animation';
+import { captureCanvas, captureImage } from './capture';
 import { copyImage } from './clipboard';
 import { downloadBlob, filenameFor } from './download';
 
@@ -38,13 +39,43 @@ export function createExporter(source: Source, onStatus: (message: string) => vo
     pending = action;
     const startedAt = performance.now();
 
-    const capture = async (format: ExportFormat): Promise<Blob> => {
-      // The export node must be painted and fully styled before it is captured.
+    // The export node must be painted and fully styled before it is captured.
+    const ready = async (): Promise<void> => {
       await tick();
       await highlightSettled;
       await loadCodeFont(appearance.codeFont, node.textContent ?? undefined);
       await document.fonts.ready;
       await tick();
+    };
+
+    const animate = async (): Promise<Blob> => {
+      await ready();
+      onStatus('Making the GIF.');
+      const full = await captureCanvas(node, false);
+      const base = await captureCanvas(node, true);
+      const glyphs = glyphRects(node, full.width / node.offsetWidth);
+      const schedule = revealSchedule(
+        glyphs.length,
+        appearance.typingSpeed,
+        GIF_FPS,
+        appearance.endPause * 1000,
+      );
+      return encodeGif({
+        base,
+        full,
+        glyphs,
+        schedule,
+        loop: appearance.loop,
+        onProgress: (frame, total) => {
+          if (frame === 1 || frame % 10 === 0)
+            onStatus(`Making the GIF: frame ${frame} of ${total}.`);
+        },
+      });
+    };
+
+    const capture = async (format: ExportFormat): Promise<Blob> => {
+      if (format === 'gif') return animate();
+      await ready();
       return captureImage(node, {
         format,
         scale: appearance.exportScale,
@@ -61,8 +92,10 @@ export function createExporter(source: Source, onStatus: (message: string) => vo
       const { exportFormat, title } = appearance;
       downloadBlob(await capture(exportFormat), filenameFor(title, exportFormat));
       onStatus('Download started.');
-    } catch {
-      onStatus('Export failed. Try again.');
+    } catch (error) {
+      // The GIF steps give messages fit to show. Other causes keep the short text.
+      const reason = error instanceof AnimationError ? ` ${error.message}` : '';
+      onStatus(`Export failed.${reason} Try again.`);
     } finally {
       const remaining = MIN_BUSY_MS - (performance.now() - startedAt);
       if (remaining > 0) await new Promise((resolve) => setTimeout(resolve, remaining));

@@ -50,6 +50,12 @@ async function run(argv: string[]): Promise<void> {
     exportFormat: extname(options.output ?? '') === '.svg' ? 'svg' : 'png',
     ...params.appearance,
   });
+  if (
+    (appearance.exportFormat !== 'png' && appearance.exportFormat !== 'svg') ||
+    extname(options.output ?? '').toLowerCase() === '.gif'
+  ) {
+    throw new Error('--format must be png or svg. Animated GIFs need the web app.');
+  }
   const output = options.output ?? `codepic.${appearance.exportFormat}`;
 
   // Marks and annotations from the options belong to the first panel.

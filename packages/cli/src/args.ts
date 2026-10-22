@@ -59,7 +59,8 @@ first panel:
   --title <text>        Filename of the first panel (default: the name of
                         the first --file)
   --scale <n>           PNG scale, 1, 2 or 3
-  --format <type>       png or svg (default: from --output)
+  --format <type>       png or svg (default: from --output). Animated GIFs
+                        need the web app
   --signature <text>    Short text in a corner, up to 60 characters
                         (default: none)
   --signaturePos <pos>  bottom-right (default), bottom-left, top-right
