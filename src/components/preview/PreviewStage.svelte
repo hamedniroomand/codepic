@@ -1,35 +1,24 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
+
   import type { AppearanceConfig } from '$lib/config/appearance-config';
   import { MIN_READABLE_FONT_PX, clampWidth } from '$lib/config/appearance-config';
-  import type { Annotation } from '$lib/marks/annotations';
-  import type { LineMarks } from '$lib/marks/line-marks';
+  import type { Panel } from '$lib/panels/panels';
 
   import ResizeHandle from './ResizeHandle.svelte';
   import SnapshotFrame from './SnapshotFrame.svelte';
 
   type Props = {
     appearance: AppearanceConfig;
-    lines: string[];
-    marks: LineMarks;
-    annotations: Annotation[];
-    code: string;
-    onSelect: (selection: { start: number; end: number }) => void;
+    panels: Panel[];
+    lines: string[][];
+    onSelect: (selection: { panel: number; start: number; end: number }) => void;
     exportRef: (element: HTMLDivElement | null) => void;
     onChange: (patch: Partial<AppearanceConfig>) => void;
-    onMarksChange: (marks: LineMarks) => void;
+    onPanelChange: (index: number, patch: Partial<Panel>) => void;
   };
 
-  let {
-    appearance,
-    lines,
-    marks,
-    annotations,
-    code = $bindable(),
-    onSelect,
-    exportRef,
-    onChange,
-    onMarksChange,
-  }: Props = $props();
+  let { appearance, panels, lines, onSelect, exportRef, onChange, onPanelChange }: Props = $props();
 
   const SIDE_GUTTER = 64;
 
@@ -39,10 +28,10 @@
 
   // The hint has done its job once the code differs from what loaded. It stays
   // hidden for the rest of the session and is never persisted.
-  const initialCode = code;
+  const initialCode = untrack(() => panels[0].code);
   let edited = $state(false);
   $effect(() => {
-    if (code !== initialCode) edited = true;
+    if (panels[0].code !== initialCode) edited = true;
   });
 
   // Width only. Content height must not change how wide the card looks,
@@ -59,14 +48,11 @@
       <div style:zoom={scale}>
         <SnapshotFrame
           {appearance}
+          {panels}
           {lines}
-          {marks}
-          {annotations}
           {onSelect}
           interactive
-          bind:code
-          onTitleChange={(title) => onChange({ title })}
-          {onMarksChange}
+          {onPanelChange}
           onFit={(value) => (fit = value)}
         />
       </div>
@@ -99,9 +85,8 @@
 
   <SnapshotFrame
     {appearance}
+    {panels}
     {lines}
-    {marks}
-    {annotations}
     forExport
     frameRef={exportRef}
   />

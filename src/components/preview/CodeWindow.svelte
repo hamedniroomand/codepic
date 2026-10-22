@@ -24,6 +24,8 @@
     marks?: LineMarks;
     annotations?: Annotation[];
     onSelect?: (selection: { start: number; end: number }) => void;
+    /** Accessible name of the code text field. */
+    label?: string;
     interactive?: boolean;
     code?: string;
     onTitleChange?: (title: string) => void;
@@ -36,6 +38,7 @@
     marks = NO_MARKS,
     annotations = [],
     onSelect = () => {},
+    label = 'Code',
     interactive = false,
     code = $bindable(''),
     onTitleChange = () => {},
@@ -177,6 +180,7 @@
         bind:code
         wrap={appearance.wrap}
         {onSelect}
+        {label}
         onscroll={(offset) => (scroll = offset)}
       />
     {/if}

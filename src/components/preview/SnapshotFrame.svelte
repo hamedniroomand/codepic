@@ -7,39 +7,34 @@
   } from '$lib/config/appearance-config';
   import { backgroundStyle, signatureColor } from '$lib/config/backgrounds';
   import { codeFontStack } from '$lib/config/fonts';
-  import type { Annotation } from '$lib/marks/annotations';
-  import type { LineMarks } from '$lib/marks/line-marks';
+  import type { Panel } from '$lib/panels/panels';
+  import { PANEL_GAP } from '$lib/panels/panels';
 
   import CodeWindow from './CodeWindow.svelte';
 
   type Props = {
     appearance: AppearanceConfig;
-    lines: string[];
-    marks?: LineMarks;
-    annotations?: Annotation[];
-    onSelect?: (selection: { start: number; end: number }) => void;
+    panels: Panel[];
+    /** Highlighted lines for each panel. */
+    lines: string[][];
+    onSelect?: (selection: { panel: number; start: number; end: number }) => void;
     interactive?: boolean;
     forExport?: boolean;
     frameRef?: (element: HTMLDivElement | null) => void;
-    code?: string;
-    onTitleChange?: (title: string) => void;
-    onMarksChange?: (marks: LineMarks) => void;
+    onPanelChange?: (index: number, patch: Partial<Panel>) => void;
     /** Reports how much a fixed shape shrinks the card. 1 means no change. */
     onFit?: (scale: number) => void;
   };
 
   let {
     appearance,
+    panels,
     lines,
-    marks,
-    annotations = [],
     onSelect,
     interactive = false,
     forExport = false,
     frameRef = () => {},
-    code = $bindable(''),
-    onTitleChange = () => {},
-    onMarksChange,
+    onPanelChange = () => {},
     onFit = () => {},
   }: Props = $props();
 
@@ -81,17 +76,26 @@
     bind:offsetHeight={cardHeight}
     style:transform={fit === 1 ? null : `scale(${fit})`}
   >
-    <CodeWindow
-      {appearance}
-      {lines}
-      {marks}
-      {annotations}
-      {onSelect}
-      {interactive}
-      bind:code
-      {onTitleChange}
-      {onMarksChange}
-    />
+    <div
+      class="panels"
+      class:column={appearance.panelLayout === 'column'}
+      style:gap="{PANEL_GAP}px"
+    >
+      {#each panels as panel, index (index)}
+        <CodeWindow
+          appearance={{ ...appearance, language: panel.language, title: panel.title }}
+          lines={lines[index] ?? []}
+          marks={panel.marks}
+          annotations={panel.annotations}
+          label={panels.length > 1 ? `Code, panel ${index + 1}` : 'Code'}
+          onSelect={onSelect && ((range) => onSelect({ panel: index, ...range }))}
+          {interactive}
+          bind:code={() => panel.code, (code) => onPanelChange(index, { code })}
+          onTitleChange={(title) => onPanelChange(index, { title })}
+          onMarksChange={(marks) => onPanelChange(index, { marks })}
+        />
+      {/each}
+    </div>
   </div>
   {#if appearance.signature}
     {@const [vertical, horizontal] = appearance.signaturePosition.split('-')}
@@ -122,6 +126,16 @@
   }
   .card {
     flex: none;
+  }
+  .panels {
+    display: flex;
+  }
+  .panels > :global(*) {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .panels.column {
+    flex-direction: column;
   }
   /* Centred on the middle of the padding, in line with the window edge. */
   .signature {

@@ -5,6 +5,7 @@ export type WindowStyle = 'minimal' | 'controls' | 'borderless';
 export type BackgroundMode = 'solid' | 'gradient' | 'transparent';
 export type ExportScale = 1 | 2 | 3;
 export type ExportFormat = 'png' | 'svg';
+export type PanelLayout = 'row' | 'column';
 export type AspectRatio = 'free' | '16:9' | '1:1' | '4:5';
 export type SignaturePosition = 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
 
@@ -31,6 +32,8 @@ export type AppearanceConfig = {
   title: string;
   exportScale: ExportScale;
   exportFormat: ExportFormat;
+  /** How more than one panel is laid out: side by side, or one above the other. */
+  panelLayout: PanelLayout;
   /** A fixed image shape, or `free` to fit the height to the code. */
   aspect: AspectRatio;
   /** An id from CODE_FONTS. */
@@ -53,6 +56,7 @@ export const SIGNATURE_POSITIONS: SignaturePosition[] = [
 ];
 export const MAX_SIGNATURE_CHARS = 60;
 export const ASPECT_RATIOS: AspectRatio[] = ['free', '16:9', '1:1', '4:5'];
+export const PANEL_LAYOUTS: PanelLayout[] = ['row', 'column'];
 
 /** Code drawn smaller than this, in px, is hard to read. */
 export const MIN_READABLE_FONT_PX = 9;
@@ -124,6 +128,7 @@ export const DEFAULT_APPEARANCE: AppearanceConfig = {
   title: 'hello.ts',
   exportScale: 2,
   exportFormat: 'png',
+  panelLayout: 'row',
   aspect: 'free',
   codeFont: 'jetbrains-mono',
   ligatures: true,
@@ -252,6 +257,8 @@ export function parseAppearance(raw: unknown): AppearanceConfig {
     title: typeof o.title === 'string' ? o.title : DEFAULT_APPEARANCE.title,
     exportScale: parseExportScale(o.exportScale),
     exportFormat: EXPORT_FORMATS.find((format) => format === o.exportFormat) ?? 'png',
+    panelLayout:
+      PANEL_LAYOUTS.find((layout) => layout === o.panelLayout) ?? DEFAULT_APPEARANCE.panelLayout,
     aspect: ASPECT_RATIOS.find((ratio) => ratio === o.aspect) ?? DEFAULT_APPEARANCE.aspect,
     codeFont: CODE_FONTS.some((font) => font.id === o.codeFont)
       ? (o.codeFont as string)

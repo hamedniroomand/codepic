@@ -2,6 +2,7 @@ import { mergeAppearance, type AppearanceConfig } from '$lib/config/appearance-c
 import { DEFAULT_CODE } from '$lib/config/default-code';
 import type { Annotation } from '$lib/marks/annotations';
 import { NO_MARKS, type LineMarks } from '$lib/marks/line-marks';
+import type { Panel } from '$lib/panels/panels';
 
 import { parseOpenParams } from './open-params';
 import type { SharedSnapshot } from './share-url';
@@ -11,6 +12,7 @@ export type Boot = {
   code: string;
   marks: LineMarks;
   annotations: Annotation[];
+  extraPanels: Panel[];
   notice: string;
 };
 
@@ -25,6 +27,7 @@ export function resolveBoot(shared: SharedSnapshot, search: string, saved: Appea
     code: shared.code ?? params.code ?? DEFAULT_CODE,
     marks: shared.marks ?? params.marks ?? NO_MARKS,
     annotations: shared.annotations ?? params.annotations ?? [],
+    extraPanels: shared.extraPanels ?? [],
     notice: params.errors.join(' '),
   };
 }

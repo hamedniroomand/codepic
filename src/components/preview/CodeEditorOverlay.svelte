@@ -4,8 +4,9 @@
     wrap: boolean;
     onscroll: (offset: { left: number; top: number }) => void;
     onSelect: (selection: { start: number; end: number }) => void;
+    label: string;
   };
-  let { code = $bindable(), wrap, onscroll, onSelect }: Props = $props();
+  let { code = $bindable(), wrap, onscroll, onSelect, label }: Props = $props();
 
   // The textarea keeps its selection when it loses focus, so the last report stays true
   // when the user then clicks a button in the settings panel.
@@ -19,7 +20,7 @@
 <textarea
   class="input"
   class:wrap
-  aria-label="Code"
+  aria-label={label}
   spellcheck="false"
   autocomplete="off"
   autocapitalize="off"

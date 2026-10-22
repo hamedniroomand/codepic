@@ -1,6 +1,7 @@
 import { parseAppearance, type AppearanceConfig } from '$lib/config/appearance-config';
 import { parseAnnotations, type Annotation } from '$lib/marks/annotations';
 import { MARK_KINDS, parseMarks, type LineMarks } from '$lib/marks/line-marks';
+import { parsePanels, type Panel } from '$lib/panels/panels';
 
 import { deflate, fromBase64Url, inflate, toBase64Url } from './codec';
 
@@ -16,6 +17,8 @@ export type ShareSnapshot = {
   code: string;
   marks: LineMarks;
   annotations: Annotation[];
+  /** Panels after the first one. */
+  extraPanels: Panel[];
 };
 
 export type SharedSnapshot = {
@@ -23,24 +26,53 @@ export type SharedSnapshot = {
   code: string | null;
   marks: LineMarks | null;
   annotations: Annotation[] | null;
+  extraPanels: Panel[] | null;
 };
 
 // A payload without `a` carries only code, so the reader keeps its own appearance.
-type SharePayload = { a?: AppearanceConfig; c?: string; m?: LineMarks; n?: Annotation[] };
+type PanelPayload = { c: string; l: string; t?: string; m?: LineMarks; n?: Annotation[] };
+type SharePayload = {
+  a?: AppearanceConfig;
+  c?: string;
+  m?: LineMarks;
+  n?: Annotation[];
+  p?: PanelPayload[];
+};
 
 const EMPTY_SHARE: SharedSnapshot = {
   appearance: null,
   code: null,
   marks: null,
   annotations: null,
+  extraPanels: null,
 };
 
-function toPayload({ appearance, code, marks, annotations }: ShareSnapshot): SharePayload {
+function hasMarks(marks: LineMarks): boolean {
+  return MARK_KINDS.some((kind) => marks[kind].length > 0);
+}
+
+function panelPayload({ code, language, title, marks, annotations }: Panel): PanelPayload {
+  const payload: PanelPayload = { c: code, l: language };
+  if (title) payload.t = title;
+  if (hasMarks(marks)) payload.m = marks;
+  if (annotations.length) payload.n = annotations;
+  return payload;
+}
+
+function toPayload({
+  appearance,
+  code,
+  marks,
+  annotations,
+  extraPanels,
+}: ShareSnapshot): SharePayload {
   const payload: SharePayload = { a: appearance };
   if (code) payload.c = code;
-  if (MARK_KINDS.some((kind) => marks[kind].length)) payload.m = marks;
+  if (hasMarks(marks)) payload.m = marks;
   // Annotations point into the code, so they go only where the code goes.
   if (code && annotations.length) payload.n = annotations;
+  // Without the first panel's code the link has no code at all, as before panels.
+  if (code && extraPanels.length) payload.p = extraPanels.map(panelPayload);
   return payload;
 }
 
@@ -69,7 +101,7 @@ export async function buildShareUrl(
   const hash = await encode(toPayload(snapshot));
   if (hash.length <= SHARE_HASH_LIMIT) return { url: `${base}${hash}`, codeOmitted: false };
 
-  const withoutCode = await encode(toPayload({ ...snapshot, code: '' }));
+  const withoutCode = await encode(toPayload({ ...snapshot, code: '', extraPanels: [] }));
   return { url: `${base}${withoutCode}`, codeOmitted: true };
 }
 
@@ -87,6 +119,7 @@ export async function parseShareHash(hash: string): Promise<SharedSnapshot> {
       code: typeof data.c === 'string' ? data.c : null,
       marks: data.m ? parseMarks(data.m) : null,
       annotations: data.n ? parseAnnotations(data.n) : null,
+      extraPanels: data.p ? parsePanels(data.p) : null,
     };
   } catch {
     return EMPTY_SHARE;

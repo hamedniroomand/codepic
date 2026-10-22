@@ -8,7 +8,9 @@ export type LanguageDetection = {
   onPaste: (event: ClipboardEvent) => void;
 };
 
-export function createLanguageDetection(apply: (language: string) => void): LanguageDetection {
+export function createLanguageDetection(
+  apply: (language: string, editor: HTMLTextAreaElement) => void,
+): LanguageDetection {
   let picked = false;
   let detected = $state(false);
 
@@ -22,7 +24,7 @@ export function createLanguageDetection(apply: (language: string) => void): Lang
       (editor.selectionStart === 0 && editor.selectionEnd === editor.value.length);
     if (!replacesAll) return;
 
-    apply(detectLanguage(pasted));
+    apply(detectLanguage(pasted), editor);
     detected = true;
   }
 
