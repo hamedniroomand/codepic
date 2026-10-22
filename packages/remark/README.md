@@ -48,4 +48,4 @@ In the code block, `alt="..."` sets the image text for screen readers. The defau
 
 The language comes from the code block, such as `ts` or `python`. CodePic guesses a language that it does not know from the code. Set `lang=` to choose it.
 
-Each image file name is a hash of the code, the options and the `codepic` version. The plugin does not draw a file again if it is there, so you can keep `outDir` between builds. The plugin does not remove old files.
+Each image file name is a hash of the code, the options and the `codepic` version. The plugin does not draw a file again if it is there, so you can keep `outDir` between builds. The plugin does not remove old files. An SVG image carries its code font, so it is about 230 to 390 KB.

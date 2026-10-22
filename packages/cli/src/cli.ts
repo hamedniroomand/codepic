@@ -73,12 +73,13 @@ async function run(argv: string[]): Promise<void> {
       return { ...newPanel(detectLanguage(text)), code: text, title: basename(file) };
     }),
   ];
-  const svg = await renderPanelsSvg(panels, appearance);
+  const font = codeFontById(appearance.codeFont);
   if (appearance.exportFormat === 'svg') {
-    writeFileSync(output, svg);
+    // The SVG carries the font file, so a browser without the font still shows it.
+    const fontBase64 = readFileSync(fontFile(font.file)).toString('base64');
+    writeFileSync(output, await renderPanelsSvg(panels, appearance, fontBase64));
   } else {
-    const font = codeFontById(appearance.codeFont);
-    const image = new Resvg(svg, {
+    const image = new Resvg(await renderPanelsSvg(panels, appearance), {
       fitTo: { mode: 'zoom', value: appearance.exportScale },
       font: {
         fontFiles: [fontFile(font.file)],
