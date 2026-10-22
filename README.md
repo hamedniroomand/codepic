@@ -27,7 +27,7 @@ It's free, it has no accounts, and it has no server. The highlighting, the layou
 
 **It works without a connection.** Visit once and CodePic loads and exports offline. You can install it like an app, too.
 
-**It points at what matters.** Click a line number to highlight it, and the rest of the code fades back. Click again to mark a line as added or removed, and you get a diff view with `+` and `−` in the gutter.
+**It points at what matters.** Click a line number to highlight it, and the rest of the code fades back. Click again to mark a line as added or removed, and you get a diff view with `+` and `−` in the gutter. You can also box or underline part of a line and add a short note.
 
 **Other tools can drive it.** Every setting can be filled in from a link, and a small command line tool draws the same image without opening a browser. Docs sites, scripts and editors can use CodePic as a building block.
 
@@ -37,13 +37,23 @@ It's free, it has no accounts, and it has no server. The highlighting, the layou
 2. **Make it yours.** The settings sidebar groups appearance, code, layout and export controls. Pick a background (or your own colors) and theme, search for a language, adjust padding, width and image shape, or change the window and line numbers. On smaller screens, **Customize image** opens the same controls in a settings sheet.
 3. **Get the image.** Download a PNG or an SVG, copy the image to your clipboard, or copy a link that opens the exact same snapshot. Drag the handles on the sides of the card to set the width.
 
+### Annotate part of a line
+
+Select text in the code and press Ctrl/⌘ + Shift + Space, or use **Add annotation** under **Annotations** in the settings. The text gets a box. You can change it to an underline in the Annotations list.
+
+An annotation covers one line. If you select more lines, only the first line gets it. With no selection, the line of the cursor gets it.
+
+Give an annotation a short note, up to 80 characters. A numbered list of the notes shows under the code, in the preview and in the image. An annotation without a note gets no number.
+
+An annotation keeps its line and column numbers. If you add or remove text before it, it does not move with the text, so add annotations after you finish the code. Share links keep annotations when they include the code. The command line tool does not draw them yet.
+
 ### Keep a look you like
 
 Presets remember a whole appearance under a name. Start from one of the five built in (Default, Clean light, Midnight, Terminal and Sunset), or save your own. They live in your browser, they never contain your code, and you can export them as a small file to move to another machine.
 
 ### Share a snapshot
 
-The share link packs your code and settings into the URL itself, compressed in the browser, so long snippets fit and there's still no server involved. A small meter next to the button shows up as you get close to the size limit. If a snippet is too big for a link, the app says so and leaves the code out instead of failing quietly.
+The share link packs your code, settings and annotations into the URL itself, compressed in the browser, so long snippets fit and there's still no server involved. A small meter next to the button shows up as you get close to the size limit. If a snippet is too big for a link, the app says so and leaves the code out instead of failing quietly.
 
 ### Stay on the keyboard
 
@@ -56,6 +66,7 @@ Every shortcut uses Ctrl (⌘ on macOS), so nothing fires while you're typing. T
 | Copy share link         | Ctrl/⌘ + Shift + L     |
 | Open image settings     | Ctrl/⌘ + .             |
 | Focus the editor        | Ctrl/⌘ + Shift + E     |
+| Annotate selected text  | Ctrl/⌘ + Shift + Space |
 | Show keyboard shortcuts | Ctrl/⌘ + /             |
 
 ## Use it from other places
@@ -165,7 +176,7 @@ The theme colors the code and the background sits behind the card. They're indep
 
 - Your code isn't sent anywhere. There's no server to receive it.
 - Your code isn't saved. Only appearance settings and presets go to `localStorage`.
-- Links carry everything in the URL, so anyone with the link can read the code in it. Keep secrets out of snippets you share.
+- Links carry everything in the URL, so anyone with the link can read the code and the annotation notes in it. Keep secrets out of snippets you share.
 - The hosted site loads an [Umami](https://umami.is) script from the maintainer's own analytics server, for page statistics.
 
 ## Run it yourself

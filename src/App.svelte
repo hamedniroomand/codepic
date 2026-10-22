@@ -17,6 +17,7 @@
   import { loadCodeFont } from '$lib/fonts/load-code-font';
   import { createHighlightState } from '$lib/highlight/highlight.svelte';
   import { createLanguageDetection } from '$lib/highlight/language-detection.svelte';
+  import { MAX_ANNOTATIONS, rangeFromSelection, type Annotation } from '$lib/marks/annotations';
   import type { LineMarks } from '$lib/marks/line-marks';
   import { saveAppearance } from '$lib/persistence/persistence';
   import { createPresetStore } from '$lib/presets/presets.svelte';
@@ -48,6 +49,8 @@
   let appearance = $state<AppearanceConfig>(initial.appearance);
   let code = $state(initial.code);
   let marks = $state<LineMarks>(initial.marks);
+  let annotations = $state<Annotation[]>(initial.annotations);
+  let selection = $state({ start: 0, end: 0 });
   let status = $state(initial.notice);
   let exportNode = $state<HTMLDivElement | null>(null);
 
@@ -56,7 +59,7 @@
     () => ({ code, language: appearance.language, themeId: appearance.themeId }),
     setStatus,
   );
-  const shareUsage = createShareUsage(() => ({ appearance, code, marks }));
+  const shareUsage = createShareUsage(() => ({ appearance, code, marks, annotations }));
   const exporter = createExporter(
     () => ({ node: exportNode, appearance, highlightSettled: highlight.settled }),
     setStatus,
@@ -71,6 +74,20 @@
     if (!exporter.busy) marks = next;
   }
 
+  function changeAnnotations(next: Annotation[]): void {
+    if (!exporter.busy) annotations = next;
+  }
+
+  /** Marks the selected text, or the whole line of the caret when nothing is selected. */
+  function annotateSelection(): void {
+    if (annotations.length >= MAX_ANNOTATIONS) {
+      setStatus(`You can add up to ${MAX_ANNOTATIONS} annotations.`);
+      return;
+    }
+    const range = rangeFromSelection(code, selection.start, selection.end);
+    changeAnnotations([...annotations, { ...range, kind: 'box' }]);
+  }
+
   const languageDetection = createLanguageDetection((language) => patch({ language }));
 
   function changeFromDock(next: Partial<AppearanceConfig>): void {
@@ -80,7 +97,7 @@
   }
 
   async function shareLink(): Promise<void> {
-    const { url, codeOmitted } = await buildShareUrl({ appearance, code, marks });
+    const { url, codeOmitted } = await buildShareUrl({ appearance, code, marks, annotations });
     try {
       await navigator.clipboard.writeText(url);
       setStatus(codeOmitted ? 'Link copied. The code was too long to include.' : 'Link copied.');
@@ -101,6 +118,7 @@
           ?.focus();
     },
     focusEditor: () => document.querySelector<HTMLTextAreaElement>('textarea')?.focus(),
+    annotate: () => annotateSelection(),
     showHelp: () => {
       helpOpen = !helpOpen;
     },
@@ -153,7 +171,9 @@
           {appearance}
           lines={highlight.lines}
           {marks}
+          {annotations}
           bind:code
+          onSelect={(next) => (selection = next)}
           exportRef={(element) => (exportNode = element)}
           onChange={patch}
           onMarksChange={changeMarks}
@@ -185,10 +205,13 @@
         <SettingsInspector
           {appearance}
           {marks}
+          {annotations}
           store={presetStore}
           languageDetected={languageDetection.detected}
           onChange={changeFromDock}
           onMarksChange={changeMarks}
+          onAnnotationsChange={changeAnnotations}
+          onAnnotate={annotateSelection}
           onStatus={setStatus}
         />
       </SettingsPanel>

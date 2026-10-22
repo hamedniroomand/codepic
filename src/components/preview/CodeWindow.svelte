@@ -5,6 +5,7 @@
   import { DEFAULT_APPEARANCE } from '$lib/config/appearance-config';
   import { codeFontStack } from '$lib/config/fonts';
   import { themeById } from '$lib/config/themes';
+  import { markColumns, noteNumbers, type Annotation } from '$lib/marks/annotations';
   import {
     NO_MARKS,
     cycleMark,
@@ -21,6 +22,8 @@
     appearance: AppearanceConfig;
     lines: string[];
     marks?: LineMarks;
+    annotations?: Annotation[];
+    onSelect?: (selection: { start: number; end: number }) => void;
     interactive?: boolean;
     code?: string;
     onTitleChange?: (title: string) => void;
@@ -31,6 +34,8 @@
     appearance,
     lines,
     marks = NO_MARKS,
+    annotations = [],
+    onSelect = () => {},
     interactive = false,
     code = $bindable(''),
     onTitleChange = () => {},
@@ -44,6 +49,24 @@
   let showTitleBar = $derived(appearance.showTitle || appearance.windowStyle === 'controls');
   let showDiff = $derived(hasDiffMarks(marks));
   let gutterWidth = $derived((appearance.lineNumbers ? 4 : 0) + (showDiff ? 2 : 0));
+  let numbers = $derived(noteNumbers(annotations));
+  let notes = $derived(annotations.filter((annotation) => annotation.note));
+  // A whole-line annotation runs to the end of the line, however long it is.
+  let marked = $derived(
+    lines.map((line, index) =>
+      markColumns(
+        line,
+        annotations
+          .filter((annotation) => annotation.line === index + 1)
+          .map((annotation) => ({
+            from: annotation.from ?? 1,
+            to: annotation.to ?? Number.MAX_SAFE_INTEGER,
+            kind: annotation.kind,
+            number: numbers.get(annotation),
+          })),
+      ),
+    ),
+  );
 
   // The untouched default reads as a placeholder, so clear it on focus and put
   // it back if the user leaves without typing. A name they chose is never touched.
@@ -68,6 +91,7 @@
     --win-border: {theme.window.border};
     --win-title: {theme.window.title};
     --win-muted: {theme.window.muted};
+    --ann-color: {theme.dark ? '#facc15' : '#d97706'};
     --fs: {appearance.fontSize}px;
     --lh: {appearance.lineHeight};
     --code-font: {codeFontStack(appearance.codeFont)};
@@ -110,7 +134,7 @@
       class="lines"
       aria-hidden={interactive ? true : undefined}
     >
-      {#each lines as line, index (index)}
+      {#each marked as line, index (index)}
         {@const number = index + 1}
         {@const mark = markAt(number, marks)}
         <div
@@ -152,10 +176,18 @@
       <CodeEditorOverlay
         bind:code
         wrap={appearance.wrap}
+        {onSelect}
         onscroll={(offset) => (scroll = offset)}
       />
     {/if}
   </div>
+  {#if notes.length}
+    <ol class="notes">
+      {#each notes as annotation (annotation)}
+        <li><span class="note-number">{numbers.get(annotation)}</span>{annotation.note}</li>
+      {/each}
+    </ol>
+  {/if}
 </div>
 
 <style>
@@ -282,10 +314,12 @@
   .row.dimmed {
     opacity: 0.4;
   }
+  /* Clip sideways only, so an annotation number above the first row stays visible. */
   .clip {
     flex: 1;
     min-width: 0;
-    overflow: hidden;
+    overflow-x: clip;
+    overflow-y: visible;
   }
   .code {
     display: block;
@@ -294,6 +328,58 @@
   .wrap .code {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
+  }
+  /* Annotations must not change the text layout, or the editable text above them drifts. */
+  .code :global(mark.ann) {
+    position: relative;
+    padding: 0;
+    background: none;
+    color: inherit;
+    border-radius: 3px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  .code :global(mark.ann-box) {
+    box-shadow: 0 0 0 1.5px var(--ann-color);
+  }
+  .code :global(mark.ann-underline) {
+    text-decoration: underline 2px var(--ann-color);
+    text-underline-offset: 3px;
+  }
+  .code :global(mark.ann[data-n])::after,
+  .note-number {
+    display: inline-grid;
+    place-items: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--ann-color);
+    color: var(--win-bg);
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .code :global(mark.ann[data-n])::after {
+    content: attr(data-n);
+    position: absolute;
+    top: -8px;
+    right: -8px;
+  }
+  .notes {
+    margin: 0;
+    padding: 0 24px 20px;
+    list-style: none;
+    color: var(--win-title);
+    font-size: 0.85em;
+  }
+  .notes li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .note-number {
+    flex: none;
   }
   .window:has(:global(textarea:focus-visible)) {
     outline: 2px solid var(--win-border);

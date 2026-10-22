@@ -59,7 +59,7 @@ test('a valid parameter still applies next to a bad one', () => {
   expect(errors).toHaveLength(1);
 });
 
-const empty = { appearance: null, code: null, marks: null };
+const empty = { appearance: null, code: null, marks: null, annotations: null };
 const saved = { ...DEFAULT_APPEARANCE, themeId: 'dracula', paddingPx: 16 as const };
 
 test('parameters win over saved settings', () => {
@@ -78,6 +78,7 @@ test('a share link wins over parameters', () => {
     appearance: { ...DEFAULT_APPEARANCE, themeId: 'github-light' },
     code: 'shared',
     marks: null,
+    annotations: null,
   };
   const boot = resolveBoot(shared, '?theme=nord&code=other', saved);
 

@@ -3,8 +3,16 @@
     code: string;
     wrap: boolean;
     onscroll: (offset: { left: number; top: number }) => void;
+    onSelect: (selection: { start: number; end: number }) => void;
   };
-  let { code = $bindable(), wrap, onscroll }: Props = $props();
+  let { code = $bindable(), wrap, onscroll, onSelect }: Props = $props();
+
+  // The textarea keeps its selection when it loses focus, so the last report stays true
+  // when the user then clicks a button in the settings panel.
+  function report(event: Event): void {
+    const input = event.currentTarget as HTMLTextAreaElement;
+    onSelect({ start: input.selectionStart, end: input.selectionEnd });
+  }
 </script>
 
 <!-- Transparent textarea over the highlighted lines. It owns caret and selection. -->
@@ -17,6 +25,10 @@
   autocapitalize="off"
   wrap={wrap ? 'soft' : 'off'}
   bind:value={code}
+  onselect={report}
+  oninput={report}
+  onkeyup={report}
+  onmouseup={report}
   onscroll={(event) =>
     onscroll({ left: event.currentTarget.scrollLeft, top: event.currentTarget.scrollTop })}
 ></textarea>
