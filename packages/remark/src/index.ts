@@ -27,7 +27,7 @@ export type Options = {
 };
 
 const MARKER = 'codepic';
-// The plugin's own `format` option sets the file type, so a block cannot change it. The GIF
+// The plugin's own `format` option sets the file type, so a block cannot change it. The animation
 // options do nothing in a still image.
 const BLOCK_OPTIONS = APPEARANCE_PARAMS.filter(
   (name) => !['format', 'speed', 'pause', 'loop'].includes(name),

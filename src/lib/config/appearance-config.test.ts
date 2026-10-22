@@ -48,6 +48,7 @@ test('reads width stored as a legacy preset name', () => {
 test('reads the export format and falls back to png', () => {
   expect(parseAppearance({ exportFormat: 'svg' }).exportFormat).toBe('svg');
   expect(parseAppearance({ exportFormat: 'gif' }).exportFormat).toBe('gif');
+  expect(parseAppearance({ exportFormat: 'mp4' }).exportFormat).toBe('mp4');
   expect(parseAppearance({ exportFormat: 'bmp' }).exportFormat).toBe('png');
   expect(parseAppearance({}).exportFormat).toBe('png');
 });

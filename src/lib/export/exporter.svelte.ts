@@ -3,7 +3,14 @@ import { tick } from 'svelte';
 import type { AppearanceConfig, ExportFormat } from '$lib/config/appearance-config';
 import { loadCodeFont } from '$lib/fonts/load-code-font';
 
-import { AnimationError, encodeGif, glyphRects, GIF_FPS, revealSchedule } from './animation';
+import {
+  AnimationError,
+  encodeGif,
+  encodeMp4,
+  glyphRects,
+  GIF_FPS,
+  revealSchedule,
+} from './animation';
 import { captureCanvas, captureImage } from './capture';
 import { copyImage } from './clipboard';
 import { downloadBlob, filenameFor } from './download';
@@ -48,9 +55,10 @@ export function createExporter(source: Source, onStatus: (message: string) => vo
       await tick();
     };
 
-    const animate = async (): Promise<Blob> => {
+    const animate = async (format: 'gif' | 'mp4'): Promise<Blob> => {
+      const name = format.toUpperCase();
       await ready();
-      onStatus('Making the GIF.');
+      onStatus(`Making the ${name}.`);
       const full = await captureCanvas(node, false);
       const base = await captureCanvas(node, true);
       const glyphs = glyphRects(node, full.width / node.offsetWidth);
@@ -60,21 +68,21 @@ export function createExporter(source: Source, onStatus: (message: string) => vo
         GIF_FPS,
         appearance.endPause * 1000,
       );
-      return encodeGif({
+      const source = {
         base,
         full,
         glyphs,
         schedule,
-        loop: appearance.loop,
-        onProgress: (frame, total) => {
+        onProgress: (frame: number, total: number): void => {
           if (frame === 1 || frame % 10 === 0)
-            onStatus(`Making the GIF: frame ${frame} of ${total}.`);
+            onStatus(`Making the ${name}: frame ${frame} of ${total}.`);
         },
-      });
+      };
+      return format === 'gif' ? encodeGif({ ...source, loop: appearance.loop }) : encodeMp4(source);
     };
 
     const capture = async (format: ExportFormat): Promise<Blob> => {
-      if (format === 'gif') return animate();
+      if (format === 'gif' || format === 'mp4') return animate(format);
       await ready();
       return captureImage(node, {
         format,
@@ -93,9 +101,12 @@ export function createExporter(source: Source, onStatus: (message: string) => vo
       downloadBlob(await capture(exportFormat), filenameFor(title, exportFormat));
       onStatus('Download started.');
     } catch (error) {
-      // The GIF steps give messages fit to show. Other causes keep the short text.
-      const reason = error instanceof AnimationError ? ` ${error.message}` : '';
-      onStatus(`Export failed.${reason} Try again.`);
+      // The animation steps give messages fit to show, with their own advice.
+      onStatus(
+        error instanceof AnimationError
+          ? `Export failed. ${error.message}`
+          : 'Export failed. Try again.',
+      );
     } finally {
       const remaining = MIN_BUSY_MS - (performance.now() - startedAt);
       if (remaining > 0) await new Promise((resolve) => setTimeout(resolve, remaining));

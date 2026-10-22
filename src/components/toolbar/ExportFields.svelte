@@ -9,7 +9,7 @@
     EXPORT_SCALE_OPTIONS,
     TYPING_SPEEDS,
   } from '$lib/config/appearance-config';
-  import { GIF_FPS } from '$lib/export/animation';
+  import { GIF_FPS, canEncodeVideo } from '$lib/export/animation';
 
   let {
     appearance,
@@ -50,7 +50,7 @@
       />{/snippet}</Field
   >
 </div>
-{#if appearance.exportFormat === 'gif'}
+{#if appearance.exportFormat === 'gif' || appearance.exportFormat === 'mp4'}
   <div class="pair">
     <Field label="Typing speed"
       >{#snippet children(labelId)}<Select
@@ -69,15 +69,24 @@
         />{/snippet}</Field
     >
   </div>
-  <Toggle
-    label="Play again from the start"
-    checked={appearance.loop}
-    onchange={(loop) => onChange({ loop })}
-  />
+  {#if appearance.exportFormat === 'gif'}
+    <Toggle
+      label="Play again from the start"
+      checked={appearance.loop}
+      onchange={(loop) => onChange({ loop })}
+    />
+  {/if}
 {/if}
 <p>
   {#if appearance.exportFormat === 'png'}
     {appearance.width * appearance.exportScale} px wide at {appearance.exportScale}× resolution
+  {:else if appearance.exportFormat === 'mp4'}
+    {#if canEncodeVideo()}
+      The code types itself in. {appearance.width} px wide at 1× resolution, {GIF_FPS} frames a second.
+      Copy image copies a PNG, not the video.
+    {:else}
+      This browser cannot make an MP4. Use GIF.
+    {/if}
   {:else if appearance.exportFormat === 'gif'}
     The code types itself in. {appearance.width} px wide at 1× resolution, {GIF_FPS} frames a second.
     Copy image copies a PNG, not the animation.
