@@ -1,0 +1,42 @@
+{
+  "name": "remark-codepic",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Turn marked code blocks into CodePic images at build time.",
+  "keywords": [
+    "code",
+    "image",
+    "markdown",
+    "remark",
+    "remark-plugin"
+  ],
+  "homepage": "https://codepic.kitdev.space/",
+  "bugs": {
+    "url": "https://github.com/hamedniroomand/codepic/issues"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hamedniroomand/codepic.git",
+    "directory": "packages/remark"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": "./dist/index.js",
+  "scripts": {
+    "build": "vp pack"
+  },
+  "devDependencies": {
+    "@types/mdast": "4.0.4",
+    "@types/node": "^24.19.0",
+    "codepic": "workspace:*"
+  },
+  "peerDependencies": {
+    "codepic": ">=0.1.1"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

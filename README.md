@@ -125,6 +125,16 @@ The frame shows the whole app, not a small viewer. CodePic sends nothing to the 
 
 The extension in `packages/vscode` adds **Open in CodePic** to the editor's right-click menu. It opens the selected code (or the whole file) in CodePic, with the language and the file name filled in. The code is in the link hash, so the browser does not send it to a server. The language and the file name are in the link query. The extension is not on the Marketplace yet. To try it from a checkout, run `vpr vscode:build`. Then open the `packages/vscode` folder in VS Code and press F5 (Run Extension).
 
+### From a Markdown site
+
+The remark plugin in `packages/remark` turns a code block marked `codepic` into an image when the site builds. It runs the command line tool below, so nothing is uploaded. It is not on npm yet. Its README shows the setup.
+
+````md
+```ts codepic theme=nord
+export const a = 1;
+```
+````
+
 ### From the command line
 
 ```sh
