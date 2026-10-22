@@ -3,7 +3,7 @@
 Notable changes to the `codepic` command line tool. The web app is deployed as it changes, so it has
 no versions of its own.
 
-## Unreleased
+## 0.2.0
 
 ### Changed
 
