@@ -1,5 +1,7 @@
 import {
+  END_PAUSES,
   EXPORT_FORMATS,
+  TYPING_SPEEDS,
   EXPORT_SCALE_OPTIONS,
   FONT_SIZE_OPTIONS,
   MAX_SIGNATURE_CHARS,
@@ -182,6 +184,15 @@ const APPLY: Record<string, Apply> = {
     if (list.length >= MAX_ANNOTATIONS)
       throw new Error(`Use at most ${MAX_ANNOTATIONS} annotate parameters.`);
     result.annotations = [...list, parseAnnotationParam(raw)];
+  },
+  speed: (raw, { appearance }) => {
+    appearance.typingSpeed = oneOf('speed', TYPING_SPEEDS, raw);
+  },
+  pause: (raw, { appearance }) => {
+    appearance.endPause = oneOf('pause', END_PAUSES, raw);
+  },
+  loop: (raw, { appearance }) => {
+    appearance.loop = boolean('loop', raw);
   },
   highlight: marks('emphasized'),
   added: marks('added'),

@@ -47,7 +47,8 @@ test('reads width stored as a legacy preset name', () => {
 
 test('reads the export format and falls back to png', () => {
   expect(parseAppearance({ exportFormat: 'svg' }).exportFormat).toBe('svg');
-  expect(parseAppearance({ exportFormat: 'gif' }).exportFormat).toBe('png');
+  expect(parseAppearance({ exportFormat: 'gif' }).exportFormat).toBe('gif');
+  expect(parseAppearance({ exportFormat: 'bmp' }).exportFormat).toBe('png');
   expect(parseAppearance({}).exportFormat).toBe('png');
 });
 
@@ -106,4 +107,17 @@ test('shrinks a card only when it does not fit', () => {
 test('reads a config saved before shapes existed', () => {
   expect(parseAppearance({}).aspect).toBe('free');
   expect(parseAppearance({ aspect: '2:1' }).aspect).toBe('free');
+});
+
+test('keeps GIF settings to the allowed values', () => {
+  expect(parseAppearance({ typingSpeed: 60, endPause: 2, loop: false })).toMatchObject({
+    typingSpeed: 60,
+    endPause: 2,
+    loop: false,
+  });
+  expect(parseAppearance({ typingSpeed: 999, endPause: -1, loop: 'no' })).toMatchObject({
+    typingSpeed: 30,
+    endPause: 1,
+    loop: true,
+  });
 });

@@ -5,6 +5,10 @@ no versions of its own.
 
 ## Unreleased
 
+### Changed
+
+- `--format gif`, or an output name that ends in `.gif`, stops with an error. Animated GIFs need the web app.
+
 ### Added
 
 - `--file` can be given up to 3 times, one panel for each file. `--panelLayout row` or `column` sets the layout. `--lang`, `--title`, `--highlight`, `--added`, `--removed` and `--annotate` apply to the first panel.
