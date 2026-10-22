@@ -10,23 +10,27 @@ const APPEARANCE_OPTIONS = Object.fromEntries(
 );
 
 export type CliOptions = {
-  file?: string;
+  /** One file for each panel, in order. */
+  files: string[];
   output?: string;
   help: boolean;
   /** Appearance options as a query string, in the form the app reads from a URL. */
   query: string;
 };
 
-export const HELP = `Usage: codepic [--file <path>] [-o <path>] [options]
+export const HELP = `Usage: codepic [--file <path>]... [-o <path>] [options]
 
 Turns code into a PNG or SVG image. Code comes from --file, or from standard input.
 Nothing is uploaded: highlighting and drawing both run on this machine.
 
-  -f, --file <path>     Read code from a file
+  -f, --file <path>     Read code from a file. Give it up to 3 times, one
+                        panel for each file
   -o, --output <path>   Write the image here (default codepic.png; .svg writes SVG)
   -h, --help            Show this help
 
-Appearance options take the same values as the URL parameters in the README:
+Appearance options take the same values as the URL parameters in the README.
+--lang, --title, --highlight, --added, --removed and --annotate apply to the
+first panel:
 
   --lang <id>           Language (default: guessed from the code): javascript,
                         typescript, jsx, tsx, html, css, json, shell, python,
@@ -52,7 +56,8 @@ Appearance options take the same values as the URL parameters in the README:
   --lines <bool>        Line numbers, true or false
   --wrap <bool>         Wrap long lines, true or false
   --showTitle <bool>    Show the filename, true or false
-  --title <text>        Filename (default: the name of --file)
+  --title <text>        Filename of the first panel (default: the name of
+                        the first --file)
   --scale <n>           PNG scale, 1, 2 or 3
   --format <type>       png or svg (default: from --output)
   --signature <text>    Short text in a corner, up to 60 characters
@@ -63,6 +68,7 @@ Appearance options take the same values as the URL parameters in the README:
                         LINE[:FROM-TO][:box|underline][:NOTE], such as
                         3:5-12:box:Reads the file. Without columns, the
                         whole line is marked. Give it up to 50 times.
+  --panelLayout <how>   row (default, side by side) or column (stacked)
   --highlight <lines>   Lines to emphasize, such as 2,5-7
   --added <lines>       Lines marked as added
   --removed <lines>     Lines marked as removed
@@ -83,7 +89,7 @@ export function parseCliArgs(argv: string[]): CliOptions {
   const { values } = parseArgs({
     args: argv,
     options: {
-      file: { type: 'string', short: 'f' },
+      file: { type: 'string', short: 'f', multiple: true },
       output: { type: 'string', short: 'o' },
       help: { type: 'boolean', short: 'h' },
       ...APPEARANCE_OPTIONS,
@@ -91,7 +97,7 @@ export function parseCliArgs(argv: string[]): CliOptions {
   });
   const { file, output, help, ...appearance } = values;
   return {
-    file,
+    files: file ?? [],
     output,
     help: help ?? false,
     query: toQuery(appearance as Record<string, string | string[]>),

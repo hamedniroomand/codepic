@@ -16,7 +16,7 @@ test('reads the file, the output and appearance options', () => {
     'false',
   ]);
 
-  expect(options.file).toBe('app.ts');
+  expect(options.files).toEqual(['app.ts']);
   expect(options.output).toBe('out.png');
   expect(new URLSearchParams(options.query).get('theme')).toBe('nord');
   expect(new URLSearchParams(options.query).get('lines')).toBe('false');
@@ -54,4 +54,9 @@ test('passes each --annotate on', () => {
     parseCliArgs(['--annotate', '1:2-3', '--annotate', '2:box:Two']).query,
   );
   expect(annotations).toHaveLength(2);
+});
+
+test('reads one --file for each panel', () => {
+  expect(parseCliArgs(['-f', 'a.ts', '--file', 'b.py']).files).toEqual(['a.ts', 'b.py']);
+  expect(parseCliArgs([]).files).toEqual([]);
 });

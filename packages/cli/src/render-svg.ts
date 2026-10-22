@@ -11,6 +11,7 @@ import {
   type LineMarks,
   type MarkKind,
 } from '$lib/marks/line-marks';
+import { PANEL_GAP, type Panel } from '$lib/panels/panels';
 
 import { backgroundPaint } from './background';
 import { tokenize } from './tokenize';
@@ -33,25 +34,83 @@ export async function renderSvg(
   marks: LineMarks,
   annotations: Annotation[] = [],
 ): Promise<string> {
+  const { language, title } = appearance;
+  return renderPanelsSvg([{ code, language, title, marks, annotations }], appearance);
+}
+
+type Window = {
+  /** Height that the window needs for its content. */
+  height: number;
+  /** Draws the window at (0, 0) with the given height. */
+  draw: (height: number) => string;
+};
+
+/**
+ * Draws one window for each panel, side by side or stacked, as SnapshotFrame does. Side by
+ * side, every window gets the height of the tallest one, as a flex row stretches them.
+ */
+export async function renderPanelsSvg(
+  panels: Panel[],
+  appearance: AppearanceConfig,
+): Promise<string> {
+  const font = codeFontById(appearance.codeFont);
+  const pad = appearance.paddingPx;
+  const row = appearance.panelLayout === 'row';
+  const inner = appearance.width - pad * 2;
+  const winW = row ? (inner - PANEL_GAP * (panels.length - 1)) / panels.length : inner;
+
+  const windows = await Promise.all(
+    panels.map((panel, index) => renderWindow(panel, appearance, winW, index)),
+  );
+  const tallest = Math.max(...windows.map((window) => window.height));
+  const cardH = row
+    ? tallest
+    : windows.reduce((sum, window) => sum + window.height, 0) + PANEL_GAP * (windows.length - 1);
+  const fixedH = aspectHeight(appearance.aspect, appearance.width);
+  const frameH = fixedH ?? cardH + pad * 2;
+  const fit = fixedH === null ? 1 : fitScale(fixedH, pad, cardH);
+  const paint = backgroundPaint(appearance.background, appearance.width, frameH);
+
+  let offset = 0;
+  const placed = windows.map((window) => {
+    const height = row ? tallest : window.height;
+    const [x, y] = row ? [pad + offset, pad] : [pad, pad + offset];
+    offset += (row ? winW : height) + PANEL_GAP;
+    return `<g transform="translate(${x} ${y})">${window.draw(height)}</g>`;
+  });
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${appearance.width}" height="${frameH}" viewBox="0 0 ${appearance.width} ${frameH}" font-size="${appearance.fontSize}" font-family="${font.family}, monospace"${appearance.ligatures ? '' : ' style="font-variant-ligatures: none"'}>
+<defs>${paint.defs}<filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dy="24" stdDeviation="28" flood-opacity="0.3"/></filter></defs>
+${appearance.background.mode === 'transparent' ? '' : `<rect width="100%" height="100%" fill="${paint.fill}"/>`}
+<g transform="translate(${appearance.width / 2} ${frameH / 2}) scale(${fit}) translate(${-appearance.width / 2} ${-(pad + cardH / 2)})">
+${placed.join('\n')}
+</g>
+${signatureSvg(appearance, frameH)}
+</svg>
+`;
+}
+
+async function renderWindow(
+  panel: Panel,
+  appearance: AppearanceConfig,
+  winW: number,
+  index: number,
+): Promise<Window> {
+  const { code, marks, annotations } = panel;
   const theme = themeById(appearance.themeId);
   const font = codeFontById(appearance.codeFont);
   const size = appearance.fontSize;
   const cell = size * font.metrics.advance;
   const lineHeight = size * appearance.lineHeight;
-  const pad = appearance.paddingPx;
-  const winW = appearance.width - pad * 2;
 
   const showDiff = hasDiffMarks(marks);
   const signW = showDiff ? 2 * cell : 0;
   const numberW = appearance.lineNumbers ? 4 * cell : 0;
-  const codeW = winW - MARGIN.side * 2 - signW - numberW;
+  // A narrow panel can leave no room for code. A negative width is not valid SVG.
+  const codeW = Math.max(0, winW - MARGIN.side * 2 - signW - numberW);
   const columns = appearance.wrap ? Math.max(1, Math.floor(codeW / cell)) : Infinity;
 
-  const lines = await tokenize(
-    code.replaceAll('\t', '  '),
-    appearance.language,
-    appearance.themeId,
-  );
+  const lines = await tokenize(code.replaceAll('\t', '  '), panel.language, appearance.themeId);
   const rows = lines.map((tokens) => wrapTokens(tokens, columns));
   const rowCount = rows.reduce((sum, wrapped) => sum + wrapped.length, 0);
 
@@ -62,25 +121,22 @@ export async function renderSvg(
   const noteSize = size * 0.85;
   const noteH = Math.max(BADGE * 2, noteSize * appearance.lineHeight);
   const legendH = notes.length ? notes.length * (6 + noteH) + 20 : 0;
-  const winH = titleBar + MARGIN.top + rowCount * lineHeight + MARGIN.bottom + legendH;
-  const fixedH = aspectHeight(appearance.aspect, appearance.width);
-  const frameH = fixedH ?? winH + pad * 2;
-  const fit = fixedH === null ? 1 : fitScale(fixedH, pad, winH);
+  const contentH = titleBar + MARGIN.top + rowCount * lineHeight + MARGIN.bottom + legendH;
   const borderless = appearance.windowStyle === 'borderless';
-  const paint = backgroundPaint(appearance.background, appearance.width, frameH);
 
-  const left = pad + MARGIN.side;
+  const left = MARGIN.side;
   const codeX = left + signW + numberW;
   const baselineOffset =
     (lineHeight - (font.metrics.ascent + font.metrics.descent) * size) / 2 +
     font.metrics.ascent * size;
-  let top = pad + titleBar + MARGIN.top;
+  let top = titleBar + MARGIN.top;
   const annotationColor = theme.dark ? '#facc15' : '#d97706';
   const sourceLines = code.split('\n');
-  const contentH = (font.metrics.ascent + font.metrics.descent) * size;
+  const glyphH = (font.metrics.ascent + font.metrics.descent) * size;
+  const clip = `code-${index}`;
 
-  const body = rows.map((wrapped, index) => {
-    const line = index + 1;
+  const body = rows.map((wrapped, lineIndex) => {
+    const line = lineIndex + 1;
     const mark = markAt(line, marks);
     const height = wrapped.length * lineHeight;
     const baseline = top + baselineOffset;
@@ -106,14 +162,14 @@ export async function renderSvg(
           annotationSvg({
             annotation,
             number: numbers.get(annotation),
-            source: sourceLines[index] ?? '',
+            source: sourceLines[lineIndex] ?? '',
             rowWidths: wrapped.map((row) =>
               row.reduce((sum, token) => sum + Array.from(token.content).length, 0),
             ),
             x: codeX,
             top,
             lineHeight,
-            contentH,
+            contentH: glyphH,
             baseline,
             cell,
             color: annotationColor,
@@ -127,6 +183,7 @@ export async function renderSvg(
           baseline + rowIndex * lineHeight,
           theme.window.title,
           appearance.ligatures ? null : cell,
+          clip,
         ),
       ),
     ].join('');
@@ -134,21 +191,20 @@ export async function renderSvg(
     top += height;
     return `<g${isDimmed(line, marks) ? ' opacity="0.4"' : ''}>${svg}</g>`;
   });
+  const legendTop = top + MARGIN.bottom;
 
-  const window = `x="${pad}" y="${pad}" width="${winW}" height="${winH}" rx="${RADIUS}"`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${appearance.width}" height="${frameH}" viewBox="0 0 ${appearance.width} ${frameH}" font-size="${size}" font-family="${font.family}, monospace"${appearance.ligatures ? '' : ' style="font-variant-ligatures: none"'}>
-<defs>${paint.defs}<filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dy="24" stdDeviation="28" flood-opacity="0.3"/></filter><clipPath id="code"><rect x="${codeX}" y="${pad}" width="${codeW}" height="${winH}"/></clipPath></defs>
-${appearance.background.mode === 'transparent' ? '' : `<rect width="100%" height="100%" fill="${paint.fill}"/>`}
-<g transform="translate(${appearance.width / 2} ${frameH / 2}) scale(${fit}) translate(${-appearance.width / 2} ${-(pad + winH / 2)})">
+  return {
+    height: contentH,
+    draw: (winH) => {
+      const window = `x="0" y="0" width="${winW}" height="${winH}" rx="${RADIUS}"`;
+      return `<clipPath id="${clip}"><rect x="${codeX}" y="0" width="${codeW}" height="${winH}"/></clipPath>
 ${borderless ? '' : `<rect ${window} fill="${theme.window.bg}" filter="url(#shadow)"/>`}
 <rect ${window} fill="${theme.window.bg}" stroke="${borderless ? 'none' : theme.window.border}"/>
-${titleBar ? titleBarSvg(appearance, pad, winW, theme.window.title) : ''}
+${titleBar ? titleBarSvg({ ...appearance, title: panel.title }, 0, winW, theme.window.title) : ''}
 ${body.join('\n')}
-${legendSvg(notes, numbers, left, top + MARGIN.bottom, noteH, noteSize, annotationColor, theme.window.bg, theme.window.title)}
-</g>
-${signatureSvg(appearance, frameH)}
-</svg>
-`;
+${legendSvg(notes, numbers, left, legendTop, noteH, noteSize, annotationColor, theme.window.bg, theme.window.title)}`;
+    },
+  };
 }
 
 // The app shows a tab as two columns too, the same as tokenize does.
@@ -270,6 +326,7 @@ function rowText(
   y: number,
   fallback: string,
   cell: number | null,
+  clip: string,
 ): string {
   let column = 0;
   const spans = row
@@ -282,7 +339,7 @@ function rowText(
       }).join('');
     })
     .join('');
-  return `<text x="${x}" y="${y}" xml:space="preserve" clip-path="url(#code)">${spans}</text>`;
+  return `<text x="${x}" y="${y}" xml:space="preserve" clip-path="url(#${clip})">${spans}</text>`;
 }
 
 function titleBarSvg(

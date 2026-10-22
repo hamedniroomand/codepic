@@ -7,6 +7,7 @@ no versions of its own.
 
 ### Added
 
+- `--file` can be given up to 3 times, one panel for each file. `--panelLayout row` or `column` sets the layout. `--lang`, `--title`, `--highlight`, `--added`, `--removed` and `--annotate` apply to the first panel.
 - `--annotate 3:5-12:box:Note` draws a box or an underline on part of a line. A note is optional, and notes show as a numbered list under the code, as in the app. Give it up to 50 times.
 - `--aspect 16:9`, `1:1` or `4:5` makes the image a fixed shape, for posts and slides. The card is in the centre. It gets smaller when the code is too tall.
 - `--codeFont <id>` picks the code font for PNG and SVG output: `jetbrains-mono` (default), `fira-code`, `source-code-pro` or `ibm-plex-mono`. `--ligatures false` turns ligatures off.
