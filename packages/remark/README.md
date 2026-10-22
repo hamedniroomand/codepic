@@ -44,7 +44,7 @@ export function setup() {}
 | `format`     | `svg` (default) or `png`                                                                      |
 | `defaults`   | Options for every image, with the names of the `codepic` options, such as `{ theme: 'nord' }` |
 
-In the code block, `alt="..."` sets the image text for screen readers. The default is the first line of the code, cut to 100 characters. Other `key=value` pairs are `codepic` options, such as `theme`, `bg`, `width`, `highlight` or `lang`. `codepic --help` lists them all. `format` is not allowed in a block, and `scale` changes only PNG images. A value with spaces needs quotes. An unknown option or a bad value stops the build with an error that names the line.
+In the code block, `alt="..."` sets the image text for screen readers. The default is the first line of the code, cut to 100 characters. Other `key=value` pairs are `codepic` options, such as `theme`, `bg`, `width`, `highlight` or `lang`. `codepic --help` lists them all. `format` is not allowed in a block, and `scale` changes only PNG images. A value with spaces needs quotes, such as `annotate="3:5-12:box:Reads the file"`. A code block can give each option only once, so it can have one `annotate`. An unknown option or a bad value stops the build with an error that names the line.
 
 The language comes from the code block, such as `ts` or `python`. CodePic guesses a language that it does not know from the code. Set `lang=` to choose it.
 

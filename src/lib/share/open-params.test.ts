@@ -135,3 +135,12 @@ test('reads the image shape', () => {
   expect(parseOpenParams('?aspect=16:9').appearance.aspect).toBe('16:9');
   expect(parseOpenParams('?aspect=2:1').errors[0]).toContain('Unknown aspect');
 });
+
+test('reads more than one annotate parameter', () => {
+  const { annotations, errors } = parseOpenParams('?annotate=1:2-4&annotate=2:underline:Hi');
+  expect(errors).toEqual([]);
+  expect(annotations).toEqual([
+    { line: 1, from: 2, to: 4, kind: 'box' },
+    { line: 2, kind: 'underline', note: 'Hi' },
+  ]);
+});

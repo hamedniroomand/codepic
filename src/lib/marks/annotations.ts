@@ -123,3 +123,41 @@ export function markColumns(html: string, ranges: Range[]): string {
   if (open) out += `${closeAll()}</mark>${reopenAll()}`;
   return out;
 }
+
+/**
+ * Reads one `annotate` link parameter: `LINE`, then optional `:FROM-TO` columns, `:box` or
+ * `:underline`, and `:note`, in this order. The note is the rest, so it can hold ":".
+ * Throws an Error whose message is fit to show the user.
+ */
+export function parseAnnotationParam(raw: string): Annotation {
+  const parts = raw.split(':');
+  const first = parts.shift() ?? '';
+  const line = Number(first);
+  if (!/^\d+$/.test(first) || line < 1) {
+    throw new Error(
+      `Invalid annotate value "${raw}". Start with a line number, such as 3:5-12:box:Note.`,
+    );
+  }
+  const annotation: Annotation = { line, kind: 'box' };
+  const columns = /^(\d+)(?:-(\d+))?$/.exec(parts[0] ?? '');
+  if (columns) {
+    parts.shift();
+    const from = Number(columns[1]);
+    const to = Number(columns[2] ?? columns[1]);
+    if (from < 1 || to < from) {
+      throw new Error(
+        `Invalid annotate columns in "${raw}". Columns start at 1, and FROM must not be more than TO.`,
+      );
+    }
+    Object.assign(annotation, { from, to });
+  }
+  if (!columns && parts[0] === '') parts.shift();
+  const kind = ANNOTATION_KINDS.find((value) => value === parts[0]?.toLowerCase());
+  if (kind) {
+    parts.shift();
+    annotation.kind = kind;
+  }
+  const note = cleanText(parts.join(':'), MAX_NOTE_CHARS);
+  if (note) annotation.note = note;
+  return annotation;
+}

@@ -20,6 +20,7 @@ import { BACKGROUND_PRESETS } from '$lib/config/backgrounds';
 import { CODE_FONTS } from '$lib/config/fonts';
 import { LANGUAGES } from '$lib/config/languages';
 import { THEMES } from '$lib/config/themes';
+import { MAX_ANNOTATIONS, parseAnnotationParam, type Annotation } from '$lib/marks/annotations';
 import { NO_MARKS, type LineMarks } from '$lib/marks/line-marks';
 import { parseLineRanges } from '$lib/marks/line-ranges';
 
@@ -31,6 +32,7 @@ export type OpenParams = {
   appearance: Partial<AppearanceConfig>;
   code?: string;
   marks?: LineMarks;
+  annotations?: Annotation[];
   /** One readable message per parameter that was ignored. */
   errors: string[];
 };
@@ -170,6 +172,12 @@ const APPLY: Record<string, Apply> = {
   },
   signaturePos: (raw, { appearance }) => {
     appearance.signaturePosition = oneOf('signaturePos', SIGNATURE_POSITIONS, raw);
+  },
+  annotate: (raw, result) => {
+    const list = result.annotations ?? [];
+    if (list.length >= MAX_ANNOTATIONS)
+      throw new Error(`Use at most ${MAX_ANNOTATIONS} annotate parameters.`);
+    result.annotations = [...list, parseAnnotationParam(raw)];
   },
   highlight: marks('emphasized'),
   added: marks('added'),

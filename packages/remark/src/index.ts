@@ -76,7 +76,11 @@ export function parseMeta(meta: string | null | undefined): Record<string, strin
   )
     return null;
   const options: Record<string, string> = {};
-  for (const [, key, quoted, plain] of meta.matchAll(META_OPTION)) options[key] = quoted ?? plain;
+  for (const [, key, quoted, plain] of meta.matchAll(META_OPTION)) {
+    if (Object.hasOwn(options, key))
+      throw new Error(`The option "${key}" is given more than once.`);
+    options[key] = quoted ?? plain;
+  }
   return options;
 }
 
@@ -160,14 +164,19 @@ export default function remarkCodepic(options: Options) {
     const walk = (parent: Parent): void => {
       parent.children.forEach((node, index) => {
         if (isCode(node)) {
-          const meta = parseMeta(node.meta);
-          if (!meta) return;
           const fail = (error: unknown): never => {
             const where = node.position ? ` at line ${node.position.start.line}` : '';
             throw new Error(
               `codepic${where}: ${error instanceof Error ? error.message : String(error)}`,
             );
           };
+          let meta: Record<string, string> | null = null;
+          try {
+            meta = parseMeta(node.meta);
+          } catch (error) {
+            fail(error);
+          }
+          if (!meta) return;
           const lang = blockLanguage(node.lang);
           const merged: Record<string, string> = {
             ...defaults,
