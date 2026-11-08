@@ -29,7 +29,7 @@
     "build": "vp pack"
   },
   "devDependencies": {
-    "@types/vscode": "1.144.0",
+    "@types/vscode": "1.145.0",
     "vscode-uri": "3.2.0"
   },
   "contributes": {
